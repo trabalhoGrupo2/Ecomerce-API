@@ -1,4 +1,4 @@
-package org.serratec.h2.grupo2.produto;
+package org.serratec.h2.grupo2.domain;
 import java.sql.Types;
 
 import org.hibernate.annotations.JdbcTypeCode;

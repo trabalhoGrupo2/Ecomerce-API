@@ -1,10 +1,13 @@
 // Essa classe vai servir para implementar todas as funções da classe Produto, deixando funcional
 
-package org.serratec.h2.grupo2.produto;
+package org.serratec.h2.grupo2.service;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.serratec.h2.grupo2.domain.Produto;
+import org.serratec.h2.grupo2.repository.FotoRepository;
+import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
