@@ -21,6 +21,10 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private FotoRepository fotoRepository;
+	
 	// GET: Ler a lista de produtos
 	// Chamar apenas service.listar no controller
 	public List<Produto> listar() {
@@ -36,8 +40,16 @@ public class ProdutoService {
 	// POST: Inserir 
 	// Chamar apenas service.inserir(produto)
 	public Produto inserir(@Valid Produto produto) {
-        return produtoRepository.save(produto);
-    }
+	    Produto produtoSalvo = produtoRepository.save(produto);
+
+	    if (produto.getFoto() != null) {
+	        Foto foto = produto.getFoto();
+	        foto.setProduto(produtoSalvo);
+	        fotoRepository.save(foto);
+	    }
+
+	    return produtoSalvo; // retorne ela no final
+	}
 	
 	// PUT: Atualizar
 	// Chamar apenas service.atualizar(id, produto)
