@@ -54,4 +54,5 @@ public class Produto {
 	private LocalDate dataCadastro;
 	
 	private LocalDate dataAtualizacao;
+
 }
