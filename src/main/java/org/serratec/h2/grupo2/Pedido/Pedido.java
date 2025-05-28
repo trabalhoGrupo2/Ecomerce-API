@@ -3,7 +3,8 @@ package org.serratec.h2.grupo2.Pedido;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.serratec.h2.grupo2.cliente.Cliente;
+import org.serratec.h2.grupo2.produto.Produto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +15,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Pedido {
 
@@ -32,7 +41,7 @@ public class Pedido {
     private Cliente cliente;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens = new ArrayList<>();
+    private List<Produto> itens = new ArrayList<>();
 
    
 }

@@ -5,6 +5,16 @@ public enum StatusPedido {
 	PAGO,
 	ENVIADO,
 	ENTREGUE,
-	CANCELADO
+	CANCELADO;
 
+
+
+public static StatusPedido statusPeloNome(String nome) {
+    for (StatusPedido status : StatusPedido.values()) {
+        if (status.name().equalsIgnoreCase(nome)) { // Ignora maiúsculas/minúsculas
+            return status;
+        }
+    }
+    throw new IllegalArgumentException("Digite um enum válido!");
+ }
 }
