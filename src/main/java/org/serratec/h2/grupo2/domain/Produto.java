@@ -3,8 +3,6 @@ package org.serratec.h2.grupo2.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.serratec.h2.grupo2.loja.Loja;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
