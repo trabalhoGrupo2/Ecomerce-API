@@ -1,17 +1,11 @@
 package org.serratec.h2.grupo2.produto;
 
-import java.util.List;
 import java.util.Optional;
-
-import org.serratec.backend.exercicio01.domain.Produto;
-import org.serratec.backend.exercicio01.repository.ProdutoRepository;
-import org.serratec.backend.servicedto.dto.FuncionarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,10 +26,10 @@ public class ProdutoController {
 	// Pesquisar por item pelo Id
 	
 	
-	@GetMapping
+	/*@GetMapping
 	public ResponseEntity<List<Produto>> listar() {
 		return ResponseEntity.ok(produtoService.listar());
-	}
+	}*/
 	
 		@GetMapping("/{id}")
 		public ResponseEntity<Produto> pesquisar(@PathVariable Long id) {

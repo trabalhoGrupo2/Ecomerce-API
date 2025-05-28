@@ -1,4 +1,7 @@
-package org.serratec.h2.grupo2.Conta.domain;
+package org.serratec.h2.grupo2.fornecedor.domain;
+
+
+import org.serratec.h2.grupo2.Conta.domain.Conta;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,14 +17,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Conta {
+public class Fornecedor {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private String email;
-	private String senha;
-	private NivelAcesso nivelAcesso;
-	private boolean ativo;
 	
+	private String cpf;
+	
+	private Conta conta;
+	
+	private TipoPessoa pessoa;
+	
+	private String cpfOuCnpj;
+	
+	//private Endereco endereco;
+
 }

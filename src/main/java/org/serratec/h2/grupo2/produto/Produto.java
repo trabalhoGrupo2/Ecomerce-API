@@ -1,6 +1,10 @@
 package org.serratec.h2.grupo2.produto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import org.serratec.h2.grupo2.fornecedor.domain.Fornecedor;
+import org.serratec.h2.grupo2.loja.Loja;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +28,7 @@ public class Produto {
 	@Column(name="descricao", nullable=false, length=255)
 	private String descricao;
 	
-	private Categoria categoria;
+	//private Categoria categoria;
 	
 	@DecimalMin(value="0", message="O preço não pode ser menor que R$ {value}.00")
 	private BigDecimal preco;
@@ -35,7 +39,7 @@ public class Produto {
 	@DecimalMin(value="0", message="O estoque não pode ser menor que R$ {value}.00")
 	private BigDecimal estoque;
 	
-	private Fornecedor fornecedor;
+	private Loja loja;
 	
 	@Column(name="fabricante", nullable=false, length=50)
 	private String fabricante;

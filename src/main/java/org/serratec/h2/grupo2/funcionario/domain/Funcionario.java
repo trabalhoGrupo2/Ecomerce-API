@@ -1,10 +1,13 @@
-package org.serratec.h2.grupo2.fornecedor;
+package org.serratec.h2.grupo2.funcionario.domain;
+
+import java.time.LocalDate;
+
+import org.serratec.h2.grupo2.Conta.domain.Conta;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Loja {
+public class Funcionario {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -23,9 +26,13 @@ public class Loja {
 	
 	private String nome;
 	
-	private String descricao;
+	private String cpf;
 	
-	private Email emailContato;
-	//private List<Produtos> produtosCadastrados;
-	//private List<pedidos> pedidos;
+	private LocalDate dataDeNascimento;
+	
+	private Genero genero;
+	
+	private String telefone;
+	
+	private Conta conta;
 }
