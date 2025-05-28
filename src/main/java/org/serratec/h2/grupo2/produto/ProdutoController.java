@@ -1,5 +1,6 @@
 package org.serratec.h2.grupo2.produto;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,56 +21,51 @@ import jakarta.validation.Valid;
 @RequestMapping("/produtos")
 public class ProdutoController {
 	
+	// Injetar service
 	@Autowired
-	private ProdutoRepository produtoRepository;
+	private ProdutoService service;
 
-	// Pesquisar por item pelo Id
-	
-	
-	/*@GetMapping
+	// GET: TODOS
+	@GetMapping
 	public ResponseEntity<List<Produto>> listar() {
-		return ResponseEntity.ok(produtoService.listar());
-	}*/
-	
-		@GetMapping("/{id}")
-		public ResponseEntity<Produto> pesquisar(@PathVariable Long id) {
-			Optional<Produto> produtoOpt = produtoRepository.findById(id);
-			if (produtoOpt.isPresent()) {
-				return ResponseEntity.ok(produtoOpt.get());
-			}
-			return ResponseEntity.notFound().build();
-		}
-
-		//Inserir um item
-		@PostMapping
-		@ResponseStatus(HttpStatus.CREATED)
-		public Produto inserir(@Valid @RequestBody Produto produto) {
-			produto = produtoRepository.save(produto);
-			return produto;
-		}
-
-
-		// Atualizando o item 
-		@PutMapping("/{id}")
-		public ResponseEntity<Produto> atualizar
-		(@PathVariable Long id, @Valid @RequestBody Produto produto) {
-			boolean exists = produtoRepository.existsById(id);
-			if(!exists) {
-				return ResponseEntity.notFound().build();
-			}
-			// produto.setId(id);
-			produto = produtoRepository.save(produto);
-			return ResponseEntity.ok(produto);
-		}
-
-		//Removendo um item 
-		@DeleteMapping("/{id}")
-		public ResponseEntity<Void> remover(@PathVariable Long id) {
-			if (!produtoRepository.existsById(id)) {
-				return ResponseEntity.notFound().build();
-			}
-			produtoRepository.deleteById(id);
-			return ResponseEntity.noContent().build();
-		}
-		
+		return ResponseEntity.ok(service.listar());
 	}
+	
+	// GET: ID
+	@GetMapping("/{id}")
+    public ResponseEntity<Produto> pesquisar(@PathVariable Long id) {
+        Optional<Produto> produtoOpt = service.pesquisar(id);
+        if (produtoOpt.isPresent()) {
+            return ResponseEntity.ok(produtoOpt.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+	// POST: INSERIR
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Produto inserir(@Valid @RequestBody Produto produto) {
+        return service.inserir(produto);
+    }
+
+
+    // PUT: ATUALIZAR
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
+        Optional<Produto> produtoAtualizado = service.atualizar(id, produto);
+        return produtoAtualizado.map(ResponseEntity::ok)
+                                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE: REMOVER
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        try {
+            service.remover(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+		
+}
