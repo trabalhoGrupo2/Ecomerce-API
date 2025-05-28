@@ -1,4 +1,4 @@
-package Pedido;
+package org.serratec.h2.grupo2.Pedido;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
