@@ -2,8 +2,7 @@ package org.serratec.h2.grupo2.produto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import jakarta.persistence.CascadeType;
+import org.serratec.h2.grupo2.loja.Loja;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
