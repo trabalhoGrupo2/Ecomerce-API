@@ -29,7 +29,7 @@ public class Foto {
 	private String nome;
 
 	@OneToOne
-	@JoinColumn(name = "id_funcionario")
+	@JoinColumn(name = "id_produto")
 	private Produto produto;
 
 	public Foto() {
