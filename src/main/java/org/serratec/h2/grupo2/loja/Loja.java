@@ -2,7 +2,7 @@ package org.serratec.h2.grupo2.loja;
 
 import java.util.List;
 
-import org.serratec.h2.grupo2.produto.Produto;
+import org.serratec.h2.grupo2.domain.Produto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

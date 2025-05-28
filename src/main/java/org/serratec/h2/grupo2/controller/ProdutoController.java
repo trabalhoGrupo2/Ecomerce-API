@@ -1,7 +1,10 @@
-package org.serratec.h2.grupo2.produto;
+package org.serratec.h2.grupo2.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.serratec.h2.grupo2.domain.Produto;
+import org.serratec.h2.grupo2.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
