@@ -1,10 +1,11 @@
-package org.serratec.h2.grupo2.Pedido;
+package org.serratec.h2.grupo2.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.serratec.h2.grupo2.cliente.Cliente;
-import org.serratec.h2.grupo2.produto.Produto;
+
+import org.serratec.h2.grupo2.enuns.StatusPedido;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,10 +40,11 @@ public class Pedido {
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-
+    
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<Produto> itens = new ArrayList<>();
+    private List<ItemPedido> itens = new ArrayList<>();
 
+   
    
 }
 

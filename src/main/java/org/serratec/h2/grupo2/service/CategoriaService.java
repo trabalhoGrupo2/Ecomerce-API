@@ -1,16 +1,16 @@
 package org.serratec.h2.grupo2.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.serratec.h2.grupo2.DTO.CategoriaRequestDto;
 import org.serratec.h2.grupo2.DTO.CategoriaResponseDto;
 import org.serratec.h2.grupo2.DTO.CategoriaUpdateDto;
 import org.serratec.h2.grupo2.domain.Categoria;
-import org.serratec.h2.grupo2.execption.CategoriaException;
 import org.serratec.h2.grupo2.mapper.CategoriaMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService {
