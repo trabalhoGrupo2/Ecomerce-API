@@ -27,7 +27,7 @@ public class Fornecedor {
 	
 	private String cpf;
 	
-	private Conta conta;
+//	private Conta conta;
 	
 	private TipoPessoa pessoa;
 	

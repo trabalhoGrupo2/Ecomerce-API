@@ -1,4 +1,4 @@
-package org.serratec.h2.grupo2.domain;
+package org.serratec.h2.grupo2.enuns;
 
 public enum Cargo {
 

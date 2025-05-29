@@ -1,43 +1,56 @@
 package org.serratec.h2.grupo2.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.serratec.h2.grupo2.DTO.CategoriaRequestDto;
+import org.serratec.h2.grupo2.DTO.CategoriaResponseDto;
+import org.serratec.h2.grupo2.DTO.CategoriaUpdateDto;
 import org.serratec.h2.grupo2.domain.Categoria;
 import org.serratec.h2.grupo2.mapper.CategoriaMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService {
 
-	@Autowired
-	private CategoriaRepository categoriaRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
-	@Autowired
-	private CategoriaMapper categoriaMapper;
+    @Autowired
+    private CategoriaMapper categoriaMapper;
 
-	public List<CategoriaDTO> listarTodas() {
-		return categoriaRepository.findAll().stream().map(categoriaMapper::toDTO).collect(Collectors.toList());
-	}
+    public List<CategoriaResponseDto> listarTodas() {
+        return categoriaRepository.findAll()
+                .stream()
+                .map(categoriaMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
 
-	public CategoriaDTO criarCategoria(CategoriaDTO categoriaDTO) {
-		if (categoriaRepository.findByNome(categoriaDTO.getNome()).isPresent()) {
-			throw new CategoriaException("Já existe uma categoria com o nome: " + categoriaDTO.getNome());
-		}
-		Categoria categoria = categoriaMapper.toEntity(categoriaDTO);
-		Categoria categoriaSalva = categoriaRepository.save(categoria);
-		return categoriaMapper.toDTO(categoriaSalva);
-	}
+    public CategoriaResponseDto criar(CategoriaRequestDto dto) {
+        if (categoriaRepository.existsByNomeIgnoreCase(dto.getNome())) {
+            throw new RuntimeException("Categoria já existente com este nome.");
+        }
 
-	public CategoriaDTO editarCategoria(Long id, CategoriaDTO categoriaDTO) {
-		Categoria categoria = categoriaMapper.toEntity(categoriaDTO);
-		categoria.setId(id);
-		Categoria categoriaAtualizada = categoriaRepository.save(categoria);
-		return categoriaMapper.toDTO(categoriaAtualizada);
-	}
+        Categoria categoria = categoriaMapper.toEntity(dto);
+        Categoria salva = categoriaRepository.save(categoria);
+        return categoriaMapper.toResponseDto(salva);
+    }
 
-	public void deletarCategoria(Long id) {
-		categoriaRepository.deleteById(id);
-	}
+    public CategoriaResponseDto atualizar(Long id, CategoriaUpdateDto dto) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+
+        Categoria atualizada = categoriaMapper.toEntity(dto, categoria);
+        Categoria salva = categoriaRepository.save(atualizada);
+        return categoriaMapper.toResponseDto(salva);
+    }
+
+    public void deletar(Long id) {
+        if (!categoriaRepository.existsById(id)) {
+            throw new RuntimeException("Categoria não encontrada.");
+        }
+        categoriaRepository.deleteById(id);
+    }
 }
