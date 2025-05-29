@@ -43,6 +43,11 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<Produto> itens = new ArrayList<>();
 
+	public void setProdutos(Object produtos) {
+		// TODO Auto-generated method stub
+		
+	}
+
    
 }
 
