@@ -1,4 +1,4 @@
-package org.serratec.h2.grupo2.DTO;
+package org.serratec.h2.grupo2.DTO.conta;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

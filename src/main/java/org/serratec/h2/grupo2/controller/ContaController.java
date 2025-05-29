@@ -1,6 +1,6 @@
-package org.serratec.h2.grupo2.Conta;
+package org.serratec.h2.grupo2.controller;
 
-import org.serratec.h2.grupo2.DTO.ContaRequestDto;
+import org.serratec.h2.grupo2.DTO.conta.ContaRequestDto;
 import org.serratec.h2.grupo2.service.ContaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,6 +1,6 @@
 package org.serratec.h2.grupo2.service;
 
-import org.serratec.h2.grupo2.DTO.ContaRequestDto;
+import org.serratec.h2.grupo2.DTO.conta.ContaRequestDto;
 import org.serratec.h2.grupo2.security.tokenAcesso.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

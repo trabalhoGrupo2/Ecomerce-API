@@ -2,7 +2,7 @@ package org.serratec.h2.grupo2.security.tokenAcesso;
 
 import java.io.IOException;
 
-import org.serratec.h2.grupo2.security.login.userDetails.ContaUserService;
+import org.serratec.h2.grupo2.security.userDetails.ContaUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -25,6 +25,31 @@ public class WebSecurityConfig {
 	        
 	        .authorizeHttpRequests(auth -> auth
 	            .requestMatchers("/auth/login", "/auth/register").permitAll() 
+	            
+	            //REQUISIÇÕES DE FUNCIONÁRIO
+	            
+	            //BAIXO NIVEL DE ACESSO
+	            .requestMatchers("/funcionario/atualizarCadastro").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
+	            .requestMatchers("/funcionario/atualizacaoParcial").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
+	            
+	            //MEDIO NIVEL DE ACESSO
+	            .requestMatchers("/funcionario/cadastro").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+	            .requestMatchers("/funcionario/atualizarFuncionario").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                .requestMatchers("/funcionario/atualizacaoParcialGestor/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                .requestMatchers("/funcionario/desativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                .requestMatchers("/funcionario/ativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                .requestMatchers("/funcionario/buscarPorId/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                .requestMatchers("/funcionario/listarPorNome/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                
+                //ALTO NIVEL DE ACESSO
+                .requestMatchers("/funcionario/listarFuncionarios").hasAnyRole("ALTO", "TOTAL")
+                .requestMatchers("/funcionario/listarPeloCargo/**").hasAnyRole("ALTO", "TOTAL")
+                .requestMatchers("/funcionario/listarContasAtivas").hasAnyRole("ALTO", "TOTAL")
+                .requestMatchers("/funcionario/listarContasDesativadas").hasAnyRole("ALTO", "TOTAL")
+                
+                //NIVEL DE ACESSO TOTAL
+                .requestMatchers("/funcionario/deletarFuncionario/**").hasAnyRole("TOTAL")
+	            
 	            .anyRequest().permitAll() )
 	        .build();
 	}
