@@ -1,4 +1,4 @@
-package org.serratec.h2.grupo2.login;
+package org.serratec.h2.grupo2.security.login.userDetails;
 
 import java.util.Collection;
 import java.util.List;
