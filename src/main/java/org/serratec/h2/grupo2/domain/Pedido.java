@@ -40,9 +40,9 @@ public class Pedido {
     @ManyToOne(optional = false)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-
-    /*@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<Produto> itens = new ArrayList<>();*/
+    
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<ItemPedido> itens = new ArrayList<>();
 
 }
 

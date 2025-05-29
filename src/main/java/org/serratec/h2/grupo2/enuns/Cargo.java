@@ -1,5 +1,6 @@
 package org.serratec.h2.grupo2.enuns;
 
+
 public enum Cargo {
 
     // Alta liderança
@@ -8,6 +9,10 @@ public enum Cargo {
     DIRETOR_FINANCEIRO,
     DIRETOR_COMERCIAL,
     SOCIO,
+    ENGENHEIRO_DE_SOFTWARE, 
+    DESENVOLVEDOR_FRONTEND, 
+    DESENVOLVEDOR_BACKEND, 
+    ENGENHEIRO_DE_DADOS,
 
     // Gerência
     GERENTE_ADMINISTRATIVO,
@@ -22,12 +27,6 @@ public enum Cargo {
     ANALISTA_DE_MARKETING,
     ANALISTA_DE_RECURSOS_HUMANOS,
     CONSULTOR,
-
-    // Desenvolvimento / Engenharia
-    DESENVOLVEDOR_BACKEND,
-    DESENVOLVEDOR_FRONTEND,
-    ENGENHEIRO_DE_SOFTWARE,
-    ENGENHEIRO_DE_DADOS,
     TECNICO_DE_SUPORTE,
 
     // Assistentes / Auxiliares / Operacionais
@@ -36,7 +35,7 @@ public enum Cargo {
     AUXILIAR_ADMINISTRATIVO,
     ESTAGIARIO,
     RECEPCIONISTA,
-    RECURSOS_HUMANOS;
+    RECURSOS_HUMANOS; 
 
     public static NivelAcesso getNivelAcesso(Cargo cargo) {
         switch (cargo) {
@@ -79,5 +78,5 @@ public enum Cargo {
             default:
                 return NivelAcesso.BAIXO;
         }
-    }
+    };
 }

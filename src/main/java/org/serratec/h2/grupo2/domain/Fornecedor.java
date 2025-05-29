@@ -30,6 +30,7 @@ public class Fornecedor {
 	
 	private String cpf;
 	
+
 	@OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "conta_id", referencedColumnName = "id", nullable = false)
     private Conta conta;

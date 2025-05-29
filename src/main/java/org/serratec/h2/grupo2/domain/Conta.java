@@ -27,12 +27,12 @@ public class Conta {
 	private String email;
 	
 	private String senha;
-	
+
 	@Enumerated(EnumType.STRING)
 	private NivelAcesso nivelAcesso;
 	
 	private boolean ativo;
-	
+
 	@OneToOne(mappedBy = "conta")
 	private Funcionario funcionario;
 	

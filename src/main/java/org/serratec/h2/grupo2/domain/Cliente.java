@@ -43,7 +43,7 @@ public class Cliente {
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "conta_id", referencedColumnName = "id", nullable = false)
     private Conta conta;
-	
+
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos = new ArrayList<>();
 }
