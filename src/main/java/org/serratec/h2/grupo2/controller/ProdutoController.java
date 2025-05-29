@@ -3,6 +3,7 @@ package org.serratec.h2.grupo2.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +48,8 @@ public class ProdutoController {
 	// POST: INSERIR
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Produto inserir(@Valid @RequestBody Produto produto) {
-        return service.inserir(produto);
+    public ProdutoResponseDTO inserir(@Valid @RequestBody Produto produto) {
+        return service.inserir(ProdutoResponseDTO);
     }
 
 
