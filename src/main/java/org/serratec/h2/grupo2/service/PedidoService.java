@@ -1,10 +1,15 @@
-package org.serratec.h2.grupo2.Pedido;
+package org.serratec.h2.grupo2.service;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.serratec.h2.grupo2.DTO.PedidoDTO;
+import org.serratec.h2.grupo2.domain.Pedido;
+import org.serratec.h2.grupo2.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PedidoService {
     
 	@Autowired

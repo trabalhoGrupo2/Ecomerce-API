@@ -34,5 +34,5 @@ public class Funcionario {
 	
 	private String telefone;
 	
-	private Conta conta;
+//	private Conta conta;
 }
