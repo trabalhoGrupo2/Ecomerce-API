@@ -1,12 +1,9 @@
 package org.serratec.h2.grupo2.domain;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +24,9 @@ public class Loja {
 	
 	private String descricao;
 	
-	private Email emailContato;
+	private String emailContato;
 	
-	private List<Produto> produtosCadastrados;
+	//private List<Produto> produtosCadastrados;
 	
 	//private Endereco endereco;
 	

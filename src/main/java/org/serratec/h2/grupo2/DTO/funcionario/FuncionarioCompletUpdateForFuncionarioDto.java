@@ -33,7 +33,6 @@ public class FuncionarioCompletUpdateForFuncionarioDto {
 	@Pattern(regexp = "^\\(\\d{2}\\) ?9?\\d{4}-\\d{4}$", message = "Telefone inválido, formato esperado: (XX) 9XXXX-XXXX")
 	private String telefone;
 	
-	//DADOS DA CONTA
 	@Email (message = "Email inválido")
 	private String email;
 	

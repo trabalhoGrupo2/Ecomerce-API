@@ -1,8 +1,9 @@
 package org.serratec.h2.grupo2.domain;
 
 import org.serratec.h2.grupo2.enuns.NivelAcesso;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,9 +23,14 @@ public class Conta {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	
 	private String email;
+	
 	private String senha;
+	
+	@Enumerated(EnumType.STRING)
 	private NivelAcesso nivelAcesso;
+	
 	private boolean ativo;
 	
 	@OneToOne(mappedBy = "conta")

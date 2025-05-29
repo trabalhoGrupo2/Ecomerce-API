@@ -1,6 +1,8 @@
 package org.serratec.h2.grupo2.service;
 
+import org.serratec.h2.grupo2.DTO.CategoriaDTO;
 import org.serratec.h2.grupo2.domain.Categoria;
+import org.serratec.h2.grupo2.execption.CategoriaException;
 import org.serratec.h2.grupo2.mapper.CategoriaMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
