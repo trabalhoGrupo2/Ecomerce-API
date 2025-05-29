@@ -24,35 +24,30 @@ public class PedidoController {
 
     @Autowired
     private PedidoService pedidoService;
-
     // Inserir pedido
     @PostMapping
     public ResponseEntity<Pedido> criarPedido(@RequestBody PedidoDTO pedidoDTO) {
         Pedido pedido = pedidoService.criarPedido(pedidoDTO);
         return ResponseEntity.ok(pedido);
     }
-
     // Editar pedido 
     @PutMapping("/{id}")
     public ResponseEntity<Pedido> editarPedido(@PathVariable Long id, @RequestBody PedidoDTO pedidoDTO) {
         Pedido pedido = pedidoService.editarPedido(id, pedidoDTO);
         return ResponseEntity.ok(pedido);
     }
-
     // Alterar status do pedido
     @PatchMapping("/{id}/status")
     public ResponseEntity<Pedido> alterarStatus(@PathVariable Long id, @RequestParam String status) {
         Pedido pedido = pedidoService.alterarStatus(id, status);
         return ResponseEntity.ok(pedido);
     }
-
     // Buscar pedido por ID
     @GetMapping("/{id}")
     public ResponseEntity<Pedido> buscarPorId(@PathVariable Long id) {
         Pedido pedido = pedidoService.buscarPorId(id);
         return ResponseEntity.ok(pedido);
     }
-
     // Listar todos os pedidos
     @GetMapping
     public ResponseEntity<List<Pedido>> listarTodos() {
