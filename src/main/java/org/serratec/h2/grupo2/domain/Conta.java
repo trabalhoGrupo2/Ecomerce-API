@@ -35,5 +35,4 @@ public class Conta {
 
 	@OneToOne(mappedBy = "conta")
 	private Funcionario funcionario;
-	
 }

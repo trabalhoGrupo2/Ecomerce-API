@@ -11,5 +11,4 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
 	
 	boolean existsByEmail (String email);
 	
-	Conta findByEmail1 (String email);
 }

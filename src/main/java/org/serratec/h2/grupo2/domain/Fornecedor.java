@@ -1,8 +1,6 @@
 package org.serratec.h2.grupo2.domain;
 
-
 import org.serratec.h2.grupo2.enuns.TipoPessoa;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,9 +26,8 @@ public class Fornecedor {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	private String cpf;
+	private String cpfOuCnpj;
 	
-
 	@OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "conta_id", referencedColumnName = "id", nullable = false)
     private Conta conta;
@@ -38,8 +35,5 @@ public class Fornecedor {
 	@Enumerated(EnumType.STRING)
 	private TipoPessoa pessoa;
 	
-	private String cpfOuCnpj;
-	
 	//private Endereco endereco;
-
 }

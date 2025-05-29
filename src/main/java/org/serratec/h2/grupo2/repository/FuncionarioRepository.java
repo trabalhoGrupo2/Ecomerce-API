@@ -11,13 +11,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
 
-	Funcionario existsByEmail (String email);
+	Funcionario findByContaEmail (String email);
 	
 	List<Funcionario> findByNomeContainingIgnoreCase (String nome);
 	
-	List<Funcionario> findByNivelAcesso (NivelAcesso acesso);
+	List<Funcionario> findByContaNivelAcesso (NivelAcesso acesso);
 	
 	List<Funcionario> findByCargo (Cargo cargo);
 	
-	List<Funcionario> findByAtivo (Boolean ativo);
+	List<Funcionario> findByContaAtivo (Boolean ativo);
 }

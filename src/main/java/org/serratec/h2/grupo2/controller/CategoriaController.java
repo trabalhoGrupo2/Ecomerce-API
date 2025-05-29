@@ -1,6 +1,10 @@
 package org.serratec.h2.grupo2.controller;
 
+import java.util.List;
 
+import org.serratec.h2.grupo2.DTO.CategoriaRequestDto;
+import org.serratec.h2.grupo2.DTO.CategoriaResponseDto;
+import org.serratec.h2.grupo2.DTO.CategoriaUpdateDto;
 import org.serratec.h2.grupo2.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

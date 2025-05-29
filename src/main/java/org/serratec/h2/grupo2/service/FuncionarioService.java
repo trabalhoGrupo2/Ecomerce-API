@@ -41,7 +41,7 @@ public class FuncionarioService {
 	//PUT - FUNCIONARIO ATUALIZA O CADASTRO - ELE NÃO PODE MUDAR O PRÓPRIO CARGO
 	public FuncionarioResponseDto atualizacaoCadastro(FuncionarioCompletUpdateForFuncionarioDto request) {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		Funcionario funcionario = repository.existsByEmail(email);
+		Funcionario funcionario = repository.findByContaEmail(email);
 		
 		funcionario.setNome(request.getNome());
 		funcionario.setCpf(request.getCpf());
@@ -77,7 +77,7 @@ public class FuncionarioService {
 	//ATUALIZAÇÃO PARCIAL FEITA PELO FUNCIONÁRIO
 	public FuncionarioResponseDto atualizacaoParcial(FuncionarioCompletUpdateForFuncionarioDto request) {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		Funcionario funcionario = repository.existsByEmail(email);
+		Funcionario funcionario = repository.findByContaEmail(email);
 		
 		if (request.getNome() != null && !request.getNome().isBlank()) {
 	        funcionario.setNome(request.getNome());
@@ -228,13 +228,13 @@ public class FuncionarioService {
 	
 	//PELO NIVEL DE ACESSO
 	public List<FuncionarioResponseDto> listarPorNivelDeAcesso(NivelAcesso acesso) {
-		List<Funcionario> listaFuncionarios = repository.findByNivelAcesso(acesso);
+		List<Funcionario> listaFuncionarios = repository.findByContaNivelAcesso(acesso);
 		return mapper.toListResponse(listaFuncionarios);
 	}
 	
 	//LISTAR FUNCIONÁRIOS SE ELES TIVEREM A CONTA ATIVA OU DESATIVADA
 	public List<FuncionarioResponseDto> listarContaAtivaOuDesativada(Boolean ativo) {
-		List<Funcionario> listaFuncionarios = repository.findByAtivo(ativo);
+		List<Funcionario> listaFuncionarios = repository.findByContaAtivo(ativo);
 		return mapper.toListResponse(listaFuncionarios);
 	}
 	
