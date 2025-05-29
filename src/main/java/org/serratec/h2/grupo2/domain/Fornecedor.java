@@ -23,6 +23,8 @@ public class Fornecedor {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	private String nome;
+	
 	private String cpf;
 	
 //	private Conta conta;

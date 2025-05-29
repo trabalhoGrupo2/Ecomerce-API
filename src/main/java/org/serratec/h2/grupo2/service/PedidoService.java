@@ -44,6 +44,13 @@ public class PedidoService {
 		return null;
 	}
 
+	public void remover(Long id) {
+		
+	
+		
+	}
+
+	
 	
 
 }
