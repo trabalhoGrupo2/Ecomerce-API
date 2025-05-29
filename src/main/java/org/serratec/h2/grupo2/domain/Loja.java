@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +29,12 @@ public class Loja {
 	
 	private String descricao;
 	
-	private Email emailContato;
+	private String emailContato;
 	
+	@ManyToMany
+	@JoinTable(name="loja_produto",
+	joinColumns = @JoinColumn(name="id_loja"),
+	inverseJoinColumns = @JoinColumn(name="id_produto"))
 	private List<Produto> produtosCadastrados;
 	
 	//private Endereco endereco;

@@ -5,6 +5,7 @@ package org.serratec.h2.grupo2.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.repository.FotoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
@@ -44,7 +45,6 @@ public class ProdutoService {
 	// Chamar apenas service.inserir(produto)
 	public Produto inserir(@Valid Produto produto) {
 	    Produto produtoSalvo = produtoRepository.save(produto);
-
 	    if (produto.getFoto() != null) {
 	        Foto foto = produto.getFoto();
 	        foto.setProduto(produtoSalvo);
