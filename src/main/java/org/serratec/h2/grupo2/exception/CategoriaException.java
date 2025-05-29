@@ -1,4 +1,4 @@
-package org.serratec.h2.grupo2.execption;
+package org.serratec.h2.grupo2.exception;
 
 public class CategoriaException extends RuntimeException {
 	public CategoriaException(Long id) {
