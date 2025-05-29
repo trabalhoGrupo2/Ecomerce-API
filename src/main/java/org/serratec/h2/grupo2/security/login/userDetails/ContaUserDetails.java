@@ -2,7 +2,8 @@ package org.serratec.h2.grupo2.security.login.userDetails;
 
 import java.util.Collection;
 import java.util.List;
-import org.serratec.h2.grupo2.Conta.domain.Conta;
+
+import org.serratec.h2.grupo2.domain.Conta;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

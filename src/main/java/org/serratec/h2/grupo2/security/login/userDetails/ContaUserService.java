@@ -1,6 +1,6 @@
 package org.serratec.h2.grupo2.security.login.userDetails;
 
-import org.serratec.h2.grupo2.Conta.ContaRepository;
+import org.serratec.h2.grupo2.repository.ContaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
