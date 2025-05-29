@@ -1,5 +1,6 @@
 package org.serratec.h2.grupo2.controller;
 
+import org.serratec.h2.grupo2.DTO.CategoriaDTO;
 import org.serratec.h2.grupo2.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
