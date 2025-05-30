@@ -72,6 +72,12 @@ public class PedidoController {
     	 repository.deleteById(id);
         }
     
+    @GetMapping("/por-cliente")
+    public ResponseEntity<List<Pedido>> listarPorCliente(@RequestParam Long clienteId) {
+        List<Pedido> pedidos = pedidoService.listarPorClienteId(clienteId);
+        return ResponseEntity.ok(pedidos);
+    }
+    
 }
 
 
