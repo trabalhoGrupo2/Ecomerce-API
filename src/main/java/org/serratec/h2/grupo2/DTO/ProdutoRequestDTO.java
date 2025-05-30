@@ -32,7 +32,7 @@ public class ProdutoRequestDTO {
 	@NotBlank (message = "O nome deve ser preenchido")
 	private String nome;
 	
-	@Size (min = 3, max = 50, message = "o nome do produto deve ter entre 3 e 50 caracteres")
+	@Size (min = 3, max = 255, message = "O nome do produto deve ter entre 3 e 255 caracteres")
 	@NotBlank (message = "O descrição deve ser preenchido")
 	private String descricao;
 	

@@ -27,9 +27,7 @@ public class ProdutoMapper {
 		Produto produto = new Produto();
 
 		produto.setNome(request.getNome());
-		
 		produto.setDescricao(request.getDescricao());
-		
 		Categoria categoria = categoriaRepository.findById(request.getIdCategoria())
 	                .orElseThrow(() -> 
 	                new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
