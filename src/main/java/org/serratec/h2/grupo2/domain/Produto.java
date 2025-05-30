@@ -71,7 +71,8 @@ public class Produto {
 	private LocalDate dataAtualizacao;
 
 	// Relação entre foto e produto
-	@OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
+	// @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
 	private Foto foto;
 	
 	@OneToMany(mappedBy = "produto")
