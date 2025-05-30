@@ -15,6 +15,49 @@ public class PedidoService {
     @Autowired
     private PedidoRepository repository;
 
+//ADICIONAR UM PRODUTO EM PEDIDO
+
+//REMOVER UM PRODUTO DO PEDIDO
+
+//ALTERAR QUANTIDADE DE UM PRODUTO NO PEDIDO
+
+//FINALIZAR UM PEDIDO
+
+//FUNÇÕES
+
+    //CRIAR UM PEDIDO
+
+    //TRANSFORMA UM PEDIDO EM ITEM PEDIDO
+
+    //CALCULAR O VALOR TOTAL DO PEDIDOZ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    
     public Pedido buscarPorId(Long id) {
         return repository.findById(id)
