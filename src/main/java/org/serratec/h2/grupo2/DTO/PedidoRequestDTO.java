@@ -34,4 +34,14 @@ public class PedidoRequestDTO {
     public void setItens(List<ItemPedidoRequestDTO> itens) {
         this.itens = itens;
     }
+    
+    private String codigoDesconto; // pode ser null ou vazio se o cliente não enviar
+
+    public String getCodigoDesconto() {
+        return codigoDesconto;
+    }
+
+    public void setCodigoDesconto(String codigoDesconto) {
+        this.codigoDesconto = codigoDesconto;
+    }
 }
