@@ -1,28 +1,23 @@
 // ATUALIZADO DANDARA
 
-package org.serratec.h2.grupo2.domain;
+package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.serratec.h2.grupo2.domain.Categoria;
+import org.serratec.h2.grupo2.domain.Foto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,36 +27,26 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name="produto")
-public class Produto {
+public class ProdutoRequestDTO {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@Column(name="nome", nullable=false, length=50)
+	@NotBlank (message = "O nome deve ser preenchido")
 	private String nome;
 	
-	@Column(name="descricao", nullable=false, length=255)
+	@Size (min = 3, max = 255, message = "O nome do produto deve ter entre 3 e 255 caracteres")
+	@NotBlank (message = "O descrição deve ser preenchido")
 	private String descricao;
 	
+	@NotNull(message = "O ID da categoria deve ser informado")
+
+	private Long idCategoria;
 	
-    @NotNull(message = "Categoria é obrigatória")
-	@ManyToOne
-	@JoinTable(name="id_categoria")
-	private Categoria categoria;
-	
-	@DecimalMin(value="0", message="O preço não pode ser menor que R$ {value}.00")
+	@NotNull (message = "O preço maior que zero")
 	private BigDecimal preco;
 	
-	@DecimalMin(value="0", message="O preço não pode ser menor que R$ {value}.00")
 	private BigDecimal precoPromocional;
 	
-	@DecimalMin(value="0", message="O estoque não pode ser negativo")
 	private BigDecimal estoque;
 	
-	@Column(name="fabricante", nullable=false, length=50)
 	private String fabricante;
 	
 	private Boolean ativo;
@@ -70,28 +55,7 @@ public class Produto {
 	
 	private LocalDate dataAtualizacao;
 
-	// Relação entre foto e produto
-	// @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
-	@OneToOne(cascade = CascadeType.ALL)
 	private Foto foto;
-	
-	@OneToMany(mappedBy = "produto")
-	private List<ItemPedido> itens = new ArrayList<>();
-	
-	@PrePersist
-	private void oncreate() {
-		this.ativo = true;
-		this.dataCadastro = LocalDate.now();
-		this.dataAtualizacao = LocalDate.now();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getNome() {
 		return nome;
@@ -109,12 +73,12 @@ public class Produto {
 		this.descricao = descricao;
 	}
 
-	public Categoria getCategoria() {
-		return categoria;
+	public Long getIdCategoria() {
+		return idCategoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
+	public void setIdCategoria(Long idCategoria) {
+		this.idCategoria = idCategoria;
 	}
 
 	public BigDecimal getPreco() {
@@ -181,12 +145,4 @@ public class Produto {
 		this.foto = foto;
 	}
 
-	public List<ItemPedido> getItens() {
-		return itens;
-	}
-
-	public void setItens(List<ItemPedido> itens) {
-		this.itens = itens;
-	}
-	
 }
