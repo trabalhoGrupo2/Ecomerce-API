@@ -1,18 +1,22 @@
 package org.serratec.h2.grupo2.DTO;
 
-
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class ItemPedidoDTO {
+/**
+ * DTO que representa um item do pedido dentro do PedidoRequestDTO.
+ */
+public class ItemPedidoRequestDTO {
 
+    // O ID do produto do item do pedido é obrigatório
     @NotNull(message = "O ID do produto é obrigatório")
     private Long produtoId;
 
-    @Min(value = 1, message = "A quantidade deve ser no mínimo 1")
+    // A quantidade do produto para esse item é obrigatória
+    @NotNull(message = "A quantidade é obrigatória")
     private Integer quantidade;
 
     // Getters e Setters
+
     public Long getProdutoId() {
         return produtoId;
     }

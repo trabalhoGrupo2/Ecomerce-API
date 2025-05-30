@@ -4,15 +4,21 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * DTO usado para receber os dados de criação ou edição de um pedido.
+ */
 public class PedidoRequestDTO {
 
+    // O ID do cliente que está fazendo o pedido é obrigatório
     @NotNull(message = "O ID do cliente é obrigatório")
     private Long clienteId;
 
+    // A lista de itens do pedido não pode estar vazia
     @NotEmpty(message = "O pedido deve conter ao menos um item")
-    private List<ItemPedidoDTO> itens;
+    private List<ItemPedidoRequestDTO> itens;
 
     // Getters e Setters
+
     public Long getClienteId() {
         return clienteId;
     }
@@ -21,12 +27,11 @@ public class PedidoRequestDTO {
         this.clienteId = clienteId;
     }
 
-    public List<ItemPedidoDTO> getItens() {
+    public List<ItemPedidoRequestDTO> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemPedidoDTO> itens) {
+    public void setItens(List<ItemPedidoRequestDTO> itens) {
         this.itens = itens;
     }
 }
-

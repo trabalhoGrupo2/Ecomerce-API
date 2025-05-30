@@ -36,8 +36,8 @@ public class ItemPedido {
         }
     }
 
-	public void setPedido(Object object) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+	
 }
