@@ -31,21 +31,41 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Double valorFrete;
     private LocalDate dataCriacao;
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
-   
-   
+
+	public Double getValorTotal() {
+		
+		return null;
+	}
+
+	public void setValorTotal(double d) {
+		
+		
+	}
+
+	public void setDescricao(Object descricao) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setStatus(String upperCase) {
+		// TODO Auto-generated method stub
+		
+	}
+
+  
 }
 
 
