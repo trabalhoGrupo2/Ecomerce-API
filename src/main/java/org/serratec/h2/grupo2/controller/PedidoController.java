@@ -3,11 +3,14 @@ package org.serratec.h2.grupo2.controller;
 
 import java.util.List;
 
+import org.serratec.h2.grupo2.DTO.FreteDTO;
 import org.serratec.h2.grupo2.DTO.PedidoDTO;
 import org.serratec.h2.grupo2.domain.Pedido;
+import org.serratec.h2.grupo2.repository.PedidoRepository;
 import org.serratec.h2.grupo2.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,16 +21,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("/api/pedidos")
 public class PedidoController {
 
     @Autowired
     private PedidoService pedidoService;
-
+    
+    @Autowired
+    private PedidoRepository repository;
+    
     // Inserir pedido
     @PostMapping
-    public ResponseEntity<Pedido> criarPedido(@RequestBody PedidoDTO pedidoDTO) {
+    public ResponseEntity<Pedido> criarPedido( @RequestBody PedidoDTO pedidoDTO) {
         Pedido pedido = pedidoService.criarPedido(pedidoDTO);
         return ResponseEntity.ok(pedido);
     }
@@ -46,6 +54,8 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
+    
+    
     // Buscar pedido por ID
     @GetMapping("/{id}")
     public ResponseEntity<Pedido> buscarPorId(@PathVariable Long id) {
@@ -59,6 +69,20 @@ public class PedidoController {
         List<Pedido> pedidos = pedidoService.listarTodos();
         return ResponseEntity.ok(pedidos);
     }
+    
+    @DeleteMapping("/{id}")
+    public void remover(@PathVariable Long id) {
+        Pedido pedido = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pedido com ID " + id + " não encontrado."));
+    	 repository.deleteById(id);
+        }
+    
+    
+    @PatchMapping("/{id}/frete")
+    public ResponseEntity<Pedido> calcularFrete(@PathVariable Long id, @RequestBody FreteDTO freteDTO) {
+        Pedido pedido = pedidoService.calcularFrete(id, freteDTO.getDistanciaKm());
+        return ResponseEntity.ok(pedido);
+    }
+   
 }
 
 
