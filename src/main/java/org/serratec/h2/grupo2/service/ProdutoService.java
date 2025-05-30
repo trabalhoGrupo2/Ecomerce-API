@@ -1,3 +1,4 @@
+// ATUALIZADO DANDARA
 // Essa classe vai servir para implementar todas as funções da classe Produto, deixando funcional
 
 package org.serratec.h2.grupo2.service;
@@ -53,9 +54,7 @@ public class ProdutoService {
         return produtoMapper.toResponse(produto);
     }
 	
-<<<<<<< HEAD
-    
- // POST: Inserir
+	// POST: Inserir
     // Mapper converte o JSON para Produto depois converte para ProdutoResponse
     // Chamar apenas service.inserir(produto)
     public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
@@ -66,24 +65,8 @@ public class ProdutoService {
     	}
 
     	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
-
     	return produtoMapper.toResponse(produtoSalvo);
-=======
-	// POST: Inserir
-    // Mapper converte o JSON para Produto depois converte para ProdutoResponse
-    // Chamar apenas service.inserir(produto)
-    public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
-        Produto produto = produtoMapper.toProduto(dto);
-        Produto produtoSalvo = produtoRepository.save(produto);
 
-        if (produto.getFoto() != null) {
-            Foto foto = produto.getFoto();
-            foto.setProduto(produtoSalvo);
-            fotoRepository.save(foto);
-        }
-
-        return produtoMapper.toResponse(produtoSalvo);
->>>>>>> 5e6718fdde70b5b34f14cff2245639beb9492c70
     }
 
 	

@@ -1,4 +1,5 @@
-//Atualizado Marlos
+// ATUALIZADO DANDARA
+
 package org.serratec.h2.grupo2.controller;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class ProdutoController {
 			return ResponseEntity.notFound().build();
 		}
 	}
-=======
+
         try {
             return ResponseEntity.ok(service.pesquisar(id));
         // Retorna error 404
@@ -82,6 +83,7 @@ public class ProdutoController {
 
 
     // PUT: ATUALIZAR
+    @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
         try {
             ProdutoResponseDTO atualizado = service.atualizar(id, dto);
@@ -90,7 +92,6 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
     }
->>>>>>> 5e6718fdde70b5b34f14cff2245639beb9492c70
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> remover(@PathVariable Long id) {

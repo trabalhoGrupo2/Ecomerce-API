@@ -1,4 +1,5 @@
-// Atualizado Marlos
+// ATUALIZADO DANDARA
+
 package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
@@ -35,7 +36,8 @@ public class ProdutoRequestDTO {
 	@NotBlank (message = "O descrição deve ser preenchido")
 	private String descricao;
 	
-	@NotNull (message = "O id da Categoria deve ser preenchido")
+	@NotNull(message = "O ID da categoria deve ser informado")
+
 	private Long idCategoria;
 	
 	@NotNull (message = "O preço maior que zero")
@@ -71,7 +73,6 @@ public class ProdutoRequestDTO {
 		this.descricao = descricao;
 	}
 
-	
 	public Long getIdCategoria() {
 		return idCategoria;
 	}
@@ -143,5 +144,5 @@ public class ProdutoRequestDTO {
 	public void setFoto(Foto foto) {
 		this.foto = foto;
 	}
-	
+
 }

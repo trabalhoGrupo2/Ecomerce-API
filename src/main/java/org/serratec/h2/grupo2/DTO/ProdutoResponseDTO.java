@@ -1,4 +1,5 @@
-// Atualizado Marlos
+// ATUALIZADO DANDARA
+
 package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
@@ -80,7 +81,8 @@ public class ProdutoResponseDTO {
 	public Long getIdCategoria() {
 		return idCategoria;
 	}
-	public void setIdCategoria(Long idCategoria) {
+
+    public void setIdCategoria(Long idCategoria) {
 		this.idCategoria = idCategoria;
 	}
 	public BigDecimal getPreco() {
@@ -151,6 +153,5 @@ public class ProdutoResponseDTO {
 	public void setDataAtualizacao(LocalDate dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
-
 
 }

@@ -1,10 +1,13 @@
-// Atualizado Marlos
+// ATUALIZADO DANDARA
+
 package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,7 +21,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -63,12 +65,6 @@ public class Produto {
 	private String fabricante;
 	
 	private Boolean ativo;
-		@PrePersist
-		private void oncreate() {
-			this.ativo = true;
-			this.dataCadastro = LocalDate.now();
-			this.dataAtualizacao = LocalDate.now();
-		}
 	
 	private LocalDate dataCadastro;
 	
@@ -80,6 +76,13 @@ public class Produto {
 	
 	@OneToMany(mappedBy = "produto")
 	private List<ItemPedido> itens = new ArrayList<>();
+	
+	@PrePersist
+	private void oncreate() {
+		this.ativo = true;
+		this.dataCadastro = LocalDate.now();
+		this.dataAtualizacao = LocalDate.now();
+	}
 
 	public Long getId() {
 		return id;
