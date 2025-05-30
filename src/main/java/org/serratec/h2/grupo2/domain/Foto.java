@@ -1,7 +1,10 @@
+// ATUALIZADO DANDARA
 package org.serratec.h2.grupo2.domain;
 import java.sql.Types;
 
 import org.hibernate.annotations.JdbcTypeCode;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

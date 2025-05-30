@@ -1,3 +1,4 @@
+// ATUALIZADO DANDARA
 package org.serratec.h2.grupo2.controller;
 
 import java.util.List;
@@ -60,6 +61,7 @@ public class ProdutoController {
 
 
     // PUT: ATUALIZAR
+    @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
         try {
             ProdutoResponseDTO atualizado = service.atualizar(id, dto);
