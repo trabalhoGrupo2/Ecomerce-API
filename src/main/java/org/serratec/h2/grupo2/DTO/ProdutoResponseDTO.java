@@ -1,4 +1,5 @@
 // ATUALIZADO DANDARA
+
 package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
@@ -81,12 +82,9 @@ public class ProdutoResponseDTO {
 		return idCategoria;
 	}
 
-
-	public void setIdCategoria(Long idCategoria) {
+    public void setIdCategoria(Long idCategoria) {
 		this.idCategoria = idCategoria;
 	}
-
-
 	public BigDecimal getPreco() {
 		return preco;
 	}

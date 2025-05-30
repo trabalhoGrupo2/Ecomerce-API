@@ -1,4 +1,5 @@
 // ATUALIZADO DANDARA
+
 package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;

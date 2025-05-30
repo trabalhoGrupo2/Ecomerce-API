@@ -4,7 +4,6 @@
 package org.serratec.h2.grupo2.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
@@ -66,8 +65,8 @@ public class ProdutoService {
     	}
 
     	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
-
     	return produtoMapper.toResponse(produtoSalvo);
+
     }
 
 	
@@ -84,7 +83,7 @@ public class ProdutoService {
         Produto atualizado = produtoRepository.save(produto);
         return produtoMapper.toResponse(atualizado);
     }
-	
+
 	// Deletar um item
 	// Chamar apenas service.remover(id)
     public void remover(Long id) {
