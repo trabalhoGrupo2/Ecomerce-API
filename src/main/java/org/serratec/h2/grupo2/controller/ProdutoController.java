@@ -33,15 +33,11 @@ public class ProdutoController {
 	// ResponseEntity permite customizar o status HTTP
 	@GetMapping
 	public ResponseEntity<List<ProdutoResponseDTO>> listar() {
-		return ResponseEntity.ok(service.listar());
-	}
+
+        return ResponseEntity.ok(service.listar());
+    }
 
 
-	// GET: ID
-	@GetMapping("/{id}")
-	public ResponseEntity<ProdutoResponseDTO> pesquisar(@PathVariable Long id) {
-		// Chama o método pesquisar e caso exista o ID vai retornar o status HTTP
-		// ok com ProdutoResponse no corpo da resposta
 		try {
 			return ResponseEntity.ok(service.pesquisar(id)); 
 			// Retorna error 404
@@ -68,6 +64,33 @@ public class ProdutoController {
 			return ResponseEntity.notFound().build();
 		}
 	}
+=======
+        try {
+            return ResponseEntity.ok(service.pesquisar(id));
+        // Retorna error 404
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+	// POST: INSERIR
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProdutoResponseDTO inserir(@Valid @RequestBody ProdutoRequestDTO dto) {
+        return service.inserir(dto);
+    }
+
+
+    // PUT: ATUALIZAR
+    public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
+        try {
+            ProdutoResponseDTO atualizado = service.atualizar(id, dto);
+            return ResponseEntity.ok(atualizado);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+>>>>>>> 5e6718fdde70b5b34f14cff2245639beb9492c70
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> remover(@PathVariable Long id) {

@@ -44,11 +44,7 @@ public class Produto {
 	@Column(name="descricao", nullable=false, length=255)
 	private String descricao;
 	
-//    @NotNull(message = "Endereco é obrigatório")
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @Valid
-//    private Endereco endereco;
-
+	
     @NotNull(message = "Categoria é obrigatória")
 	@ManyToOne
 	@JoinTable(name="id_categoria")

@@ -53,6 +53,7 @@ public class ProdutoService {
         return produtoMapper.toResponse(produto);
     }
 	
+<<<<<<< HEAD
     
  // POST: Inserir
     // Mapper converte o JSON para Produto depois converte para ProdutoResponse
@@ -67,6 +68,22 @@ public class ProdutoService {
     	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
 
     	return produtoMapper.toResponse(produtoSalvo);
+=======
+	// POST: Inserir
+    // Mapper converte o JSON para Produto depois converte para ProdutoResponse
+    // Chamar apenas service.inserir(produto)
+    public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
+        Produto produto = produtoMapper.toProduto(dto);
+        Produto produtoSalvo = produtoRepository.save(produto);
+
+        if (produto.getFoto() != null) {
+            Foto foto = produto.getFoto();
+            foto.setProduto(produtoSalvo);
+            fotoRepository.save(foto);
+        }
+
+        return produtoMapper.toResponse(produtoSalvo);
+>>>>>>> 5e6718fdde70b5b34f14cff2245639beb9492c70
     }
 
 	
@@ -86,10 +103,10 @@ public class ProdutoService {
 
 	// Deletar um item
 	// Chamar apenas service.remover(id)
-	public void remover(@PathVariable Long id) {
-	    if (!produtoRepository.existsById(id)) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
-	    }
-	    produtoRepository.deleteById(id);
-	}
+    public void remover(Long id) {
+        if (!produtoRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+        }
+        produtoRepository.deleteById(id);
+    }
 }
