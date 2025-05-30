@@ -1,3 +1,4 @@
+// ATUALIZADO DANDARA
 package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ public class ProdutoResponseDTO {
 	private Long id;
 	private String nome;
 	private String descricao;
-	private Categoria categoria;
+	private Long idCategoria;
 	private BigDecimal preco;
 	private BigDecimal precoPromocional;
 	private BigDecimal estoque;
@@ -21,13 +22,13 @@ public class ProdutoResponseDTO {
 	private Foto foto;
 
 
-	public ProdutoResponseDTO(Long id, String nome, String descricao, Categoria categoria, BigDecimal preco,
+	public ProdutoResponseDTO(Long id, String nome, String descricao, Long idCategoria, BigDecimal preco,
 			BigDecimal precoPromocional, BigDecimal estoque, String fabricante, Boolean ativo, LocalDate dataCadastro,
 			LocalDate dataAtualizacao, Foto foto) {
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
-		this.categoria = categoria;
+		this.idCategoria = idCategoria;
 		this.preco = preco;
 		this.precoPromocional = precoPromocional;
 		this.estoque = estoque;
@@ -76,13 +77,13 @@ public class ProdutoResponseDTO {
 	}
 
 
-	public Categoria getCategoria() {
-		return categoria;
+	public Long getIdCategoria() {
+		return idCategoria;
 	}
 
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
+	public void setIdCategoria(Long idCategoria) {
+		this.idCategoria = idCategoria;
 	}
 
 
@@ -154,8 +155,5 @@ public class ProdutoResponseDTO {
 	public void setDataAtualizacao(LocalDate dataAtualizacao) {
 		this.dataAtualizacao = dataAtualizacao;
 	}
-
-
-
 
 }
