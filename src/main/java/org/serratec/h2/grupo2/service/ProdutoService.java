@@ -54,54 +54,7 @@ public class ProdutoService {
         return produtoMapper.toResponse(produto);
     }
 	
-<<<<<<< HEAD
-	// POST: Inserir 
-	// Chamar apenas service.inserir(produto)
-	/*
-	public Produto inserir(@Valid Produto produto) {
-        Produto produtoSalvo = produtoRepository.save(produto);
-        if (produto.getFoto() != null) {
-            Foto foto = produto.getFoto();
-            foto.setProduto(produtoSalvo);
-            fotoRepository.save(foto);
-        }
 
-        return produtoSalvo; // retorne ela no final
-       
-=======
-	// POST: Inserir
-    // Mapper converte o JSON para Produto depois converte para ProdutoResponse
-    // Chamar apenas service.inserir(produto)
-    public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
-    	Produto produto = produtoMapper.toProduto(dto);
-
-//    	if (produto.getFoto() != null) {
-//    	    produto.getFoto().setProduto(produto); // importante!
-//    	}
-
-    	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
-    	return produtoMapper.toResponse(produtoSalvo);
->>>>>>> f2e2b20e49d869dfc56536af2da18608646a65b6
-    }
-	
-	// PUT: Atualizar
-    // Mapper pega um JSON transforma em produto depois transforma em Produto Response
-	// Chamar apenas service.atualizar(id, produto)
-    public ProdutoResponseDTO atualizar(Long id, @Valid ProdutoRequestDTO dto) {
-        if (!produtoRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não cadastrado!");
-        }
-
-        Produto produto = produtoMapper.toProduto(dto);
-        produto.setId(id); // garante que vai atualizar o correto
-        Produto atualizado = produtoRepository.save(produto);
-        return produtoMapper.toResponse(atualizado);
-    }
-<<<<<<< HEAD
-	*/
-=======
-
->>>>>>> f2e2b20e49d869dfc56536af2da18608646a65b6
 	// Deletar um item
 	// Chamar apenas service.remover(id)
     public void remover(Long id) {

@@ -3,6 +3,7 @@ package org.serratec.h2.grupo2.controller;
 
 import java.util.List;
 
+import org.serratec.h2.grupo2.DTO.FreteDTO;
 import org.serratec.h2.grupo2.DTO.PedidoDTO;
 import org.serratec.h2.grupo2.DTO.PedidoRequestDTO;
 import org.serratec.h2.grupo2.domain.Pedido;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.EntityNotFoundException;
-
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -55,6 +55,7 @@ public class PedidoController {
         Pedido pedido = pedidoService.alterarStatus(id, status);
         return ResponseEntity.ok(pedido);
     }
+
     // Buscar pedido por ID
     @GetMapping("/{id}")
     public ResponseEntity<Pedido> buscarPorId(@PathVariable Long id) {
@@ -80,6 +81,14 @@ public class PedidoController {
         return ResponseEntity.ok(pedidos);
     }
     
+
+    @PatchMapping("/{id}/frete")
+    public ResponseEntity<Pedido> calcularFrete(@PathVariable Long id, @RequestBody FreteDTO freteDTO) {
+        Pedido pedido = pedidoService.calcularFrete(id, freteDTO.getDistanciaKm());
+        return ResponseEntity.ok(pedido);
+    }
+   
+
 }
 
 
