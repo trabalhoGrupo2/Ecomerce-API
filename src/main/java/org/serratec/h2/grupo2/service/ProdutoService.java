@@ -44,6 +44,7 @@ public class ProdutoService {
 	// POST: Inserir 
 	// Chamar apenas service.inserir(produto)
 	public Produto inserir(@Valid Produto produto) {
+		
 	    Produto produtoSalvo = produtoRepository.save(produto);
 	    if (produto.getFoto() != null) {
 	        Foto foto = produto.getFoto();
