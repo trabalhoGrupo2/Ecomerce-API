@@ -3,10 +3,12 @@
 package org.serratec.h2.grupo2.service;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
+import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
+import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.FotoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,46 +31,59 @@ public class ProdutoService {
 	@Autowired
 	private FotoRepository fotoRepository;
 	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private ProdutoMapper produtoMapper;
+	
 	// GET: Ler a lista de produtos
+	// Mapper faz a conversão de Produto para ProdutoResponse
 	// Chamar apenas service.listar no controller
-	public List<Produto> listar() {
-        return produtoRepository.findAll();
+	public List<ProdutoResponseDTO> listar() {
+        List<Produto> produtos = produtoRepository.findAll();
+        return produtoMapper.toListResponse(produtos);
     }
 	
 	// GET: ID
 	// Chamar apenas service.pesquisar
-	public Optional<Produto> pesquisar(Long id) {
-        return produtoRepository.findById(id);
+	// Mapper faz a conversão do Produto para ProdutoResponse
+	// GET: Buscar por ID
+    public ProdutoResponseDTO pesquisar(Long id) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+        return produtoMapper.toResponse(produto);
     }
 	
-	// POST: Inserir 
-	// Chamar apenas service.inserir(produto)
-	public Produto inserir(@Valid Produto produto) {
-		
-	    Produto produtoSalvo = produtoRepository.save(produto);
-	    if (produto.getFoto() != null) {
-	        Foto foto = produto.getFoto();
-	        foto.setProduto(produtoSalvo);
-	        fotoRepository.save(foto);
-	    }
+    
+ // POST: Inserir
+    // Mapper converte o JSON para Produto depois converte para ProdutoResponse
+    // Chamar apenas service.inserir(produto)
+    public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
+    	Produto produto = produtoMapper.toProduto(dto);
 
-	    return produtoSalvo; // retorne ela no final
-	}
+    	if (produto.getFoto() != null) {
+    	    produto.getFoto().setProduto(produto); // importante!
+    	}
+
+    	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
+
+    	return produtoMapper.toResponse(produtoSalvo);
+    }
+
 	
 	// PUT: Atualizar
+    // Mapper pega um JSON transforma em produto depois transforma em Produto Response
 	// Chamar apenas service.atualizar(id, produto)
-	public Optional<Produto> atualizar(Long id, @Valid Produto produto) {
-		
-		// Caso o id seja diferente dos que temos, retorna vazia
+    public ProdutoResponseDTO atualizar(Long id, @Valid ProdutoRequestDTO dto) {
         if (!produtoRepository.existsById(id)) {
-            return Optional.empty();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não cadastrado!");
         }
-        // Salva o produto atualizado e retorna
-        produto.setId(id);
+
+        Produto produto = produtoMapper.toProduto(dto);
+        produto.setId(id); // garante que vai atualizar o correto
         Produto atualizado = produtoRepository.save(produto);
-        return Optional.of(atualizado);
+        return produtoMapper.toResponse(atualizado);
     }
-	
+
 	// Deletar um item
 	// Chamar apenas service.remover(id)
 	public void remover(@PathVariable Long id) {

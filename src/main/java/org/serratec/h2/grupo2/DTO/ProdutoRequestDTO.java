@@ -1,3 +1,4 @@
+// Atualizado Marlos
 package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,11 +31,12 @@ public class ProdutoRequestDTO {
 	@NotBlank (message = "O nome deve ser preenchido")
 	private String nome;
 	
+	@Size (min = 3, max = 50, message = "o nome do produto deve ter entre 3 e 50 caracteres")
 	@NotBlank (message = "O descrição deve ser preenchido")
 	private String descricao;
 	
 	@NotNull (message = "O id da Categoria deve ser preenchido")
-	private Categoria categoria;
+	private Long idCategoria;
 	
 	@NotNull (message = "O preço maior que zero")
 	private BigDecimal preco;
@@ -68,12 +71,13 @@ public class ProdutoRequestDTO {
 		this.descricao = descricao;
 	}
 
-	public Categoria getCategoria() {
-		return categoria;
+	
+	public Long getIdCategoria() {
+		return idCategoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
+	public void setIdCategoria(Long idCategoria) {
+		this.idCategoria = idCategoria;
 	}
 
 	public BigDecimal getPreco() {
