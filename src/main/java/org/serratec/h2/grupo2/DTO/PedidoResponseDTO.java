@@ -15,7 +15,9 @@ public class PedidoResponseDTO {
     private String status;                // Status do pedido (ex: PAGO, ENVIADO)
     private LocalDate dataCriacao;        // Data de criação do pedido
     private BigDecimal valorTotal;        // Valor total do pedido (somatório dos itens)
-
+    private String codigoDesconto;
+    private BigDecimal valorFinal;
+    
     // Getters e Setters
 
     public Long getId() {
@@ -65,4 +67,22 @@ public class PedidoResponseDTO {
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
+    
+    public String getCodigoDesconto() {
+        return codigoDesconto;
+    }
+
+    public void setCodigoDesconto(String codigoDesconto) {
+        this.codigoDesconto = codigoDesconto;
+    }
+
+    public BigDecimal getValorFinal() {
+        return valorFinal;
+    }
+
+    public void setValorFinal(BigDecimal valorFinal) {
+        this.valorFinal = valorFinal;
+    }
+
+    
 }

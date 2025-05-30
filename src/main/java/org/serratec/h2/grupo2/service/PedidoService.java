@@ -1,6 +1,8 @@
 package org.serratec.h2.grupo2.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+
 import java.util.List;
 
 import org.serratec.h2.grupo2.DTO.ItemPedidoRequestDTO;
@@ -12,6 +14,7 @@ import org.serratec.h2.grupo2.domain.Pedido;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.enuns.StatusPedido;
 import org.serratec.h2.grupo2.repository.ClienteRepository;
+import org.serratec.h2.grupo2.repository.CodigoDescontoRepository;
 import org.serratec.h2.grupo2.repository.PedidoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class PedidoService {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+    
+    @Autowired
+    private CodigoDescontoRepository codigoDescontoRepository;
 
     // Criar novo pedido
     public Pedido criarPedido(PedidoRequestDTO pedidoDTO) {
@@ -40,6 +46,7 @@ public class PedidoService {
         pedido.setDataCriacao(LocalDate.now());
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
 
+        // Adiciona itens ao pedido
         for (ItemPedidoRequestDTO itemDTO : pedidoDTO.getItens()) {
             Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
@@ -52,6 +59,32 @@ public class PedidoService {
 
             pedido.adicionarItem(item);
         }
+
+        // Calcula o total dos itens
+        BigDecimal totalItens = pedido.getItens().stream()
+                .map(ItemPedido::getPrecoTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Aplica código de desconto, se fornecido
+        String codigo = pedidoDTO.getCodigoDesconto();
+        if (codigo != null && !codigo.isBlank()) {
+            CodigoDesconto desconto = codigoDescontoRepository.findByCodigo(codigo)
+                    .orElseThrow(() -> new RuntimeException("Código de desconto inválido"));
+
+            if (!desconto.isAtivo()) {
+                throw new RuntimeException("Código de desconto está inativo");
+            }
+
+            totalItens = totalItens.subtract(desconto.getValorDesconto());
+            pedido.setCodigoDesconto(codigo);
+        }
+
+        // Garante que o valor final não seja negativo
+        if (totalItens.compareTo(BigDecimal.ZERO) < 0) {
+            totalItens = BigDecimal.ZERO;
+        }
+
+        pedido.setValorFinal(totalItens);
 
         return repository.save(pedido);
     }

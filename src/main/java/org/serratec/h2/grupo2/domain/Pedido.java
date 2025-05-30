@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.math.BigDecimal;
 
 @Setter
 @Getter
@@ -55,6 +56,10 @@ public class Pedido {
         this.itens.remove(item);
         item.setPedido(null);
     }
+    
+    private String codigoDesconto;  
+    
+    private BigDecimal valorFinal; 
 }
 
 
