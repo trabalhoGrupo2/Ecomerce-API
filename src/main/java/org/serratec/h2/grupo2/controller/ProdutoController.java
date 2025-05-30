@@ -1,6 +1,6 @@
 // ATUALIZADO DANDARA
-
 package org.serratec.h2.grupo2.controller;
+
 import java.util.List;
 
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
-
+	
 	// Injetar service
 	@Autowired
 	private ProdutoService service;
@@ -34,38 +34,15 @@ public class ProdutoController {
 	// ResponseEntity permite customizar o status HTTP
 	@GetMapping
 	public ResponseEntity<List<ProdutoResponseDTO>> listar() {
-
         return ResponseEntity.ok(service.listar());
     }
 
-
-		try {
-			return ResponseEntity.ok(service.pesquisar(id)); 
-			// Retorna error 404
-		} catch (Exception e) {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
-	// POST: INSERIR
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public ProdutoResponseDTO inserir(@Valid @RequestBody ProdutoRequestDTO dto) {
-		return service.inserir(dto);
-	}
-
-
-	// PUT: ATUALIZAR
-	@PutMapping("/{id}")
-	public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
-		try {
-			ProdutoResponseDTO atualizado = service.atualizar(id, dto);
-			return ResponseEntity.ok(atualizado);
-		} catch (Exception e) {
-			return ResponseEntity.notFound().build();
-		}
-	}
-
+	
+	// GET: ID
+	@GetMapping("/{id}")
+	public ResponseEntity<ProdutoResponseDTO> pesquisar(@PathVariable Long id) {
+		// Chama o método pesquisar e caso exista o ID vai retornar o status HTTP
+		// ok com ProdutoResponse no corpo da resposta
         try {
             return ResponseEntity.ok(service.pesquisar(id));
         // Retorna error 404
@@ -93,7 +70,8 @@ public class ProdutoController {
         }
     }
 
-	@DeleteMapping("/{id}")
+    // DELETE: REMOVER
+    @DeleteMapping("/{id}")
 	public ResponseEntity<Void> remover(@PathVariable Long id) {
 	    try {
 	        service.remover(id);
@@ -104,7 +82,5 @@ public class ProdutoController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Retorna 500 para erros inesperados
 	    }
 	}
-
-	
-
+		
 }

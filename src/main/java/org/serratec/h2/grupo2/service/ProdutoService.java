@@ -60,15 +60,13 @@ public class ProdutoService {
     public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
     	Produto produto = produtoMapper.toProduto(dto);
 
-    	if (produto.getFoto() != null) {
-    	    produto.getFoto().setProduto(produto); // importante!
-    	}
+//    	if (produto.getFoto() != null) {
+//    	    produto.getFoto().setProduto(produto); // importante!
+//    	}
 
     	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
     	return produtoMapper.toResponse(produtoSalvo);
-
     }
-
 	
 	// PUT: Atualizar
     // Mapper pega um JSON transforma em produto depois transforma em Produto Response
