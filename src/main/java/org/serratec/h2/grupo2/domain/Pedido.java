@@ -31,7 +31,7 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Double valorFrete;
     private LocalDate dataCriacao;
 
     @Enumerated(EnumType.STRING)
@@ -43,6 +43,26 @@ public class Pedido {
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
+
+	public Double getValorTotal() {
+		
+		return null;
+	}
+
+	public void setValorTotal(double d) {
+		
+		
+	}
+
+	public void setDescricao(Object descricao) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setStatus(String upperCase) {
+		// TODO Auto-generated method stub
+		
+	}
 
    
    
