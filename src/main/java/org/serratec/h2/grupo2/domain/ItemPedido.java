@@ -1,7 +1,6 @@
 package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
