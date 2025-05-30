@@ -43,16 +43,18 @@ public class ProdutoService {
 	
 	// POST: Inserir 
 	// Chamar apenas service.inserir(produto)
+	/*
 	public Produto inserir(@Valid Produto produto) {
-	    Produto produtoSalvo = produtoRepository.save(produto);
-	    if (produto.getFoto() != null) {
-	        Foto foto = produto.getFoto();
-	        foto.setProduto(produtoSalvo);
-	        fotoRepository.save(foto);
-	    }
+        Produto produtoSalvo = produtoRepository.save(produto);
+        if (produto.getFoto() != null) {
+            Foto foto = produto.getFoto();
+            foto.setProduto(produtoSalvo);
+            fotoRepository.save(foto);
+        }
 
-	    return produtoSalvo; // retorne ela no final
-	}
+        return produtoSalvo; // retorne ela no final
+       
+    }
 	
 	// PUT: Atualizar
 	// Chamar apenas service.atualizar(id, produto)
@@ -67,7 +69,7 @@ public class ProdutoService {
         Produto atualizado = produtoRepository.save(produto);
         return Optional.of(atualizado);
     }
-	
+	*/
 	// Deletar um item
 	// Chamar apenas service.remover(id)
 	public void remover(@PathVariable Long id) {

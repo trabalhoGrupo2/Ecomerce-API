@@ -35,4 +35,9 @@ public class ItemPedido {
             this.precoTotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
         }
     }
+
+	public void setPedido(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
 }
