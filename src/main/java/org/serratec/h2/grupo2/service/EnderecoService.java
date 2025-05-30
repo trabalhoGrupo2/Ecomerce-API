@@ -1,7 +1,6 @@
 package org.serratec.h2.grupo2.service;
 
 import java.util.Map;
-
 import org.serratec.h2.grupo2.domain.Endereco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class EnderecoService {
+
     
     @Autowired
     private RestTemplate restTemplate;
@@ -45,4 +45,6 @@ public class EnderecoService {
 
         return endereco;
     }
+
 }
+	
