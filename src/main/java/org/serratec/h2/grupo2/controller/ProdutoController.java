@@ -3,6 +3,7 @@ package org.serratec.h2.grupo2.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.service.ProdutoService;
@@ -30,35 +31,42 @@ public class ProdutoController {
 	private ProdutoService service;
 
 	// GET: TODOS
+	// ResponseEntity permite customizar o status HTTP
 	@GetMapping
-	public ResponseEntity<List<Produto>> listar() {
-		return ResponseEntity.ok(service.listar());
-	}
+	public ResponseEntity<List<ProdutoResponseDTO>> listar() {
+        return ResponseEntity.ok(service.listar());
+    }
+
 	
 	// GET: ID
 	@GetMapping("/{id}")
-    public ResponseEntity<Produto> pesquisar(@PathVariable Long id) {
-        Optional<Produto> produtoOpt = service.pesquisar(id);
-        if (produtoOpt.isPresent()) {
-            return ResponseEntity.ok(produtoOpt.get());
+	public ResponseEntity<ProdutoResponseDTO> pesquisar(@PathVariable Long id) {
+		// Chama o método pesquisar e caso exista o ID vai retornar o status HTTP
+		// ok com ProdutoResponse no corpo da resposta
+        try {
+            return ResponseEntity.ok(service.pesquisar(id));
+        // Retorna error 404
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
 	// POST: INSERIR
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProdutoResponseDTO inserir(@Valid @RequestBody Produto produto) {
-        return service.inserir(ProdutoResponseDTO);
+    public ProdutoResponseDTO inserir(@Valid @RequestBody ProdutoRequestDTO dto) {
+        return service.inserir(dto);
     }
 
 
     // PUT: ATUALIZAR
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
-        Optional<Produto> produtoAtualizado = service.atualizar(id, produto);
-        return produtoAtualizado.map(ResponseEntity::ok)
-                                 .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
+        try {
+            ProdutoResponseDTO atualizado = service.atualizar(id, dto);
+            return ResponseEntity.ok(atualizado);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // DELETE: REMOVER
