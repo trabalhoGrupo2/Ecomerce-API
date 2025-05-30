@@ -6,10 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,17 +31,6 @@ public class EnderecoService {
     public Endereco preencherEndereco(String cep, String numero) {
         Map<String, String> dadosCep = consultarCep(cep);
 
-        if (dadosCep.containsKey("erro")) {
-            throw new IllegalArgumentException("CEP inválido: " + cep);
-        }
-
-        Endereco endereco = new Endereco();
-        endereco.setRua(dadosCep.get("logradouro"));
-        endereco.setBairro(dadosCep.get("bairro"));
-        endereco.setCidade(dadosCep.get("localidade"));
-        endereco.setEstado(dadosCep.get("uf"));
-        endereco.setCep(cep);
-        endereco.setNumero(numero);
         if (dadosCep.containsKey("erro")) {
             throw new IllegalArgumentException("CEP inválido: " + cep);
         }
