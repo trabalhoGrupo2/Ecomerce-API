@@ -27,7 +27,6 @@ public class WebSecurityConfig {
 	            .requestMatchers("/auth/login", "/auth/register").permitAll() 
 	            
 	            //REQUISIÇÕES DE FUNCIONÁRIO
-	            
 	            //BAIXO NIVEL DE ACESSO
 	            .requestMatchers("/funcionario/atualizarCadastro").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
 	            .requestMatchers("/funcionario/atualizacaoParcial").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
@@ -50,6 +49,7 @@ public class WebSecurityConfig {
                 //NIVEL DE ACESSO TOTAL
                 .requestMatchers("/funcionario/deletarFuncionario/**").hasAnyRole("TOTAL")
 	            
+                
 	            .anyRequest().permitAll() )
 	        .build();
 	}

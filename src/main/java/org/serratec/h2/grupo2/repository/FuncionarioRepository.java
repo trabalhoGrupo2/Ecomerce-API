@@ -20,4 +20,5 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
 	List<Funcionario> findByCargo (Cargo cargo);
 	
 	List<Funcionario> findByContaAtivo (Boolean ativo);
+
 }

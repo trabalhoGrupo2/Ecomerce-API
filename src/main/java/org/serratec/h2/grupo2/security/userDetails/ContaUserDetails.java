@@ -63,8 +63,4 @@ public class ContaUserDetails implements UserDetails {
     	return conta.isAtivo();
     }
     
-    public Conta getConta() {
-        return conta;
-    }
-    
 }

@@ -1,4 +1,4 @@
-package org.serratec.h2.grupo2.security.login;
+package org.serratec.h2.grupo2.security.autentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClienteRequestDto {
+public class ClienteUpdateCompletDto {
 
 	@NotBlank
 	private String nome;
@@ -28,12 +28,8 @@ public class ClienteRequestDto {
 	
 	@Pattern(regexp = "^\\(\\d{2}\\) ?9?\\d{4}-\\d{4}$", message = "Telefone inválido, formato esperado: (XX) 9XXXX-XXXX")
 	private String telefone;
-	
-	@Pattern(regexp = "^\\d{5}-\\d{3}$",message = "CEP inválido. Use: 99999-999")
-	private String cep;
 
-	@Pattern(regexp = "^[1-9]\\d*$|(?i)^s/?n$", message = "Número residencial deve ser um número positivo ou 'S/N'")
-	private String numero;
+    private EnderecoUpdateDto endereco;
 	
 	//DADOS DA CONTA
 	@Email (message = "Email inválido")
