@@ -25,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 
 @Service
 public class ClienteService {
@@ -114,7 +113,7 @@ public class ClienteService {
 		}
 		
 		//FUNCIONARIO INTERNO ATUALIZA O CADASTRO DE CLIENTE 
-		public ClienteResponseDto atualizacaoCadastroClientePorFuncionario(Long id, ClienteRequestDto request) {
+		public ClienteResponseDto atualizacaoCadastroFuncionario(Long id, ClienteRequestDto request) {
 		    Cliente cliente = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário com ID " + id + " não encontrado."));
 
 		    cliente.setNome(request.getNome());
@@ -167,7 +166,7 @@ public class ClienteService {
 		}
 		
 		//ATUALIZAÇÃO PARCIAL FEITA PELO FUNCIONÁRIO INTERNO
-		public ClienteResponseDto atualizacaoParcialFuncionario(Long id, ClienteUpdateDto update) {
+		public ClienteResponseDto atualizacaoParcialClientePorFuncionario(Long id, ClienteUpdateDto update) {
 		    Cliente cliente = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário com ID " + id + " não encontrado."));
 		
 		    if (update.getNome() != null && !update.getNome().isBlank()) {
@@ -311,10 +310,5 @@ public class ClienteService {
 		repository.deleteById(id);
 		return ResponseEntity.ok("Conta excluída com sucesso!");
 	}
-
-	
-	
-
-	
 	
 }
