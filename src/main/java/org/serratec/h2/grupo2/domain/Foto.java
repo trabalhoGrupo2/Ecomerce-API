@@ -1,5 +1,9 @@
-// ATUALIZADO DANDARA
 package org.serratec.h2.grupo2.domain;
+import java.sql.Types;
+
+import org.hibernate.annotations.JdbcTypeCode;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -17,21 +22,28 @@ public class Foto {
 	@Column(name = "id_foto")
 	private Long id;
 
-	private String url;
-	
+	@Lob
+	@JdbcTypeCode(Types.BINARY)
+	private byte[] dados;
+
+	private String tipo;
+
 	private String nome;
 
-//	@OneToOne
-//	@JoinColumn(name = "id_produto")
-//	private Produto produto;
+	@OneToOne
+	@JoinColumn(name = "id_produto")
+	private Produto produto;
 
-	public Foto() {}
+	public Foto() {
+	}
 
-	public Foto(Long id, String url, String nome) {
+	public Foto(Long id, byte[] dados, String tipo, String nome, Produto produto) {
 		super();
 		this.id = id;
-		this.url = url;
+		this.dados = dados;
+		this.tipo = tipo;
 		this.nome = nome;
+		this.produto = produto;
 	}
 
 	public Long getId() {
@@ -42,12 +54,20 @@ public class Foto {
 		this.id = id;
 	}
 
-	public String getUrl() {
-		return url;
+	public byte[] getDados() {
+		return dados;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setDados(byte[] dados) {
+		this.dados = dados;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getNome() {
@@ -58,6 +78,12 @@ public class Foto {
 		this.nome = nome;
 	}
 
-	
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
 
 }

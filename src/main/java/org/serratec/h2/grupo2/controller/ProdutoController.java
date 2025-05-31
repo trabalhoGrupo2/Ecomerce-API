@@ -1,10 +1,12 @@
 // ATUALIZADO DANDARA
 package org.serratec.h2.grupo2.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
+import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -52,11 +57,35 @@ public class ProdutoController {
     }
 
 	// POST: INSERIR
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProdutoResponseDTO inserir(@Valid @RequestBody ProdutoRequestDTO dto) {
-        return service.inserir(dto);
-    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ProdutoResponseDTO inserir(@Valid @RequestBody ProdutoRequestDTO dto) {
+//        return service.inserir(dto);
+//    }
+    
+    
+    
+//    @PostMapping(value = "/com-foto", consumes = "multipart/form-data")
+    @PostMapping(consumes = "multipart/form-data")
+	public ResponseEntity<ProdutoResponseDTO> inserir(
+	    @RequestPart("produto") ProdutoRequestDTO produtoJson,
+	    @RequestPart("foto") MultipartFile fotoFile) throws IOException {
+
+	    // Criar entidade Foto
+	    Foto foto = new Foto();
+	    foto.setDados(fotoFile.getBytes());
+	    foto.setNome(fotoFile.getOriginalFilename());
+	    foto.setTipo(fotoFile.getContentType());
+
+	    produtoJson.setFoto(foto);
+
+	    ProdutoResponseDTO response = service.inserir(produtoJson);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+    
+    
+    
+    
 
 
     // PUT: ATUALIZAR
