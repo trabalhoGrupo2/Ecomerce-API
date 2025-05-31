@@ -1,8 +1,8 @@
 package org.serratec.h2.grupo2.service;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.serratec.h2.grupo2.DTO.CategoriaRequestDto;
 import org.serratec.h2.grupo2.DTO.CategoriaResponseDto;
 import org.serratec.h2.grupo2.DTO.CategoriaUpdateDto;
