@@ -1,4 +1,3 @@
-// ATUALIZADO DANDARA
 // Essa classe vai servir para implementar todas as funções da classe Produto, deixando funcional
 
 package org.serratec.h2.grupo2.service;
@@ -62,5 +61,13 @@ public class ProdutoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
         produtoRepository.deleteById(id);
+    }
+    
+    // Método para listar itens em promoção
+    public List<ProdutoResponseDTO> listarPromocoes() {
+        return produtoRepository.findAll().stream()
+            .filter(p -> p.getPrecoPromocional() != null && p.getPrecoPromocional().compareTo(p.getPreco()) < 0)
+            .map(produtoMapper::toResponse)
+            .toList();
     }
 }
