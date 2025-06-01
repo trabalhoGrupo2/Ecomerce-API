@@ -36,7 +36,7 @@ public class ClienteController {
     //atualização completa c base no id
     @PutMapping("/atualizarCliente/{id}")
     public ClienteResponseDto atualizacaoCompleta(@PathVariable Long id, @Valid @RequestBody ClienteRequestDto request) {
-        return service.atualizacaoCadastroClientePorFuncionario(id, request);
+        return service.atualizacaoCadastroFuncionario(id, request);
     }
 
     //atualização parcial de dados

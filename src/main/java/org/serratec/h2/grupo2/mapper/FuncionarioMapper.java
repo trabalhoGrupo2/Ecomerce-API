@@ -31,7 +31,7 @@ public class FuncionarioMapper {
 	public FuncionarioResponseDto toResponse(Funcionario funcionario) {
 		FuncionarioResponseDto response = new FuncionarioResponseDto();
 		
-		response.setId(funcionario.getId());
+		response.setCodigo(funcionario.getId());
 		response.setNome(funcionario.getNome());
 		response.setCpf(funcionario.getCpf());
 		response.setDataDeNascimento(funcionario.getDataDeNascimento());

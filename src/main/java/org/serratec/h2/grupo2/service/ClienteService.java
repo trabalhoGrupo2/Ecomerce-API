@@ -242,21 +242,6 @@ public class ClienteService {
 			return mapper.toListResponse(listaClientes);
 		}
 	
-		//CLIENTE PEDE PRA LISTAR OS PEDIDOS - HISTÓRICO DE PEDIDOS
-		/*public List<PedidoResponseDto> listarPedidos(Long id) {
-		 	Cliente cliente = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Usuário com ID " + id + " não encontrado."));
-		 	
-		 	List<Pedido> listaPedidos = new Pedido();
-		 	
-		 	for (List<Pedido> p : 
-		}*/
-		
-		//LISTAR PEDIDO ATUAL
-		
-		//LISTAR HISTORICO DE PEDIDOS CONCLUIDOS
-	
-		//FUNCIONÁRIO LISTA OS PEDIDOS DO CLIENTE PELO ID
-		
 		//LISTAR CLIENTE PELA CIDADE PESQUISADA
 		public List<ClienteResponseDto> pesquisaPorCidade(String cidade) {
 			List<Cliente> listaClientes = repository.findByEnderecoCidadeContainingIgnoreCase(cidade);

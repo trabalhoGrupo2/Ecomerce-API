@@ -37,8 +37,7 @@ public class Produto {
 	
 	@Column(name="descricao", nullable=false, length=255)
 	private String descricao;
-	
-	
+
     @NotNull(message = "Categoria é obrigatória")
 	@ManyToOne
 	@JoinTable(name="id_categoria")
@@ -51,7 +50,7 @@ public class Produto {
 	private BigDecimal precoPromocional;
 	
 	@DecimalMin(value="0", message="O estoque não pode ser negativo")
-	private BigDecimal estoque;
+	private Integer estoque;
 	
 	@Column(name="fabricante", nullable=false, length=50)
 	private String fabricante;
@@ -125,11 +124,11 @@ public class Produto {
 		this.precoPromocional = precoPromocional;
 	}
 
-	public BigDecimal getEstoque() {
+	public Integer getEstoque() {
 		return estoque;
 	}
 
-	public void setEstoque(BigDecimal estoque) {
+	public void setEstoque(Integer estoque) {
 		this.estoque = estoque;
 	}
 

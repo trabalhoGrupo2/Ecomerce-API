@@ -7,7 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ItemPedido {
 
@@ -28,10 +36,4 @@ public class ItemPedido {
     private BigDecimal precoUnitario;
 
     private BigDecimal precoTotal;
-
-    public void calcularTotal() {
-        if (quantidade != null && precoUnitario != null) {
-            this.precoTotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
-        }
-    }
 }

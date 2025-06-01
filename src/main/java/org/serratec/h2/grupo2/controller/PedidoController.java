@@ -1,10 +1,6 @@
 package org.serratec.h2.grupo2.controller;
 
-
 import java.util.List;
-
-import org.serratec.h2.grupo2.DTO.FreteDTO;
-import org.serratec.h2.grupo2.DTO.PedidoDTO;
 import org.serratec.h2.grupo2.domain.Pedido;
 import org.serratec.h2.grupo2.repository.PedidoRepository;
 import org.serratec.h2.grupo2.service.PedidoService;
@@ -33,55 +29,7 @@ public class PedidoController {
     @Autowired
     private PedidoRepository repository;
     
-    // Inserir pedido
-    @PostMapping
-    public ResponseEntity<Pedido> criarPedido( @RequestBody PedidoDTO pedidoDTO) {
-        Pedido pedido = pedidoService.criarPedido(pedidoDTO);
-        return ResponseEntity.ok(pedido);
-    }
-
-    // Editar pedido 
-    @PutMapping("/{id}")
-    public ResponseEntity<Pedido> editarPedido(@PathVariable Long id, @RequestBody PedidoDTO pedidoDTO) {
-        Pedido pedido = pedidoService.editarPedido(id, pedidoDTO);
-        return ResponseEntity.ok(pedido);
-    }
-
-    // Alterar status do pedido
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<Pedido> alterarStatus(@PathVariable Long id, @RequestParam String status) {
-        Pedido pedido = pedidoService.alterarStatus(id, status);
-        return ResponseEntity.ok(pedido);
-    }
-
-    
-    
-    // Buscar pedido por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Pedido> buscarPorId(@PathVariable Long id) {
-        Pedido pedido = pedidoService.buscarPorId(id);
-        return ResponseEntity.ok(pedido);
-    }
-
-    // Listar todos os pedidos
-    @GetMapping
-    public ResponseEntity<List<Pedido>> listarTodos() {
-        List<Pedido> pedidos = pedidoService.listarTodos();
-        return ResponseEntity.ok(pedidos);
-    }
-    
-    @DeleteMapping("/{id}")
-    public void remover(@PathVariable Long id) {
-        Pedido pedido = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pedido com ID " + id + " não encontrado."));
-    	 repository.deleteById(id);
-        }
-    
-    
-    @PatchMapping("/{id}/frete")
-    public ResponseEntity<Pedido> calcularFrete(@PathVariable Long id, @RequestBody FreteDTO freteDTO) {
-        Pedido pedido = pedidoService.calcularFrete(id, freteDTO.getDistanciaKm());
-        return ResponseEntity.ok(pedido);
-    }
+ 
    
 }
 

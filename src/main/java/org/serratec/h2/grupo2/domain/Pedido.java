@@ -1,5 +1,6 @@
 package org.serratec.h2.grupo2.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import org.serratec.h2.grupo2.enuns.StatusPedido;
@@ -28,8 +29,10 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double valorFrete;
+
     private LocalDate dataCriacao;
+    
+    private LocalDate dataDeFinalizacao;
 
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
@@ -41,25 +44,10 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens;
 
-
-	public Double getValorTotal() {
-		return null;
-	}
-
-	public void setValorTotal(double d) {
-	}
-
-	public void setDescricao(Object descricao) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setStatus(String upperCase) {
-		// TODO Auto-generated method stub
-		
-	}
-
-  
+    private BigDecimal precoTotal;
+    
+    private BigDecimal valorFrete;
+    
 }
 
 

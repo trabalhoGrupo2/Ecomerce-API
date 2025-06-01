@@ -28,7 +28,7 @@ public class ClienteMapper {
 	public ClienteResponseDto toResponse(Cliente cliente) {
 		ClienteResponseDto response = new ClienteResponseDto();
 		
-		response.setId(cliente.getId());
+		response.setCodigo(cliente.getId());
 		response.setNome(cliente.getNome());
 		response.setCpf(cliente.getCpf());
 		response.setDataDeNascimento(cliente.getDataDeNascimento());
