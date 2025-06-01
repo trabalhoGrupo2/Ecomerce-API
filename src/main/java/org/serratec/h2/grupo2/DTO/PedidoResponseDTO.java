@@ -4,14 +4,20 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.serratec.h2.grupo2.domain.Cliente;
+import org.serratec.h2.grupo2.domain.ItemPedido;
+
+
+
+
 /**
  * DTO para enviar os dados completos do pedido para o cliente.
  */
 public class PedidoResponseDTO {
 
     private Long id;                      // ID do pedido
-    private ClienteResumoDTO cliente;     // Dados resumidos do cliente
-    private List<ItemPedidoResponseDTO> itens;  // Lista dos itens do pedido
+    private Cliente cliente;     // Dados resumidos do cliente
+    private List<ItemPedido> itens;  // Lista dos itens do pedido
     private String status;                // Status do pedido (ex: PAGO, ENVIADO)
     private LocalDate dataCriacao;        // Data de criação do pedido
     private BigDecimal valorTotal;        // Valor total do pedido (somatório dos itens)
@@ -28,19 +34,19 @@ public class PedidoResponseDTO {
         this.id = id;
     }
 
-    public ClienteResumoDTO getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setCliente(ClienteResumoDTO cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
-    public List<ItemPedidoResponseDTO> getItens() {
+    public List<ItemPedido> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemPedidoResponseDTO> itens) {
+    public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
     }
 

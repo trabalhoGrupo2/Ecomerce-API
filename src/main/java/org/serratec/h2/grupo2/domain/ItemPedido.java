@@ -39,5 +39,25 @@ public class ItemPedido {
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
+
+	public void setProduto(Produto produto2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setQuantidade(Integer quantidade2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setPrecoUnitario(BigDecimal preco) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public BigDecimal getPrecoTotal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -75,7 +75,7 @@ public class Pedido {
 		
 	}
 
-	public void setStatus(String upperCase) {
+	public void setStatus(StatusPedido aguardandoPagamento) {
 		// TODO Auto-generated method stub
 		
 	}

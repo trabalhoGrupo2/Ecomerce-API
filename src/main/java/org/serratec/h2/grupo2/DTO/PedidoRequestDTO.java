@@ -3,11 +3,40 @@ package org.serratec.h2.grupo2.DTO;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.time.LocalDate;
+import org.serratec.h2.grupo2.enuns.StatusPedido;
 
 /**
  * DTO usado para receber os dados de criação ou edição de um pedido.
  */
 public class PedidoRequestDTO {
+	
+	private LocalDate dataCriacao;
+	private StatusPedido status;
+	private Double valorFrete;
+	
+	public LocalDate getDataCriacao() {
+	    return dataCriacao;
+	}
+	public void setDataCriacao(LocalDate dataCriacao) {
+	    this.dataCriacao = dataCriacao;
+	}
+	
+	public StatusPedido getStatus() {
+	    return status;
+	}
+
+	public void setStatus(StatusPedido status) {
+	    this.status = status;
+	}
+
+	public Double getValorFrete() {
+	    return valorFrete;
+	}
+
+	public void setValorFrete(Double valorFrete) {
+	    this.valorFrete = valorFrete;
+	}
 
     // O ID do cliente que está fazendo o pedido é obrigatório
     @NotNull(message = "O ID do cliente é obrigatório")
@@ -44,4 +73,6 @@ public class PedidoRequestDTO {
     public void setCodigoDesconto(String codigoDesconto) {
         this.codigoDesconto = codigoDesconto;
     }
+    
+    
 }
