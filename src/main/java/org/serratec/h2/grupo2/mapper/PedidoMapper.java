@@ -41,6 +41,7 @@ public class PedidoMapper {
 		
 		response.setCodigo(pedido.getId());
 		response.setItens(toResponseItensList(pedido.getItens()));
+		response.setStatusPedido(pedido.getStatus());
 		response.setValorFrete(pedido.getValorFrete());
 		response.setPrecoTotal(pedido.getPrecoTotal());
 		

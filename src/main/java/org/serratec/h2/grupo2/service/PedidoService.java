@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.serratec.h2.grupo2.DTO.pedido.ItemIndisponivel;
-import org.serratec.h2.grupo2.DTO.pedido.ItemResponseDto;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
 import org.serratec.h2.grupo2.domain.Cliente;
@@ -127,7 +125,7 @@ public class PedidoService {
 	        return item;
 	    }
 		
-		
+	//CLIENTE FAZ AS REQUISIÇÕES
 	//ADICIONAR PRODUTO NO PEDIDO
     public PedidoAndamentoResponseDto adicionarProdutoPedido(Long idProduto, Integer quantidade) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -227,108 +225,162 @@ public class PedidoService {
         return ResponseEntity.ok("Pedido em entrega foi cancelado com sucesso!!");
     }
     
-	//CLIENTE FAZ A LISTAGEM
-		//LISTAR PEDIDOS COM O STATUS EM ENTREGA
-	    public List<PedidoAndamentoResponseDto> pedidosEmEntrega() {
-	        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-	        log.info("Listando pedidos em entrega para {}", email);
+	//LISTAR PEDIDOS COM O STATUS EM ENTREGA
+    public List<PedidoAndamentoResponseDto> pedidosEmEntrega() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("Listando pedidos em entrega para {}", email);
+
+        List<Pedido> pedidos = pedidoRepository.findAllByClienteContaEmailAndStatus(email, StatusPedido.EM_ENTREGA);
+        return mapper.toListResponse(pedidos);
+    }
 	
-	        List<Pedido> pedidos = pedidoRepository.findAllByClienteContaEmailAndStatus(email, StatusPedido.EM_ENTREGA);
-	        return mapper.toListResponse(pedidos);
+	//LISTAR UM HISTÓRIOCO DE PEDIDOS CONCLUIDOS
+    public List<PedidoAndamentoResponseDto> pedidosFinalizados() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("Listando pedidos finalizados para {}", email);
+
+        List<Pedido> pedidos = pedidoRepository.findAllByClienteContaEmailAndStatus(email, StatusPedido.CONCLUIDO);
+        return mapper.toListResponse(pedidos);
+    }
+
+	
+	//LISTAR PEDIDOS CANCELADOS
+	public List<PedidoAndamentoResponseDto> pedidosCancelados() {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		List<Pedido> pedidosCancelados = pedidoRepository.findAllByClienteContaEmailAndStatus(email, StatusPedido.CANCELADO);
+		log.info("Listando pedidos cancelados para {}", email);
+		
+		return mapper.toListResponse(pedidosCancelados);
+	}
+	
+	//DIMINUIR A QUANTIDADE DE UM PRODUTO NO PEDIDO
+	public PedidoAndamentoResponseDto diminuirQuantidade(Long itemId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("Usuário {} solicitou diminuir a quantidade do item ID {}", email, itemId);
+
+        ItemPedido item = itemRepository
+            .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
+            .orElseThrow(() -> {
+                log.warn("Item com ID {} não encontrado para o usuário {}", itemId, email);
+                return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");
+            });
+
+        if (item.getQuantidade() > 1) {
+            item.setQuantidade(item.getQuantidade() - 1);
+            itemRepository.save(item);
+            log.info("Quantidade do item {} reduzida para {}", itemId, item.getQuantidade());
+            
+            Pedido pedido = item.getPedido();
+            pedido.setPrecoTotal(valorTotal(pedido.getId()));
+            pedidoRepository.save(pedido);
+            
+            return mapper.toResponse(pedido);
+        } else {
+            itemRepository.deleteById(itemId);
+            log.info("Item {} removido do pedido do usuário {}", itemId, email);
+            
+            Pedido pedido = item.getPedido();
+            pedido.setPrecoTotal(valorTotal(pedido.getId()));
+            pedidoRepository.save(pedido);
+            
+            return mapper.toResponse(pedido);
+        }
+    }
+	
+	//AUMENTAR A QUANTIDADE DE UM PRODUTO NO PEDIDO
+	public PedidoAndamentoResponseDto aumentarQuantidade(Long id) {
+	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+	    log.info("Usuário '{}' solicitou aumentar a quantidade do item de ID {}", email, id);
+
+	    ItemPedido item = itemRepository
+	        .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(id, StatusPedido.EM_ANDAMENTO, email)
+	        .orElseThrow(() -> {
+	            log.warn("Item com ID {} não encontrado para o usuário '{}'", id, email);
+	            return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");});
+
+	    int estoqueDisponivel = item.getProduto().getEstoque();
+	    int quantidadeAtual = item.getQuantidade();
+
+	    if (quantidadeAtual < estoqueDisponivel) {
+	        item.setQuantidade(quantidadeAtual + 1);
+	        itemRepository.save(item);
+	        log.info("Quantidade do item ID {} aumentada para {}", id, item.getQuantidade());
+	        
+	        Pedido pedido = item.getPedido();
+            pedido.setPrecoTotal(valorTotal(pedido.getId()));
+            pedidoRepository.save(pedido);
+	        
+	        return mapper.toResponse(pedido);
+	    } else {
+	        String mensagem = String.format("Não há estoque suficiente do produto '%s' para efetuar o aumento. Estoque disponível: %d", 
+	                                        item.getProduto().getNome(), estoqueDisponivel);
+	        log.warn(mensagem);
+	        throw new EntityNotFoundException(mensagem);
 	    }
-		
-		//LISTAR UM HISTÓRIOCO DE PEDIDOS CONCLUIDOS
-	    public List<PedidoAndamentoResponseDto> pedidosFinalizados() {
-	        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-	        log.info("Listando pedidos finalizados para {}", email);
-
-	        List<Pedido> pedidos = pedidoRepository.findAllByClienteContaEmailAndStatus(email, StatusPedido.CONCLUIDO);
-	        return mapper.toListResponse(pedidos);
-	    }
-
-		
-		//LISTAR PEDIDOS CANCELADOS
-		public List<PedidoAndamentoResponseDto> pedidosCancelados() {
-			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			List<Pedido> pedidosCancelados = pedidoRepository.findAllByClienteContaEmailAndStatus(email, StatusPedido.CANCELADO);
-			log.info("Listando pedidos cancelados para {}", email);
-			
-			return mapper.toListResponse(pedidosCancelados);
-		}
-		
-		//DIMINUIR A QUANTIDADE DE UM PRODUTO NO PEDIDO
-		public ItemResponseDto diminuirQuantidade(Long id) {
-	        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-	        log.info("Usuário {} solicitou diminuir a quantidade do item ID {}", email, id);
-
-	        ItemPedido item = itemRepository
-	            .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(id, StatusPedido.EM_ANDAMENTO, email)
-	            .orElseThrow(() -> {
-	                log.warn("Item com ID {} não encontrado para o usuário {}", id, email);
-	                return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");
-	            });
-
-	        if (item.getQuantidade() > 1) {
-	            item.setQuantidade(item.getQuantidade() - 1);
-	            itemRepository.save(item);
-	            log.info("Quantidade do item {} reduzida para {}", id, item.getQuantidade());
-	            return mapper.itemToResponse(item);
-	        } else {
-	            itemRepository.deleteById(id);
-	            log.info("Item {} removido do pedido do usuário {}", id, email);
-	            return null;
-	        }
-	    }
-		
-		//AUMENTAR A QUANTIDADE DE UM PRODUTO NO PEDIDO
-		public ItemResponseDto aumentarQuantidade(Long id) {
-		    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		    log.info("Usuário '{}' solicitou aumentar a quantidade do item de ID {}", email, id);
-
-		    ItemPedido item = itemRepository
-		        .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(id, StatusPedido.EM_ANDAMENTO, email)
-		        .orElseThrow(() -> {
-		            log.warn("Item com ID {} não encontrado para o usuário '{}'", id, email);
-		            return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");});
-
-		    int estoqueDisponivel = item.getProduto().getEstoque();
-		    int quantidadeAtual = item.getQuantidade();
-
-		    if (quantidadeAtual < estoqueDisponivel) {
-		        item.setQuantidade(quantidadeAtual + 1);
-		        itemRepository.save(item);
-		        log.info("Quantidade do item ID {} aumentada para {}", id, item.getQuantidade());
-		        return mapper.itemToResponse(item);
-		    } else {
-		        String mensagem = String.format("Não há estoque suficiente do produto '%s' para efetuar o aumento. Estoque disponível: %d", 
-		                                        item.getProduto().getNome(), estoqueDisponivel);
-		        log.warn(mensagem);
-		        throw new EntityNotFoundException(mensagem);
-		    }
-		}
-		
-		//EXLUIR UM ITEM DO PEDIDO
-		public PedidoAndamentoResponseDto excluirItem(Long itemId) {
-			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		    log.info("Usuário '{}' solicitou a exclusãodo item de ID {}", email, itemId);
-		    
-		    ItemPedido item = itemRepository
-		        .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
-		        .orElseThrow(() -> {
-		            log.warn("Item com ID {} não encontrado para o usuário '{}'", itemId, email);
-		            return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");});
-
-		    itemRepository.deleteById(itemId);
-		    
-		    
-		    
-		}
-	
-	//FUNCIONARIO FAZ PESQUISA
-	
-	
+	}
 	
 	//EXLUIR UM ITEM DO PEDIDO
+	public PedidoAndamentoResponseDto excluirItem(Long itemId) {
+	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+	    log.info("Usuário '{}' solicitou a exclusão do item de ID {}", email, itemId);
+
+	    ItemPedido item = itemRepository
+	        .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
+	        .orElseThrow(() -> {
+	            log.warn("Item com ID {} não encontrado no pedido em andamento do usuário '{}'", itemId, email);
+	            return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");
+	        });
+
+	    Pedido pedido = item.getPedido();
+
+	    itemRepository.deleteById(itemId);
+	    log.info("Item de ID {} removido com sucesso do pedido ID {}", itemId, pedido.getId());
+
+	    pedido.getItens().removeIf(i -> i.getId().equals(itemId));
+	    pedido.setValorFrete(calcularFrete(pedido.getItens().size()));
+	    pedido.setPrecoTotal(valorTotal(pedido.getId()));
+	    pedidoRepository.save(pedido);
+
+	    log.info("Pedido ID {} atualizado após exclusão do item. Novo total: R${}, Novo frete: R${}",
+	            pedido.getId(), pedido.getPrecoTotal(), pedido.getValorFrete());
+
+	    return mapper.toResponse(pedido);
+	}
 	
-	//FUNCIONÁRIO LISTA OS PEDIDOS DO CLIENTE PELO ID
+	
+	//FUNCIONARIO FAZ AS REQUISIÇÕES
+	
+	//LISTAR TODOS OS PEDIDOS EM ANDAMENTOS
+	public List<PedidoAndamentoResponseDto> pedidoAndamentoFuncionario () {
+		List<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.EM_ANDAMENTO);
+		return mapper.toListResponse(pedidos);
+	}
+	
+	//LISTAR TODOS OS PEDIDOS EM ROTA DE ENTREGA
+	public List<PedidoAndamentoResponseDto> pedidosEntregaFuncionario () {
+		List<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.EM_ENTREGA);
+		return mapper.toListResponse(pedidos);
+	}
+	
+	//LISTAR TODOS OS PEDIDO FINALIZADOS
+	public List<PedidoAndamentoResponseDto> pedidosFinalizadosFuncionario () {
+		List<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.CONCLUIDO);
+		return mapper.toListResponse(pedidos);
+	}
+	
+	//LISTAR TODOS OS PEDIDOS CANCELADOS
+	public List<PedidoAndamentoResponseDto> pedidosCanceladosFuncionario () {
+		List<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.CANCELADO);
+		return mapper.toListResponse(pedidos);
+	}
+	
+	//FUNCIONÁRIO LISTA TODOS OS PEDIDOS DO CLIENTE PELO ID
+	public List<PedidoAndamentoResponseDto> pedidosCliente(Long idCliente) {
+		Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> {
+            log.warn("Cliente com o id {} não foi encontrado.", idCliente);
+            return new EntityNotFoundException("Nenhum é referênciado por este id.");});
+		
+		List<Pedido> pedidos = pedidoRepository.findByClienteId(cliente.getId());
+		return mapper.toListResponse(pedidos);
+	}
 }
