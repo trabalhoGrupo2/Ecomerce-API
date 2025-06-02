@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
+
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
+
 
     @Autowired
     private CategoriaService categoriaService;
