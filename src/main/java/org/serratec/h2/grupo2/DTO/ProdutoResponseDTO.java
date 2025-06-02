@@ -1,5 +1,3 @@
-// ATUALIZADO DANDARA
-
 package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
@@ -20,12 +18,11 @@ public class ProdutoResponseDTO {
 	private Boolean ativo;
 	private LocalDate dataCadastro;
 	private LocalDate dataAtualizacao;
-	private Foto foto;
-
+	private FotoResponseDTO foto;
 
 	public ProdutoResponseDTO(Long id, String nome, String descricao, Long idCategoria, BigDecimal preco,
 			BigDecimal precoPromocional, BigDecimal estoque, String fabricante, Boolean ativo, LocalDate dataCadastro,
-			LocalDate dataAtualizacao, Foto foto) {
+			LocalDate dataAtualizacao, FotoResponseDTO foto) {
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
@@ -42,10 +39,10 @@ public class ProdutoResponseDTO {
 	public ProdutoResponseDTO() {}
 
 
-	public Foto getFoto() {
+	public FotoResponseDTO getFoto() {
 		return foto;
 	}
-	public void setFoto(Foto foto) {
+	public void setFoto(FotoResponseDTO foto) {
 		this.foto = foto;
 	}
 	public Long getId() {

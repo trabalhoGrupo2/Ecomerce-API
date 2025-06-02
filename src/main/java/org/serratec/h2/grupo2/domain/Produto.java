@@ -1,5 +1,3 @@
-// ATUALIZADO DANDARA
-
 package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;
@@ -71,13 +69,13 @@ public class Produto {
 	private LocalDate dataAtualizacao;
 
 	// Relação entre foto e produto
-	// @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
-	@OneToOne(cascade = CascadeType.ALL)
+	// OrphanRemoval faz a foto ser deletada junto com o produto
+	@OneToOne(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Foto foto;
 	
 	@OneToMany(mappedBy = "produto")
 	private List<ItemPedido> itens = new ArrayList<>();
-	
+
 	@PrePersist
 	private void oncreate() {
 		this.ativo = true;

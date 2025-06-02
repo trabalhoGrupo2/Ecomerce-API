@@ -1,11 +1,10 @@
-// ATUALIZADO DANDARA
-
 package org.serratec.h2.grupo2.mapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.serratec.h2.grupo2.DTO.FotoResponseDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Categoria;
@@ -56,7 +55,12 @@ public class ProdutoMapper {
 		response.setAtivo(produto.getAtivo());
 		response.setDataCadastro(produto.getDataCadastro());
 		response.setDataAtualizacao(produto.getDataAtualizacao());
-		response.setFoto(produto.getFoto());
+		if (produto.getFoto() != null) {
+		    FotoResponseDTO fotoDto = new FotoResponseDTO();
+		    fotoDto.setNome(produto.getFoto().getNome());
+		    fotoDto.setTipo(produto.getFoto().getTipo());
+		    response.setFoto(fotoDto);
+		}
 		return response;
 	}
 	
