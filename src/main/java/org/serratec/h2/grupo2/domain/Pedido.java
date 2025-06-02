@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.math.BigDecimal;
 
 @Setter
 @Getter
@@ -44,6 +45,20 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
+    // método para adicionar item
+    public void adicionarItem(ItemPedido item) {
+        item.setPedido(this);
+        this.itens.add(item);
+    }
+
+    public void removerItem(ItemPedido item) {
+        this.itens.remove(item);
+        item.setPedido(null);
+    }
+    
+    private String codigoDesconto;  
+    
+    private BigDecimal valorFinal; 
 
 	public Double getValorTotal() {
 		
@@ -60,7 +75,7 @@ public class Pedido {
 		
 	}
 
-	public void setStatus(String upperCase) {
+	public void setStatus(StatusPedido aguardandoPagamento) {
 		// TODO Auto-generated method stub
 		
 	}
