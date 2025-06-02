@@ -19,21 +19,28 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProdutoService {
-
-    @Autowired
-    private ProdutoRepository produtoRepository;
-
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private FotoRepository fotoRepository;
-
-    @Autowired
-    private ProdutoMapper produtoMapper;
-
-    // GET: listar todos os produtos
-    public List<ProdutoResponseDTO> listar() {
+	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private ProdutoRepository produtoRepository;
+	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private FotoRepository fotoRepository;
+	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private ProdutoMapper produtoMapper;
+	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+	
+	
+	// GET: Ler a lista de produtos
+	// Mapper faz a conversão de Produto para ProdutoResponse
+	// Chamar apenas service.listar no controller
+	public List<ProdutoResponseDTO> listar() {
         List<Produto> produtos = produtoRepository.findAll();
         return produtoMapper.toListResponse(produtos);
     }
@@ -44,11 +51,56 @@ public class ProdutoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
         return produtoMapper.toResponse(produto);
     }
+	
+	// POST: Inserir
+    // Mapper converte o JSON para Produto depois converte para ProdutoResponse
+    // Chamar apenas service.inserir(produto)
+    public ProdutoResponseDTO inserir(@Valid ProdutoRequestDTO dto) {
+    	Produto produto = produtoMapper.toProduto(dto);
 
-    // DELETE: remover produto
-    public void remover(Long id) {
-        if (!produtoRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
+    	if (produto.getFoto() != null) {
+    	    produto.getFoto().setProduto(produto); // importante!
+    	}
+
+    	Produto produtoSalvo = produtoRepository.save(produto); // salva ambos com cascade
+    	return produtoMapper.toResponse(produtoSalvo);
+    }
+	
+	// PUT: Atualizar
+    // Mapper pega um JSON transforma em produto depois transforma em Produto Response
+    // Salva os dados passados
+    public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
+        Produto produtoExistente = produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+
+        // Atualizar somente os campos relevantes
+        produtoExistente.setNome(dto.getNome());
+        produtoExistente.setDescricao(dto.getDescricao());
+
+        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
+        produtoExistente.setCategoria(categoria);
+
+        produtoExistente.setPreco(dto.getPreco());
+        produtoExistente.setPrecoPromocional(dto.getPrecoPromocional());
+        produtoExistente.setEstoque(dto.getEstoque());
+        produtoExistente.setFabricante(dto.getFabricante());
+        produtoExistente.setAtivo(dto.getAtivo());
+        produtoExistente.setDataAtualizacao(LocalDate.now());
+
+        if (dto.getFoto() != null && dto.getFoto().getDados() != null) {
+            Foto foto = produtoExistente.getFoto();
+
+            if (foto == null) {
+                foto = new Foto();
+                foto.setProduto(produtoExistente);
+            }
+
+            foto.setDados(dto.getFoto().getDados());
+            foto.setNome(dto.getFoto().getNome());
+            foto.setTipo(dto.getFoto().getTipo());
+
+            produtoExistente.setFoto(foto);
         }
         produtoRepository.deleteById(id);
     }
@@ -61,52 +113,26 @@ public class ProdutoService {
                 .toList();
     }
 
-    // POST: inserir novo produto
-    public ProdutoResponseDTO inserir(ProdutoRequestDTO dto) {
-        Produto produto = produtoMapper.toProduto(dto);
-
-        // vincular categoria
-        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
-        produto.setCategoria(categoria);
-
-        // salvar foto (se houver)
-        Foto foto = dto.getFoto();
-        if (foto != null) {
-            fotoRepository.save(foto);
-            produto.setFoto(foto);
+        Produto atualizado = produtoRepository.save(produtoExistente);
+        return produtoMapper.toResponse(atualizado);
+    }
+    
+	// Deletar um item
+	// Chamar apenas service.remover(id)
+    public void remover(Long id) {
+        if (!produtoRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
 
-        produto.setDataCadastro(LocalDate.now());
         produto = produtoRepository.save(produto);
         return produtoMapper.toResponse(produto);
     }
-
-    // PUT: atualizar produto existente
-    public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
-        Produto existente = produtoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
-
-        Produto produto = produtoMapper.toProduto(dto);
-        produto.setId(id);
-        produto.setDataCadastro(existente.getDataCadastro());
-        produto.setDataAtualizacao(LocalDate.now());
-
-        // atualizar categoria
-        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
-        produto.setCategoria(categoria);
-
-        // atualizar foto (opcional)
-        Foto foto = dto.getFoto();
-        if (foto != null) {
-            fotoRepository.save(foto);
-            produto.setFoto(foto);
-        } else {
-            produto.setFoto(existente.getFoto());
-        }
-
-        produto = produtoRepository.save(produto);
-        return produtoMapper.toResponse(produto);
+    
+    // Método para listar itens em promoção
+    public List<ProdutoResponseDTO> listarPromocoes() {
+        return produtoRepository.findAll().stream()
+            .filter(p -> p.getPrecoPromocional() != null && p.getPrecoPromocional().compareTo(p.getPreco()) < 0)
+            .map(produtoMapper::toResponse)
+            .toList();
     }
 }
