@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ClienteResponseDto {
 
-	private Long id;
+	private Long codigo;
 	private String nome;
 	private String cpf;
 	private LocalDate dataDeNascimento;

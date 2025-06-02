@@ -10,48 +10,48 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-	@SuppressWarnings("removal")
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    return http
-	        .csrf().disable()
-	        .sessionManagement(session -> session
-	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
-	        
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/auth/login", "/auth/register").permitAll() 
-	            
-	            //REQUISIÇÕES DE FUNCIONÁRIO
-	            //BAIXO NIVEL DE ACESSO
-	            .requestMatchers("/funcionario/atualizarCadastro").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
-	            .requestMatchers("/funcionario/atualizacaoParcial").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
-	            
-	            //MEDIO NIVEL DE ACESSO
-	            .requestMatchers("/funcionario/cadastro").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-	            .requestMatchers("/funcionario/atualizarFuncionario").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-                .requestMatchers("/funcionario/atualizacaoParcialGestor/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-                .requestMatchers("/funcionario/desativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-                .requestMatchers("/funcionario/ativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-                .requestMatchers("/funcionario/buscarPorId/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-                .requestMatchers("/funcionario/listarPorNome/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
-                
-                //ALTO NIVEL DE ACESSO
-                .requestMatchers("/funcionario/listarFuncionarios").hasAnyRole("ALTO", "TOTAL")
-                .requestMatchers("/funcionario/listarPeloCargo/**").hasAnyRole("ALTO", "TOTAL")
-                .requestMatchers("/funcionario/listarContasAtivas").hasAnyRole("ALTO", "TOTAL")
-                .requestMatchers("/funcionario/listarContasDesativadas").hasAnyRole("ALTO", "TOTAL")
-                
-                //NIVEL DE ACESSO TOTAL
-                .requestMatchers("/funcionario/deletarFuncionario/**").hasAnyRole("TOTAL")
-	            
-                
-	            .anyRequest().permitAll() )
-	        .build();
+            .csrf(csrf -> csrf.disable())
+			.sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/auth/login", "/auth/register").permitAll()
+
+                    //REQUISIÇÕES DE FUNCIONÁRIO
+                    //BAIXO NIVEL DE ACESSO
+                    .requestMatchers("/funcionario/atualizarCadastro").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/atualizacaoParcial").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
+
+                    //MEDIO NIVEL DE ACESSO
+                    .requestMatchers("/funcionario/cadastro").permitAll()
+                    .requestMatchers("/funcionario/atualizarFuncionario").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/atualizacaoParcialGestor/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                	.requestMatchers("/funcionario/desativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/ativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/buscarPorId/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/listarPorNome/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+
+                    //ALTO NIVEL DE ACESSO
+                    .requestMatchers("/funcionario/listarFuncionarios").hasAnyRole("ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/listarPeloCargo/**").hasAnyRole("ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/listarContasAtivas").hasAnyRole("ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/listarContasDesativadas").hasAnyRole("ALTO", "TOTAL")
+
+                    //NIVEL DE ACESSO TOTAL
+                    .requestMatchers("/funcionario/deletarFuncionario/**").hasAnyRole("TOTAL")
+
+
+                    .anyRequest().permitAll())
+            .build();
 	}
 	
 	@Bean
@@ -63,4 +63,9 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+	
+	 @Bean
+	 public RestTemplate restTemplate() {
+	    return new RestTemplate();
+	 }
 }

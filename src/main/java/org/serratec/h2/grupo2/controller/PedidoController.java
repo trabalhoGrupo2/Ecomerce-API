@@ -1,12 +1,9 @@
 package org.serratec.h2.grupo2.controller;
 
-
 import java.util.List;
 
-import org.serratec.h2.grupo2.DTO.FreteDTO;
-import org.serratec.h2.grupo2.DTO.PedidoDTO;
-import org.serratec.h2.grupo2.domain.Pedido;
-import org.serratec.h2.grupo2.repository.PedidoRepository;
+import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
+import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
 import org.serratec.h2.grupo2.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,74 +12,101 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @RestController
-@RequestMapping("/api/pedidos")
+@RequestMapping("/pedidos")
 public class PedidoController {
 
     @Autowired
-    private PedidoService pedidoService;
-    
-    @Autowired
-    private PedidoRepository repository;
-    
-    // Inserir pedido
-    @PostMapping
-    public ResponseEntity<Pedido> criarPedido( @RequestBody PedidoDTO pedidoDTO) {
-        Pedido pedido = pedidoService.criarPedido(pedidoDTO);
-        return ResponseEntity.ok(pedido);
-    }
+    private PedidoService service;
 
-    // Editar pedido 
-    @PutMapping("/{id}")
-    public ResponseEntity<Pedido> editarPedido(@PathVariable Long id, @RequestBody PedidoDTO pedidoDTO) {
-        Pedido pedido = pedidoService.editarPedido(id, pedidoDTO);
-        return ResponseEntity.ok(pedido);
-    }
-
-    // Alterar status do pedido
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<Pedido> alterarStatus(@PathVariable Long id, @RequestParam String status) {
-        Pedido pedido = pedidoService.alterarStatus(id, status);
-        return ResponseEntity.ok(pedido);
-    }
-
-    
-    
-    // Buscar pedido por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Pedido> buscarPorId(@PathVariable Long id) {
-        Pedido pedido = pedidoService.buscarPorId(id);
-        return ResponseEntity.ok(pedido);
-    }
-
-    // Listar todos os pedidos
-    @GetMapping
-    public ResponseEntity<List<Pedido>> listarTodos() {
-        List<Pedido> pedidos = pedidoService.listarTodos();
-        return ResponseEntity.ok(pedidos);
-    }
-    
-    @DeleteMapping("/{id}")
-    public void remover(@PathVariable Long id) {
-        Pedido pedido = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pedido com ID " + id + " não encontrado."));
-    	 repository.deleteById(id);
-        }
-    
-    
-    @PatchMapping("/{id}/frete")
-    public ResponseEntity<Pedido> calcularFrete(@PathVariable Long id, @RequestBody FreteDTO freteDTO) {
-        Pedido pedido = pedidoService.calcularFrete(id, freteDTO.getDistanciaKm());
-        return ResponseEntity.ok(pedido);
+    //ADICIONA UM PRODUTO NO PEDIDO
+    @PostMapping("/adicionar/{produtoId}/{quantidade}")
+    public PedidoAndamentoResponseDto adicionarProdutoPedido(@PathVariable Long idProduto, @PathVariable Integer quantidade) {
+    	return service.adicionarProdutoPedido(idProduto, quantidade);
     }
    
+    //FINALIZAR PEDIDO, ELE VAI PRA ROTA DE ENTREGA + E-MAIL
+    @PostMapping("/finalizar")
+    public PedidoFinalizadoResponseDto finalizarPedido() {
+    	return service.finalizarPedido();
+    }
+    
+    //DIMINUIR A QUANTIDADE DE UM PRODUTO NO PEDIDO
+    @PatchMapping("/diminuir/{itemId}")
+    public PedidoAndamentoResponseDto diminuirQuantidade(@PathVariable Long itemId) {
+    	return service.diminuirQuantidade(itemId);
+    }
+    
+    //AUMENTAR A QUANTIDADE DE UM PRODUTO NO PEDIDO
+    @PatchMapping("/aumentar/{itemId}")
+    public PedidoAndamentoResponseDto aumentarQuantidade(@PathVariable Long id) {
+    	return service.aumentarQuantidade(id);
+    }
+    
+    //EXLUIR UM ITEM DO PEDIDO
+    @DeleteMapping("/excluir/item/{itemId}")
+    public PedidoAndamentoResponseDto excluirItem(@PathVariable Long itemId) {
+    	return service.excluirItem(itemId);
+    }
+    
+    //CANCELAMENTO DE UM PEDIDO QUE ESTAVA EM ROTA DE ENTREGA + E-MAIL
+    @PatchMapping("/cancelar/{idPedido}")
+    public ResponseEntity<String> cancelarPedido(@PathVariable Long idPedido) {
+    	return service.cancelarPedido(idPedido);
+    }
+    
+    //LISTAR PEDIDOS EM ENTREGA DO PRÓPRIO CLIENTE
+    @GetMapping("/em-entrega")
+    public List<PedidoAndamentoResponseDto> pedidosEmEntrega() {
+    	return service.pedidosEmEntrega();
+    }
+    
+    //LISTAR PEDIDOS FINALIZADOS DO PRÓPRIO CLIENTE
+    @GetMapping("/finalizados")
+    public List<PedidoAndamentoResponseDto> pedidosFinalizados() {
+    	return service.pedidosFinalizados();
+    }
+    
+    //LISTAR PEDIDOS CANCELADOS DO PRÓRPRIO CLIENTE
+    @GetMapping("/cancelados")
+    public List<PedidoAndamentoResponseDto> pedidosCancelados() {
+    	return service.pedidosCancelados();
+    }
+    
+    //FUNCINÁRIO
+    
+    //LISTAR TODOS OS PEDIDOS EM ANDAMENTOS
+    @GetMapping("/listar-pedidos-andamento")
+    public List<PedidoAndamentoResponseDto> pedidoAndamentoFuncionario () {
+    	return service.pedidoAndamentoFuncionario();
+    }
+    
+    //LISTAR TODOS OS PEDIDOS EM ROTA DE ENTREGA
+    @GetMapping("/listar-pedidos-entregues")
+    public List<PedidoAndamentoResponseDto> pedidosEntregaFuncionario () {
+    	return service.pedidosEntregaFuncionario();
+    }
+    
+    //LISTAR TODOS OS PEDIDO FINALIZADOS
+    @GetMapping("/listar-pedidos-finalizados")
+    public List<PedidoAndamentoResponseDto> pedidosFinalizadosFuncionario () {
+    	return service.pedidosFinalizadosFuncionario();
+    }
+    
+    //LISTAR TODOS OS PEDIDOS CANCELADOS
+    @GetMapping("/listar-pedidos-cancelados")
+    public List<PedidoAndamentoResponseDto> pedidosCanceladosFuncionario () {
+    	return service.pedidosCanceladosFuncionario();
+    }
+    
+    //FUNCIONÁRIO LISTA TODOS OS PEDIDOS DO CLIENTE PELO ID
+    @GetMapping("/pedidos-por-cliente")
+    public List<PedidoAndamentoResponseDto> pedidosCliente(Long idCliente) {
+    	return service.pedidosCliente(idCliente);
+    }
 }
 
 

@@ -21,96 +21,91 @@ public class ClienteController {
     @Autowired
     private ClienteService service;
 
-    //endpoint p cadastro
+    //CADASTRO DE CLIENTE - SOMENTE O PRÓPRIO CLIENTE PODE SE CADASTRAR
     @PostMapping("/cadastro")
     public ClienteResponseDto cadastrar(@Valid @RequestBody ClienteRequestDto request) {
         return service.cadastrarCliente(request);
     }
 
-    //atualização cadastro
+    //CLIENTE FAZ A ATUALIZAÇÃO DA PRÓPRIA CONTA
     @PutMapping("/atualizarCadastro")
     public ClienteResponseDto atualizacaoCadastro(@Valid @RequestBody ClienteRequestDto request) {
         return service.atualizacaoCadastro(request);
     }
 
-    //atualização completa c base no id
+    //FUNCIONÁRIO ATUALIZA A CONTA DO, CLIENTE
     @PutMapping("/atualizarCliente/{id}")
     public ClienteResponseDto atualizacaoCompleta(@PathVariable Long id, @Valid @RequestBody ClienteRequestDto request) {
-        return service.atualizacaoCadastroClientePorFuncionario(id, request);
+        return service.atualizacaoCadastroFuncionario(id, request);
     }
 
-    //atualização parcial de dados
+    //CLIENTE FAZ UMA ATUALIZAÇÃO PARCIAL DOS DADOS
     @PatchMapping("/atualizacaoParcial")
     public ClienteResponseDto atualizacaoParcial(@RequestBody ClienteUpdateDto request) {
         return service.atualizacaoParcial(request);
     }
 
+    //CLIENTE ATUALIZA O ENDEREÇO
+    
+    //FUNCIONÁRIO ATUALIZA O ENDEREÇO DO CLIENTE
 
-    //desativa conta
+    //FUNCIONÁRIO DESATIVA A CONTA DO CLIENTE
     @PatchMapping("/desativarConta/{id}")
     public ClienteResponseDto desativarConta(@PathVariable Long id) {
         return service.desativarConta(id);
     }
 
-    //ativa novamente a conta
+    //FUNCIONÁRIO FAZ A ATIVAÇÃO DE UMA CONTA CLIENTE
     @PatchMapping("/ativarConta/{id}")
     public ClienteResponseDto ativarConta(@PathVariable Long id) {
         return service.tivarConta(id);
     }
 
-    //ativação via email e token
-    @PatchMapping("/ativarContaEmail")
-    public ResponseEntity<String> ativarConta(@RequestParam String email, @RequestParam String token) {
+    //CLIENTE ATIVA A CONTA VIA TOKEN
+    @PatchMapping("/ativarContaEmail/{email}/{token}")
+    public ResponseEntity<String> ativarConta(@PathVariable String email, @PathVariable String token) {
         return service.ativarConta(email, token);
     }
 
-    //lista cliente cadastro
+    //LISTA TODOS OS CLIENTES CADASTRADOS
     @GetMapping("/listarClientes")
-   
     public List<ClienteResponseDto> listarTodos() {
         return service.listarTodos();
     }
 
-    
-    //busca por id
+    //BUSCA CLIENTE PELO ID
     @GetMapping("/buscarPorId/{id}")
     public ClienteResponseDto buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
     
-    //busca por nome
+    //LISTA CLIENTES PELO NOME
     @GetMapping("/buscarPorNome/{nome}")
     public List<ClienteResponseDto> buscarPorNome(@PathVariable String nome) {
         return service.buscarNome(nome);
     }
  
-    
-    //busca cliente por cidade
+    //LISTA CLIENTES PELA CIDADE
     @GetMapping("/buscarPorCidade/{cidade}")
     public List<ClienteResponseDto> buscarPorCidade(@PathVariable String cidade) {
         return service.pesquisaPorCidade(cidade);
     }
-
-    
-    //busca por estado
+  
+    //LISTA CLIENTES PELO ESTADO
     @GetMapping("/buscarPorEstado/{estado}")
     public List<ClienteResponseDto> buscarPorEstado(@PathVariable String estado) {
         return service.pesquisaPorEstado(estado);
     }
 
-    
-    //lista quantidade
+    //RELATÓRIO DE QUANTO CLIENTES EXISTEM POR ESTADO/CIDADE
     @GetMapping("/quantidadePorEstadoECidade")
-   
     public List<QuantidadeEstadoDto> quantidadeClientesPorEstadoECidade() {
         return service.listarQuantidadeClientes();
     }
-
     
-    //excluui o cliente permanentemente
+    //EXCLUÍ CLIENTE PERMANENTEMENTE
     @DeleteMapping("/excluirCliente/{id}")
-   
     public ResponseEntity<String> excluirCliente(@PathVariable Long id) {
         return service.excluirCliente(id);
     }

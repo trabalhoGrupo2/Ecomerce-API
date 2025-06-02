@@ -1,4 +1,3 @@
-// ATUALIZADO DANDARA
 // Essa classe vai servir para implementar todas as funções da classe Produto, deixando funcional
 
 package org.serratec.h2.grupo2.service;
@@ -7,7 +6,6 @@ import java.util.List;
 
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
-import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.FotoRepository;
@@ -15,7 +13,6 @@ import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
@@ -89,5 +86,13 @@ public class ProdutoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
         produtoRepository.deleteById(id);
+    }
+    
+    // Método para listar itens em promoção
+    public List<ProdutoResponseDTO> listarPromocoes() {
+        return produtoRepository.findAll().stream()
+            .filter(p -> p.getPrecoPromocional() != null && p.getPrecoPromocional().compareTo(p.getPreco()) < 0)
+            .map(produtoMapper::toResponse)
+            .toList();
     }
 }
