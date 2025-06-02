@@ -94,16 +94,26 @@ public class ProdutoController {
 	    return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
     
-
     // PUT: ATUALIZAR
-    @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
-        try {
-            ProdutoResponseDTO atualizado = service.atualizar(id, dto);
-            return ResponseEntity.ok(atualizado);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+    // Multipart/form-data: aceita file no Postman
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<ProdutoResponseDTO> atualizar(
+        @PathVariable Long id,
+        @Valid @RequestPart("produto") ProdutoRequestDTO dto,
+        @RequestPart(name = "foto", required = false) MultipartFile fotoFile
+    ) throws IOException {
+    	// Se eexistir foto no file, atualiza os dados no fotoDTO
+        if (fotoFile != null && !fotoFile.isEmpty()) {
+            Foto novaFoto = new Foto();
+            novaFoto.setNome(fotoFile.getOriginalFilename());
+            novaFoto.setTipo(fotoFile.getContentType());
+            novaFoto.setDados(fotoFile.getBytes());
+            dto.setFoto(novaFoto);
         }
+        
+        // Chama o método atualizar
+        ProdutoResponseDTO atualizado = service.atualizar(id, dto);
+        return ResponseEntity.ok(atualizado);
     }
 
     // DELETE: REMOVER

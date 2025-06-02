@@ -2,19 +2,20 @@
 
 package org.serratec.h2.grupo2.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
-import org.serratec.h2.grupo2.domain.Foto;
+import org.serratec.h2.grupo2.domain.Categoria;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
+import org.serratec.h2.grupo2.repository.CategoriaRepository;
 import org.serratec.h2.grupo2.repository.FotoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
@@ -34,6 +35,11 @@ public class ProdutoService {
 	// Injetar a interface para procurar no banco de dados
 	@Autowired
 	private ProdutoMapper produtoMapper;
+	
+	// Injetar a interface para procurar no banco de dados
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+	
 	
 	// GET: Ler a lista de produtos
 	// Mapper faz a conversão de Produto para ProdutoResponse
@@ -69,18 +75,36 @@ public class ProdutoService {
 	
 	// PUT: Atualizar
     // Mapper pega um JSON transforma em produto depois transforma em Produto Response
-	// Chamar apenas service.atualizar(id, produto)
-    public ProdutoResponseDTO atualizar(Long id, @Valid ProdutoRequestDTO dto) {
-        if (!produtoRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não cadastrado!");
+    // Salva os dados passados
+    public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
+        Produto produtoExistente = produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
+
+        // Atualizar somente os campos relevantes
+        produtoExistente.setNome(dto.getNome());
+        produtoExistente.setDescricao(dto.getDescricao());
+
+        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
+        produtoExistente.setCategoria(categoria);
+
+        produtoExistente.setPreco(dto.getPreco());
+        produtoExistente.setPrecoPromocional(dto.getPrecoPromocional());
+        produtoExistente.setEstoque(dto.getEstoque());
+        produtoExistente.setFabricante(dto.getFabricante());
+        produtoExistente.setAtivo(dto.getAtivo());
+        produtoExistente.setDataAtualizacao(LocalDate.now());
+
+        // Atualiza a imagem apenas se foi enviada no DTO
+        if (dto.getFoto() != null && dto.getFoto().getDados() != null) {
+            dto.getFoto().setProduto(produtoExistente);
+            produtoExistente.setFoto(dto.getFoto());
         }
 
-        Produto produto = produtoMapper.toProduto(dto);
-        produto.setId(id); // garante que vai atualizar o correto
-        Produto atualizado = produtoRepository.save(produto);
+        Produto atualizado = produtoRepository.save(produtoExistente);
         return produtoMapper.toResponse(atualizado);
     }
-
+    
 	// Deletar um item
 	// Chamar apenas service.remover(id)
     public void remover(Long id) {
