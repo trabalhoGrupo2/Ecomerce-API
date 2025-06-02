@@ -8,6 +8,7 @@ import java.util.List;
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Categoria;
+import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
@@ -95,10 +96,19 @@ public class ProdutoService {
         produtoExistente.setAtivo(dto.getAtivo());
         produtoExistente.setDataAtualizacao(LocalDate.now());
 
-        // Atualiza a imagem apenas se foi enviada no DTO
         if (dto.getFoto() != null && dto.getFoto().getDados() != null) {
-            dto.getFoto().setProduto(produtoExistente);
-            produtoExistente.setFoto(dto.getFoto());
+            Foto foto = produtoExistente.getFoto();
+
+            if (foto == null) {
+                foto = new Foto();
+                foto.setProduto(produtoExistente);
+            }
+
+            foto.setDados(dto.getFoto().getDados());
+            foto.setNome(dto.getFoto().getNome());
+            foto.setTipo(dto.getFoto().getTipo());
+
+            produtoExistente.setFoto(foto);
         }
 
         Produto atualizado = produtoRepository.save(produtoExistente);
