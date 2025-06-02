@@ -107,9 +107,9 @@ public class PedidoService {
 		//CALCULO DE FRETE
 		 public BigDecimal calcularFrete(Integer quantidade) {
 	        log.info("Calculando frete para {} itens", quantidade);
-	        BigDecimal valorBase = new BigDecimal("10.0");
+	        BigDecimal valorBase = new BigDecimal("5.0");
 	        
-	        BigDecimal adicionalPorItem = new BigDecimal("2.5");
+	        BigDecimal adicionalPorItem = new BigDecimal("1.0");
 	        BigDecimal valorFrete = valorBase.add(adicionalPorItem.multiply(new BigDecimal(quantidade)));
 	        log.debug("Valor do frete calculado: {}", valorFrete);
 	        

@@ -11,12 +11,14 @@ import java.util.Optional;
 import org.serratec.h2.grupo2.DTO.cliente.ClienteRequestDto;
 import org.serratec.h2.grupo2.DTO.cliente.ClienteResponseDto;
 import org.serratec.h2.grupo2.DTO.cliente.ClienteUpdateDto;
+import org.serratec.h2.grupo2.DTO.cliente.EnderecoUpdateDto;
+import org.serratec.h2.grupo2.DTO.cliente.quantidadeClientes.MensagemComClienteResponseDto;
 import org.serratec.h2.grupo2.DTO.cliente.quantidadeClientes.QuantidadeCidadeDto;
 import org.serratec.h2.grupo2.DTO.cliente.quantidadeClientes.QuantidadeEstadoDto;
 import org.serratec.h2.grupo2.domain.Cliente;
 import org.serratec.h2.grupo2.domain.Conta;
+import org.serratec.h2.grupo2.domain.Endereco;
 import org.serratec.h2.grupo2.enuns.NivelAcesso;
-import org.serratec.h2.grupo2.exception.ContaInativaException;
 import org.serratec.h2.grupo2.mapper.ClienteMapper;
 import org.serratec.h2.grupo2.repository.ClienteRepository;
 import org.serratec.h2.grupo2.security.tokenAcesso.TokenAtivacaoConta;
@@ -60,38 +62,53 @@ public class ClienteService {
 	}
 
 	//POST - CADASTRO DE CLIENTE (CERTO)
-	public ClienteResponseDto cadastrarCliente(ClienteRequestDto request) {
-		Optional<Cliente> clienteExistente = repository.findByContaEmail(request.getEmail());
+	public ResponseEntity<MensagemComClienteResponseDto> cadastrarCliente(ClienteRequestDto request) {
+	    Optional<Cliente> clienteExistente = repository.findByContaEmail(request.getEmail());
 
 	    if (clienteExistente.isPresent()) {
-	    	
 	        Cliente existente = clienteExistente.get();
-	        
+
 	        if (!existente.getConta().isAtivo()) {
-	        	enviarEmailDeAtivacao(existente);
-	        	 throw new ContaInativaException("Conta já cadastrada, mas inativa. Verifique seu e-mail para ativação.");
-	        } throw new IllegalArgumentException("Conta já cadastrada e ativa.");}
-		
-		Cliente cliente = new Cliente();
-		Conta conta = new Conta();
-		
-		conta.setAtivo(false);
-		conta.setEmail(request.getEmail());
-		conta.setNivelAcesso(NivelAcesso.NENHUM);
-		conta.setSenha(encoder.encode(request.getSenha()));
-		
-		cliente.setConta(conta);
-		cliente.setDataDeNascimento(request.getDataDeNascimento());
-		cliente.setEndereco(enderecoService.preencherEndereco(request.getCep(), request.getNumero()));
-		cliente.setNome(request.getNome());
-		cliente.setTelefone(request.getTelefone());
-		String token = tokenAtivacao.gerarToken(LocalDateTime.now());
-		cliente.setTokenAtivacao(token);
-		
-		repository.save(cliente);
-		emailService.emailPraAtivacaoDaConta(cliente.getConta().getEmail(), cliente.getNome(), token);
-		
-		return mapper.toResponse(repository.save(cliente));
+	            enviarEmailDeAtivacao(existente);
+
+	            MensagemComClienteResponseDto resposta = new MensagemComClienteResponseDto(
+	                "Conta já cadastrada, mas inativa. Um novo e-mail de ativação foi enviado.",
+	                mapper.toResponse(existente)
+	            );
+
+	            return ResponseEntity.status(HttpStatus.OK).body(resposta);
+	        }
+
+	        throw new IllegalArgumentException("Conta já cadastrada e ativa.");
+	    }
+
+	    Cliente cliente = new Cliente();
+	    Conta conta = new Conta();
+
+	    conta.setAtivo(false);
+	    conta.setEmail(request.getEmail());
+	    conta.setNivelAcesso(NivelAcesso.NENHUM);
+	    conta.setSenha(encoder.encode(request.getSenha()));
+
+	    cliente.setCpf(request.getCpf());
+	    cliente.setConta(conta);
+	    cliente.setDataDeNascimento(request.getDataDeNascimento());
+	    cliente.setEndereco(enderecoService.preencherEndereco(request.getCep(), request.getNumero()));
+	    cliente.setNome(request.getNome());
+	    cliente.setTelefone(request.getTelefone());
+	    
+	    String token = tokenAtivacao.gerarToken(LocalDateTime.now(ZoneOffset.UTC));
+	    cliente.setTokenAtivacao(token);
+
+	    repository.save(cliente);
+	    emailService.emailPraAtivacaoDaConta(cliente.getConta().getEmail(), cliente.getNome(), token);
+
+	    MensagemComClienteResponseDto resposta = new MensagemComClienteResponseDto(
+	        "Conta criada com sucesso! Verifique seu e-mail para ativação.",
+	        mapper.toResponse(cliente)
+	    );
+
+	    return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
 	}
 	
 	//AUTENTICAR TOKEN E ATIVAR A CONTA
@@ -103,24 +120,19 @@ public class ClienteService {
 	        throw new IllegalArgumentException("Sua conta já se encontra ativa.");
 	    }
 
-	    boolean tokenCorreto = token.equals(cliente.getTokenAtivacao());
-	    boolean tokenValido = tokenAtivacao.tokenValido(token);
-
-	    if (tokenCorreto && tokenValido) {
-	        cliente.getConta().setAtivo(true);
-	        repository.save(cliente);
-	        emailService.emailContaCriadaComSucesso(email, cliente.getNome());
-	        return ResponseEntity.ok("Conta ativada com sucesso!");
-	    }
-
-	    else {
-	    	String novoToken = tokenAtivacao.gerarToken(LocalDateTime.now());
+	    if (!cliente.getTokenAtivacao().equals(token)) {
+	    	String novoToken = tokenAtivacao.gerarToken(LocalDateTime.now(ZoneOffset.UTC));
 	    	cliente.setTokenAtivacao(novoToken);
 	    	repository.save(cliente);
+	    	emailService.emailPraAtivacaoDaConta(cliente.getConta().getEmail(), cliente.getNome(), cliente.getTokenAtivacao());
 	    	emailService.emailPraAtivacaoDaConta(cliente.getConta().getEmail(), cliente.getNome(), novoToken);
-		    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	                         .body("Token expirado ou inválido. Um novo foi enviado ao seu e-mail.");
+		    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token expirado ou inválido. Um novo foi enviado ao seu e-mail.");
 	    }
+	    
+        cliente.getConta().setAtivo(true);
+        repository.save(cliente);
+        emailService.emailContaCriadaComSucesso(email, cliente.getNome());
+        return ResponseEntity.ok("Conta ativada com sucesso!");
 	}
 	
 	//PUT - ATUALIZAÇÃO TOTAL DOS DADOS
@@ -138,6 +150,11 @@ public class ClienteService {
 			cliente.getConta().setSenha(request.getSenha());
 			
 			return mapper.toResponse(repository.save(cliente));
+		}
+		
+		//ATUALIZAÇÃO DO ENDEREÇO - TOTAL
+		public Endereco atualizacaoEndereco(EnderecoUpdateDto endereco) {
+			Endereco novoEndereco = mapper.toEndereco(endereco);
 		}
 		
 		//FUNCIONARIO INTERNO ATUALIZA O CADASTRO DE CLIENTE 
