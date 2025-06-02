@@ -6,12 +6,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-=======
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
->>>>>>> f2e2b20e49d869dfc56536af2da18608646a65b6
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,10 +20,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
 
 
-@NoArgsConstructor
 @Entity
 @Table(name="produto")
 public class Produto {
@@ -75,9 +67,7 @@ public class Produto {
 	
 	@OneToMany(mappedBy = "produto")
 	private List<ItemPedido> itens = new ArrayList<>();
-<<<<<<< HEAD
 
-=======
 	
 	@PrePersist
 	private void oncreate() {
@@ -189,7 +179,4 @@ public class Produto {
 	public void setItens(List<ItemPedido> itens) {
 		this.itens = itens;
 	}
-	
->>>>>>> f2e2b20e49d869dfc56536af2da18608646a65b6
 }
-
