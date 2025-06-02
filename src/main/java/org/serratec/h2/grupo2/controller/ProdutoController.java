@@ -34,6 +34,7 @@ import org.springframework.http.ContentDisposition;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
+// Mapear esse EndPoint
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
@@ -73,18 +74,9 @@ public class ProdutoController {
 	    return ResponseEntity.ok(promocoes);
 	}
 
-	// POST: INSERIR
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ProdutoResponseDTO inserir(@Valid @RequestBody ProdutoRequestDTO dto) {
-//        return service.inserir(dto);
-//    }
-    
-    
-    
-//    @PostMapping(value = "/com-foto", consumes = "multipart/form-data")
     @PostMapping(consumes = "multipart/form-data")
 	public ResponseEntity<ProdutoResponseDTO> inserir(
+		// Cria as chaves do Postman que serão usadas para inserir o produto
 	    @RequestPart("produto") ProdutoRequestDTO produtoJson,
 	    @RequestPart("foto") MultipartFile fotoFile) throws IOException {
 
@@ -95,7 +87,8 @@ public class ProdutoController {
 	    foto.setTipo(fotoFile.getContentType());
 
 	    produtoJson.setFoto(foto);
-
+	    
+	    // Chama o método inserir para o Json, Converte em ProdutoResponse
 	    ProdutoResponseDTO response = service.inserir(produtoJson);
 	    return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
@@ -107,8 +100,9 @@ public class ProdutoController {
         @PathVariable Long id,
         @Valid @RequestPart("produto") ProdutoRequestDTO dto,
         @RequestPart(name = "foto", required = false) MultipartFile fotoFile
+        // Exceção que representa que pode ocorrer erros de entrado e saída
     ) throws IOException {
-    	// Se eexistir foto no file, atualiza os dados no fotoDTO
+    	// Se existir foto no file, atualiza os dados no fotoDTO
         if (fotoFile != null && !fotoFile.isEmpty()) {
             Foto novaFoto = new Foto();
             novaFoto.setNome(fotoFile.getOriginalFilename());
@@ -126,6 +120,7 @@ public class ProdutoController {
     @DeleteMapping("/{id}")
 	public ResponseEntity<Void> remover(@PathVariable Long id) {
 	    try {
+	    	// Chama o método remover
 	        service.remover(id);
 	        return ResponseEntity.noContent().build(); // Retorna 204 No Content ao remover com sucesso
 	    } catch (EntityNotFoundException e) {
@@ -136,6 +131,8 @@ public class ProdutoController {
 	}
     
     // Modificar, adicionar no Service todas as funções para apenas chamar no Controller
+    // Apresentar a foto de determinado ID
+    // GET: ID
     @GetMapping("/{id}/foto")
     public ResponseEntity<byte[]> getFoto(@PathVariable Long id) {
         Produto produto = produtoRepository.findById(id)
@@ -145,12 +142,17 @@ public class ProdutoController {
         if (foto == null || foto.getDados() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Foto não encontrada");
         }
-
+        
+        // Cria o cabeçalho HTTP da resposta
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(foto.getTipo())); // ex: image/png
+        // Converte a string em um objeto MediaType e aceita arquivos jpg/png
+        headers.setContentType(MediaType.parseMediaType(foto.getTipo()));
+        // Retorna os bytes que será necessário carregar
         headers.setContentLength(foto.getDados().length);
+        // Imagem exibida na mesma página, nome do arquivo caso precise salvar e constrói o objeto
         headers.setContentDisposition(ContentDisposition.inline().filename(foto.getNome()).build());
-
+        
+        // Retorna a mensagem HTTP completa
         return new ResponseEntity<>(foto.getDados(), headers, HttpStatus.OK);
     }
 		
