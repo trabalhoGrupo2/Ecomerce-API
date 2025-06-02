@@ -1,5 +1,3 @@
-// Essa classe vai servir para implementar todas as funções da classe Produto, deixando funcional
-
 package org.serratec.h2.grupo2.service;
 
 import java.time.LocalDate;
@@ -19,9 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import jakarta.validation.Valid;
-
-// Representa uma camada de serviço
 @Service
 public class ProdutoService {
 	
@@ -49,11 +44,8 @@ public class ProdutoService {
         List<Produto> produtos = produtoRepository.findAll();
         return produtoMapper.toListResponse(produtos);
     }
-	
-	// GET: ID
-	// Chamar apenas service.pesquisar
-	// Mapper faz a conversão do Produto para ProdutoResponse
-	// GET: Buscar por ID
+
+    // GET: buscar produto por ID
     public ProdutoResponseDTO pesquisar(Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
@@ -110,6 +102,16 @@ public class ProdutoService {
 
             produtoExistente.setFoto(foto);
         }
+        produtoRepository.deleteById(id);
+    }
+
+    // GET: listar produtos com preço promocional
+    public List<ProdutoResponseDTO> listarPromocoes() {
+        return produtoRepository.findAll().stream()
+                .filter(p -> p.getPrecoPromocional() != null && p.getPrecoPromocional().compareTo(p.getPreco()) < 0)
+                .map(produtoMapper::toResponse)
+                .toList();
+    }
 
         Produto atualizado = produtoRepository.save(produtoExistente);
         return produtoMapper.toResponse(atualizado);
@@ -121,7 +123,9 @@ public class ProdutoService {
         if (!produtoRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
-        produtoRepository.deleteById(id);
+
+        produto = produtoRepository.save(produto);
+        return produtoMapper.toResponse(produto);
     }
     
     // Método para listar itens em promoção

@@ -66,6 +66,12 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
     }
+	// GET: Itens em promoção
+	@GetMapping("/promocoes")
+	public ResponseEntity<List<ProdutoResponseDTO>> listarPromocoes() {
+	    List<ProdutoResponseDTO> promocoes = service.listarPromocoes();
+	    return ResponseEntity.ok(promocoes);
+	}
 
 	// POST: INSERIR
 //    @PostMapping
