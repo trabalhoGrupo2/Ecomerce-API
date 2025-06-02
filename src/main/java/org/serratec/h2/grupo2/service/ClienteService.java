@@ -59,7 +59,7 @@ public class ClienteService {
 		emailService.emailPraAtivacaoDaConta(cliente.getConta().getEmail(), cliente.getNome(), token);
 	}
 
-	//POST - CADASTRO DE CLIENTE
+	//POST - CADASTRO DE CLIENTE (CERTO)
 	public ClienteResponseDto cadastrarCliente(ClienteRequestDto request) {
 		Optional<Cliente> clienteExistente = repository.findByContaEmail(request.getEmail());
 
@@ -156,7 +156,9 @@ public class ClienteService {
 		
 	//PATCH - ATUALIZAÇÃO PARCIAL DOS DADOS
 		
-		//ATUALIZAÇÃO DO ENDEREÇO
+		//ATUALIZAÇÃO DO ENDEREÇO - PARCIAL
+		
+		
 	
 		//ATUALIZAÇÃO PARCIAL FEITA PELO CLIENTE
 		public ClienteResponseDto atualizacaoParcial(ClienteUpdateDto update) {

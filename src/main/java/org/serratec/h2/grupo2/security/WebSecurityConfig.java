@@ -32,7 +32,7 @@ public class WebSecurityConfig {
                     .requestMatchers("/funcionario/atualizacaoParcial").hasAnyRole("BAIXO", "MEDIO", "ALTO", "TOTAL")
 
                     //MEDIO NIVEL DE ACESSO
-                    .requestMatchers("/funcionario/cadastro").hasAnyRole("MEDIO", "ALTO", "TOTAL")
+                    .requestMatchers("/funcionario/cadastro").permitAll()
                     .requestMatchers("/funcionario/atualizarFuncionario").hasAnyRole("MEDIO", "ALTO", "TOTAL")
                     .requestMatchers("/funcionario/atualizacaoParcialGestor/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
                 	.requestMatchers("/funcionario/desativarConta/**").hasAnyRole("MEDIO", "ALTO", "TOTAL")
