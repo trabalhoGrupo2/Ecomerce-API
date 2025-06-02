@@ -21,6 +21,11 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{
 	
 	long countByEnderecoCidadeContainingIgnoreCase (String cidade);
 	
-	@Query("SELECT c.estado, c.cidade, COUNT(c) " +"FROM Cliente c " +"GROUP BY c.estado, c.cidade " +"ORDER BY c.estado, c.cidade")
+	//@Query("SELECT c.estado, c.cidade, COUNT(c) " +"FROM Cliente c " +"GROUP BY c.estado, c.cidade " +"ORDER BY c.estado, c.cidade")
+	//List<Object[]> buscarQuantidadePorEstadoECidade();
+
+
+	@Query("SELECT c.endereco.estado, c.endereco.cidade, COUNT(c) FROM Cliente c GROUP BY c.endereco.estado, c.endereco.cidade")
 	List<Object[]> buscarQuantidadePorEstadoECidade();
 }
+

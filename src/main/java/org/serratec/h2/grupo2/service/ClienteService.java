@@ -311,10 +311,5 @@ public class ClienteService {
 		repository.deleteById(id);
 		return ResponseEntity.ok("Conta excluída com sucesso!");
 	}
-
-	
-	
-
-	
 	
 }
