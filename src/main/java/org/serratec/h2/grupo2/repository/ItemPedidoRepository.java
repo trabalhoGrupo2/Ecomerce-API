@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long>{
 
-	Optional<ItemPedido> findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail (Long id, StatusPedido status, String email);
+	Optional<ItemPedido> findByIdAndPedidoStatusAndPedidoClienteContaEmail (Long id, StatusPedido status, String email);
+	
+	Optional<ItemPedido> findByProdutoId (Long id);
 }

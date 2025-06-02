@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.serratec.h2.grupo2.DTO.pedido.ItemIndisponivel;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
@@ -127,85 +129,128 @@ public class PedidoService {
 		
 	//CLIENTE FAZ AS REQUISIÇÕES
 	//ADICIONAR PRODUTO NO PEDIDO
-    public PedidoAndamentoResponseDto adicionarProdutoPedido(Long idProduto, Integer quantidade) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("Adicionando produto ID {} ao pedido do cliente {}", idProduto, email);
+	public PedidoAndamentoResponseDto adicionarProdutoPedido(Long idProduto, Integer quantidade) {
+	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+	    log.info("Adicionando produto ID {} ao pedido do cliente {}", idProduto, email);
 
-        Pedido pedido = pedidoRepository.findTopByClienteContaEmailAndStatus(email, StatusPedido.EM_ANDAMENTO).orElse(null);
+	    Produto produto = produtoRepository.findById(idProduto)
+	        .orElseThrow(() -> new EntityNotFoundException("Não há nenhum produto vinculado a este ID."));
 
-        if (quantidade == null || quantidade <= 0) {
-            quantidade = 1;
-        }
+	    if (quantidade == null || quantidade <= 0) {
+	        log.warn("Quantidade inválida informada ({}). Usando quantidade = 1", quantidade);
+	        quantidade = 1;
+	    }
 
-        if (pedido == null || pedido.getStatus() == StatusPedido.CANCELADO || pedido.getStatus() == StatusPedido.CONCLUIDO) {
-            log.info("Nenhum pedido em andamento. Criando novo pedido para o cliente {}", email);
-            Cliente cliente = clienteRepository.findByContaEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Nenhuma conta cadastrada neste e-mail."));
-            pedido = criarPedido(cliente);
-            cliente.getPedidos().add(pedido);
-            clienteRepository.save(cliente);
-        }
+	    Pedido pedido = pedidoRepository.findTopByClienteContaEmailAndStatus(email, StatusPedido.EM_ANDAMENTO).orElse(null);
 
-        ItemPedido item = criarItemPedido(idProduto, quantidade);
-        item.setPedido(pedido);
-        itemRepository.save(item);
+	    if (pedido == null || pedido.getStatus() == StatusPedido.CANCELADO || pedido.getStatus() == StatusPedido.CONCLUIDO) {
+	        log.info("Nenhum pedido em andamento. Criando novo pedido para o cliente {}", email);
+	        Cliente cliente = clienteRepository.findByContaEmail(email)
+	            .orElseThrow(() -> new EntityNotFoundException("Nenhuma conta cadastrada neste e-mail."));
+	        pedido = criarPedido(cliente);
+	        cliente.getPedidos().add(pedido);
+	        clienteRepository.save(cliente);
+	    }
 
-        pedido.getItens().add(item);
-        pedido.setValorFrete(calcularFrete(pedido.getItens().size()));
-        pedido.setPrecoTotal(valorTotal(pedido.getId()));
-        pedidoRepository.save(pedido);
+	    Optional<ItemPedido> itemExistente = itemRepository.findByProdutoId(idProduto);
 
-        log.info("Produto ID {} adicionado ao pedido ID {}", idProduto, pedido.getId());
-        return mapper.toResponse(pedido);
-    }
+	    if (itemExistente.isPresent()) {
+	        ItemPedido item = itemExistente.get();
+	        int novaQuantidade = item.getQuantidade() + quantidade;
+	        
+	        if (novaQuantidade > produto.getEstoque()) {
+	            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");}
+	        item.setQuantidade(novaQuantidade);
+	        log.info("Produto já estava no pedido. Quantidade atualizada para {}", novaQuantidade);
+	        itemRepository.save(item);} 
+	    
+	    else {
+	        if (quantidade > produto.getEstoque()) {
+	            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");
+	        }
+
+	        ItemPedido item = criarItemPedido(idProduto, quantidade);
+	        item.setPedido(pedido);
+
+	        BigDecimal zero = BigDecimal.ZERO;
+	        if (produto.getPrecoPromocional() != null && !produto.getPrecoPromocional().equals(zero)) {
+	            item.setPrecoUnitario(produto.getPrecoPromocional());
+	        }
+
+	        pedido.getItens().add(item);
+	        itemRepository.save(item);
+	        log.info("Novo item adicionado ao pedido.");
+	    }
+
+	    pedido.setValorFrete(calcularFrete(pedido.getItens().size()));
+	    pedido.setPrecoTotal(valorTotal(pedido.getId()));
+	    pedidoRepository.save(pedido);
+
+	    log.info("Pedido ID {} atualizado. Total: R${}, Frete: R${}", pedido.getId(), pedido.getPrecoTotal(), pedido.getValorFrete());
+
+	    return mapper.toResponse(pedido);
+	}
 
 	//FINALIZAR O PEDIDO - ELE ENTRA COMO EM_ENTREGA
-    public PedidoFinalizadoResponseDto finalizarPedido() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("Finalizando pedido do cliente {}", email);
+	public PedidoFinalizadoResponseDto finalizarPedido() {
+	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+	    log.info("Finalizando pedido do cliente {}", email);
 
-        Pedido pedido = pedidoRepository.findTopByClienteContaEmailAndStatus(email, StatusPedido.EM_ANDAMENTO)
-            .orElseThrow(() -> new EntityNotFoundException("Não há nenhum pedido em aberto."));
+	    Pedido pedido = pedidoRepository
+	        .findTopByClienteContaEmailAndStatus(email, StatusPedido.EM_ANDAMENTO)
+	        .orElseThrow(() -> new EntityNotFoundException("Não há nenhum pedido em aberto."));
 
-        List<ItemPedido> intensDisponiveis = new ArrayList<>();
-        List<ItemIndisponivel> itensIndisponiveis = new ArrayList<>();
+	    List<ItemPedido> itensDisponiveis = new ArrayList<>();
+	    List<ItemIndisponivel> itensIndisponiveis = new ArrayList<>();
 
-        for (ItemPedido item : pedido.getItens()) {
-            Integer estoqueAtual = item.getProduto().getEstoque();
-            Integer quantidadeSolicitada = item.getQuantidade();
+	    for (ItemPedido item : pedido.getItens()) {
+	        Integer estoqueAtual = item.getProduto().getEstoque();
+	        Integer quantidadeSolicitada = item.getQuantidade();
+	        Produto produto = item.getProduto();
 
-            if (estoqueAtual >= quantidadeSolicitada) {
-                log.debug("Produto {} tem estoque suficiente", item.getProduto().getId());
-                item.getProduto().setEstoque(estoqueAtual - quantidadeSolicitada);
-                intensDisponiveis.add(item);
-            } else if (estoqueAtual > 0) {
-                log.debug("Produto {} com estoque parcial", item.getProduto().getId());
-                itensIndisponiveis.add(criarItemIndisponivel(item.getProduto().getNome(), quantidadeSolicitada - estoqueAtual));
-                item.setQuantidade(estoqueAtual);
-                item.getProduto().setEstoque(0);
-                intensDisponiveis.add(item);
-            } else {
-                log.debug("Produto {} sem estoque, será removido", item.getProduto().getId());
-                itensIndisponiveis.add(criarItemIndisponivel(item.getProduto().getNome(), quantidadeSolicitada));
-                itemRepository.deleteById(item.getId());
-            }
+	        if (estoqueAtual >= quantidadeSolicitada) {
+	            log.debug("Produto {} tem estoque suficiente", produto.getId());
+	            produto.setEstoque(estoqueAtual - quantidadeSolicitada);
+	            itensDisponiveis.add(item);
 
-            if (item.getProduto().getEstoque().equals(0)) {
-                item.getProduto().setAtivo(false);
-            }
+	        } else if (estoqueAtual > 0) {
+	            log.debug("Produto {} com estoque parcial", produto.getId());
+	            itensIndisponiveis.add(criarItemIndisponivel(produto.getNome(), quantidadeSolicitada - estoqueAtual));
+	            item.setQuantidade(estoqueAtual);
+	            produto.setEstoque(0);
+	            itensDisponiveis.add(item);
 
-            itemRepository.save(item);
-            produtoRepository.save(item.getProduto());
-        }
+	        } else {
+	            log.debug("Produto {} sem estoque, será removido", produto.getId());
+	            itensIndisponiveis.add(criarItemIndisponivel(produto.getNome(), quantidadeSolicitada));
+	            itemRepository.deleteById(item.getId());
+	            continue;
+	        }
 
-        pedido.setStatus(StatusPedido.EM_ENTREGA);
-        pedidoRepository.save(pedido);
+	        // DEFINIR O PREÇO PROMOCIONAL, CASO HOUVER
+	        if (produto.getPrecoPromocional() != null && produto.getPrecoPromocional().compareTo(BigDecimal.ZERO) > 0) {
+	            item.setPrecoUnitario(produto.getPrecoPromocional());
+	        }
 
-        log.info("Pedido ID {} finalizado e enviado para entrega", pedido.getId());
-        emailService.emailConfirmacaoDeCompra(email, mapper.toResponseFinalizado(pedido, itensIndisponiveis));
-        
-        return mapper.toResponseFinalizado(pedido, itensIndisponiveis);
-    }
+	        // DESATIVAR PRODUTO SE ESTOQUE FICAR ZERADO
+	        if (produto.getEstoque().equals(0)) {
+	            produto.setAtivo(false);
+	        }
+
+	        itemRepository.save(item);
+	        produtoRepository.save(produto);
+	    }
+
+	    pedido.setItens(itensDisponiveis);
+	    pedido.setStatus(StatusPedido.EM_ENTREGA);
+	    pedido.setPrecoTotal(valorTotal(pedido.getId()));
+	    pedidoRepository.save(pedido);
+
+	    log.info("Pedido ID {} finalizado e enviado para entrega", pedido.getId());
+	    emailService.emailConfirmacaoDeCompra(email, mapper.toResponseFinalizado(pedido, itensIndisponiveis));
+
+	    return mapper.toResponseFinalizado(pedido, itensIndisponiveis);
+	}
 	
 	//CONFIRMAR ENTREGA DO PEDIDO + NOTA DO PRODUTO + COMENTÁRIO
 	
@@ -259,7 +304,7 @@ public class PedidoService {
         log.info("Usuário {} solicitou diminuir a quantidade do item ID {}", email, itemId);
 
         ItemPedido item = itemRepository
-            .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
+            .findByIdAndPedidoStatusAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
             .orElseThrow(() -> {
                 log.warn("Item com ID {} não encontrado para o usuário {}", itemId, email);
                 return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");
@@ -293,7 +338,7 @@ public class PedidoService {
 	    log.info("Usuário '{}' solicitou aumentar a quantidade do item de ID {}", email, id);
 
 	    ItemPedido item = itemRepository
-	        .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(id, StatusPedido.EM_ANDAMENTO, email)
+	        .findByIdAndPedidoStatusAndPedidoClienteContaEmail(id, StatusPedido.EM_ANDAMENTO, email)
 	        .orElseThrow(() -> {
 	            log.warn("Item com ID {} não encontrado para o usuário '{}'", id, email);
 	            return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");});
@@ -325,7 +370,7 @@ public class PedidoService {
 	    log.info("Usuário '{}' solicitou a exclusão do item de ID {}", email, itemId);
 
 	    ItemPedido item = itemRepository
-	        .findByIdAndPedidoStatusPedidoAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
+	        .findByIdAndPedidoStatusAndPedidoClienteContaEmail(itemId, StatusPedido.EM_ANDAMENTO, email)
 	        .orElseThrow(() -> {
 	            log.warn("Item com ID {} não encontrado no pedido em andamento do usuário '{}'", itemId, email);
 	            return new EntityNotFoundException("Produto não se encontra em nenhum pedido em andamento.");

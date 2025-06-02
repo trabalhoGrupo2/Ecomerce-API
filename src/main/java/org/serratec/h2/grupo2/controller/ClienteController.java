@@ -59,8 +59,8 @@ public class ClienteController {
     }
 
     //ativação via email e token
-    @PatchMapping("/ativarContaEmail")
-    public ResponseEntity<String> ativarConta(@RequestParam String email, @RequestParam String token) {
+    @PatchMapping("/ativarContaEmail/{email}/{token}")
+    public ResponseEntity<String> ativarConta(@PathVariable String email, @PathVariable String token) {
         return service.ativarConta(email, token);
     }
 

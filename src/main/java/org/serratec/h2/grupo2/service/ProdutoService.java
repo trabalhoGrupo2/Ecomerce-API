@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
-import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.FotoRepository;
@@ -14,7 +13,6 @@ import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
