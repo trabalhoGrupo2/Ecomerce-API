@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,11 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidoController {
 
     @Autowired
+
     private PedidoService service;
 
     //ADICIONA UM PRODUTO NO PEDIDO
-    @PostMapping("/adicionar/{produtoId}/{quantidade}")
-    public PedidoAndamentoResponseDto adicionarProdutoPedido(@PathVariable Long idProduto, @PathVariable Integer quantidade) {
+    @PostMapping("/adicionar")
+    public PedidoAndamentoResponseDto adicionarProdutoPedido(@RequestParam Long idProduto, @RequestParam Integer quantidade) {
     	return service.adicionarProdutoPedido(idProduto, quantidade);
     }
    
@@ -42,8 +44,8 @@ public class PedidoController {
     
     //AUMENTAR A QUANTIDADE DE UM PRODUTO NO PEDIDO
     @PatchMapping("/aumentar/{itemId}")
-    public PedidoAndamentoResponseDto aumentarQuantidade(@PathVariable Long id) {
-    	return service.aumentarQuantidade(id);
+    public PedidoAndamentoResponseDto aumentarQuantidade(@PathVariable Long itemId) {
+    	return service.aumentarQuantidade(itemId);
     }
     
     //EXLUIR UM ITEM DO PEDIDO
@@ -103,10 +105,11 @@ public class PedidoController {
     }
     
     //FUNCIONÁRIO LISTA TODOS OS PEDIDOS DO CLIENTE PELO ID
-    @GetMapping("/pedidos-por-cliente")
-    public List<PedidoAndamentoResponseDto> pedidosCliente(Long idCliente) {
+    @GetMapping("/pedidos-por-cliente/{idCliente}")
+    public List<PedidoAndamentoResponseDto> pedidosCliente(@PathVariable Long idCliente) {
     	return service.pedidosCliente(idCliente);
     }
+
 }
 
 

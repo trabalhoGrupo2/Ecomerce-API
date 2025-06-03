@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.serratec.h2.grupo2.DTO.pedido.ItemIndisponivel;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
@@ -30,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PedidoService {
+
 
 	@Autowired
 	private PedidoRepository pedidoRepository;
@@ -85,31 +85,28 @@ public class PedidoService {
 		 }
 		
 		//CALCULO DE TOTAL DO PEDIDO
-		 public BigDecimal valorTotal(Long idPedido) {
-		    log.info("Calculando valor total para o pedido ID: {}", idPedido);
-		    Pedido pedido = pedidoRepository.findById(idPedido)
-		        .orElseThrow(() -> {
-		            log.warn("Pedido com ID {} não encontrado", idPedido);
-		            return new EntityNotFoundException("Nenhum pedido encontrado pra este id.");});
-
-		    BigDecimal total = BigDecimal.ZERO;
-		        
-		    for (ItemPedido item : pedido.getItens()) {
-		        total = total.add(item.getPrecoTotal());
-		    }
-		        
-		    BigDecimal valorTotal = total.add(pedido.getValorFrete());
-		    log.debug("Valor total calculado: {}", valorTotal);
-		        
-		    return valorTotal;
-		 }
+		 public BigDecimal valorTotal(Pedido pedido) {
+			    log.info("Calculando valor total para o pedido ID: {}", pedido.getId());
+	
+			    BigDecimal total = BigDecimal.ZERO;
+	
+			    for (ItemPedido item : pedido.getItens()) {
+			        total = total.add(item.getPrecoTotal());
+			    }
+	
+			    BigDecimal valorFrete = pedido.getValorFrete() != null ? pedido.getValorFrete() : BigDecimal.ZERO;
+			    BigDecimal valorTotal = total.add(valorFrete);
+	
+			    log.debug("Valor total calculado: {}", valorTotal);
+			    return valorTotal;
+			}
 		
 		//CALCULO DE FRETE
 		 public BigDecimal calcularFrete(Integer quantidade) {
 	        log.info("Calculando frete para {} itens", quantidade);
-	        BigDecimal valorBase = new BigDecimal("10.0");
+	        BigDecimal valorBase = new BigDecimal("5.0");
 	        
-	        BigDecimal adicionalPorItem = new BigDecimal("2.5");
+	        BigDecimal adicionalPorItem = new BigDecimal("1.0");
 	        BigDecimal valorFrete = valorBase.add(adicionalPorItem.multiply(new BigDecimal(quantidade)));
 	        log.debug("Valor do frete calculado: {}", valorFrete);
 	        
@@ -136,54 +133,65 @@ public class PedidoService {
 	    Produto produto = produtoRepository.findById(idProduto)
 	        .orElseThrow(() -> new EntityNotFoundException("Não há nenhum produto vinculado a este ID."));
 
+	    //NO CASO DA PESSOA ADICIONAR O PRODUTO SEM PASSAR NENHUM VALOR
 	    if (quantidade == null || quantidade <= 0) {
 	        log.warn("Quantidade inválida informada ({}). Usando quantidade = 1", quantidade);
 	        quantidade = 1;
 	    }
 
+	    // BUSCA PEDIDO ATUAL
 	    Pedido pedido = pedidoRepository.findTopByClienteContaEmailAndStatus(email, StatusPedido.EM_ANDAMENTO).orElse(null);
 
+	    //NÃO TENDO NENHUM PEDIDO EM ANDAMENTO, EU CRIO UM NOVO
 	    if (pedido == null || pedido.getStatus() == StatusPedido.CANCELADO || pedido.getStatus() == StatusPedido.CONCLUIDO) {
 	        log.info("Nenhum pedido em andamento. Criando novo pedido para o cliente {}", email);
 	        Cliente cliente = clienteRepository.findByContaEmail(email)
 	            .orElseThrow(() -> new EntityNotFoundException("Nenhuma conta cadastrada neste e-mail."));
 	        pedido = criarPedido(cliente);
 	        cliente.getPedidos().add(pedido);
+	        pedidoRepository.save(pedido);
 	        clienteRepository.save(cliente);
 	    }
 
-	    Optional<ItemPedido> itemExistente = itemRepository.findByProdutoId(idProduto);
+	    // VERIFICA SE O ITEM JÁ EXISTE NO PEDIDO
+	    Optional<ItemPedido> itemExistente = itemRepository.findByPedidoIdAndProdutoId(pedido.getId(), idProduto);
 
-	    if (itemExistente.isPresent()) {
-	        ItemPedido item = itemExistente.get();
-	        int novaQuantidade = item.getQuantidade() + quantidade;
-	        
-	        if (novaQuantidade > produto.getEstoque()) {
-	            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");}
-	        item.setQuantidade(novaQuantidade);
-	        log.info("Produto já estava no pedido. Quantidade atualizada para {}", novaQuantidade);
-	        itemRepository.save(item);} 
-	    
-	    else {
-	        if (quantidade > produto.getEstoque()) {
-	            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");
-	        }
-
-	        ItemPedido item = criarItemPedido(idProduto, quantidade);
-	        item.setPedido(pedido);
-
-	        BigDecimal zero = BigDecimal.ZERO;
-	        if (produto.getPrecoPromocional() != null && !produto.getPrecoPromocional().equals(zero)) {
-	            item.setPrecoUnitario(produto.getPrecoPromocional());
-	        }
-
-	        pedido.getItens().add(item);
-	        itemRepository.save(item);
-	        log.info("Novo item adicionado ao pedido.");
-	    }
-
+		    if (itemExistente.isPresent()) {
+		        ItemPedido item = itemExistente.get();
+		        int novaQuantidade = item.getQuantidade() + quantidade;
+	
+		        if (novaQuantidade > produto.getEstoque()) {
+		            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");
+		        }
+	
+		        item.setQuantidade(novaQuantidade);
+		        item.setPrecoTotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(novaQuantidade)));
+		        itemRepository.save(item);
+	
+		    } else {
+		        if (quantidade > produto.getEstoque()) {
+		            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");
+		        }
+	
+		        ItemPedido item = new ItemPedido();
+		        item.setProduto(produto);
+		        item.setPedido(pedido);
+		        item.setQuantidade(quantidade);
+	
+		        // BASICAMENTE, PRA NO CASO DE HAVER UM PREÇO PROMOCIONAL, O VALOR SER ATUALIZADO
+		        BigDecimal precoUnitario = produto.getPreco();
+		        if (produto.getPrecoPromocional() != null && produto.getPrecoPromocional().compareTo(BigDecimal.ZERO) > 0) {
+		            precoUnitario = produto.getPrecoPromocional();
+		        }
+		        item.setPrecoUnitario(precoUnitario);
+		        item.setPrecoTotal(precoUnitario.multiply(BigDecimal.valueOf(quantidade)));
+		        pedido.getItens().add(item);
+		        itemRepository.save(item);
+		    }
+	
+	    // RECALCULO DO FRETE E VALOR TOTAL
 	    pedido.setValorFrete(calcularFrete(pedido.getItens().size()));
-	    pedido.setPrecoTotal(valorTotal(pedido.getId()));
+	    pedido.setPrecoTotal(valorTotal(pedido));
 	    pedidoRepository.save(pedido);
 
 	    log.info("Pedido ID {} atualizado. Total: R${}, Frete: R${}", pedido.getId(), pedido.getPrecoTotal(), pedido.getValorFrete());
@@ -243,7 +251,7 @@ public class PedidoService {
 
 	    pedido.setItens(itensDisponiveis);
 	    pedido.setStatus(StatusPedido.EM_ENTREGA);
-	    pedido.setPrecoTotal(valorTotal(pedido.getId()));
+	    pedido.setPrecoTotal(valorTotal(pedido));
 	    pedidoRepository.save(pedido);
 
 	    log.info("Pedido ID {} finalizado e enviado para entrega", pedido.getId());
@@ -252,8 +260,8 @@ public class PedidoService {
 	    return mapper.toResponseFinalizado(pedido, itensIndisponiveis);
 	}
 	
-	//CONFIRMAR ENTREGA DO PEDIDO + NOTA DO PRODUTO + COMENTÁRIO
-	
+	//CONFIRMAR ENTREGA DO PEDIDO 
+
 	//CANCELAR PEDIDO
     public ResponseEntity<String> cancelarPedido(Long idPedido) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -312,20 +320,21 @@ public class PedidoService {
 
         if (item.getQuantidade() > 1) {
             item.setQuantidade(item.getQuantidade() - 1);
+            item.setPrecoTotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
             itemRepository.save(item);
-            log.info("Quantidade do item {} reduzida para {}", itemId, item.getQuantidade());
             
             Pedido pedido = item.getPedido();
-            pedido.setPrecoTotal(valorTotal(pedido.getId()));
+            pedido.setPrecoTotal(valorTotal(pedido));
             pedidoRepository.save(pedido);
-            
+
             return mapper.toResponse(pedido);
+
         } else {
             itemRepository.deleteById(itemId);
             log.info("Item {} removido do pedido do usuário {}", itemId, email);
             
             Pedido pedido = item.getPedido();
-            pedido.setPrecoTotal(valorTotal(pedido.getId()));
+            pedido.setPrecoTotal(valorTotal(pedido));
             pedidoRepository.save(pedido);
             
             return mapper.toResponse(pedido);
@@ -348,13 +357,13 @@ public class PedidoService {
 
 	    if (quantidadeAtual < estoqueDisponivel) {
 	        item.setQuantidade(quantidadeAtual + 1);
+	        item.setPrecoTotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
 	        itemRepository.save(item);
-	        log.info("Quantidade do item ID {} aumentada para {}", id, item.getQuantidade());
-	        
+
 	        Pedido pedido = item.getPedido();
-            pedido.setPrecoTotal(valorTotal(pedido.getId()));
-            pedidoRepository.save(pedido);
-	        
+	        pedido.setPrecoTotal(valorTotal(pedido));
+	        pedidoRepository.save(pedido);
+
 	        return mapper.toResponse(pedido);
 	    } else {
 	        String mensagem = String.format("Não há estoque suficiente do produto '%s' para efetuar o aumento. Estoque disponível: %d", 
@@ -383,7 +392,7 @@ public class PedidoService {
 
 	    pedido.getItens().removeIf(i -> i.getId().equals(itemId));
 	    pedido.setValorFrete(calcularFrete(pedido.getItens().size()));
-	    pedido.setPrecoTotal(valorTotal(pedido.getId()));
+	    pedido.setPrecoTotal(valorTotal(pedido));
 	    pedidoRepository.save(pedido);
 
 	    log.info("Pedido ID {} atualizado após exclusão do item. Novo total: R${}, Novo frete: R${}",
@@ -429,3 +438,4 @@ public class PedidoService {
 		return mapper.toListResponse(pedidos);
 	}
 }
+

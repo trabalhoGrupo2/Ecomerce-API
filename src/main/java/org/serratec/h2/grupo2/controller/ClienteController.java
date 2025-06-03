@@ -1,14 +1,25 @@
 package org.serratec.h2.grupo2.controller;
 
 import java.util.List;
+
 import org.serratec.h2.grupo2.DTO.cliente.ClienteRequestDto;
 import org.serratec.h2.grupo2.DTO.cliente.ClienteResponseDto;
 import org.serratec.h2.grupo2.DTO.cliente.ClienteUpdateDto;
+import org.serratec.h2.grupo2.DTO.cliente.quantidadeClientes.MensagemComClienteResponseDto;
 import org.serratec.h2.grupo2.DTO.cliente.quantidadeClientes.QuantidadeEstadoDto;
 import org.serratec.h2.grupo2.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
@@ -23,7 +34,7 @@ public class ClienteController {
 
     //CADASTRO DE CLIENTE - SOMENTE O PRÓPRIO CLIENTE PODE SE CADASTRAR
     @PostMapping("/cadastro")
-    public ClienteResponseDto cadastrar(@Valid @RequestBody ClienteRequestDto request) {
+    public ResponseEntity<MensagemComClienteResponseDto> cadastrar(@Valid @RequestBody ClienteRequestDto request) {
         return service.cadastrarCliente(request);
     }
 
@@ -45,25 +56,25 @@ public class ClienteController {
         return service.atualizacaoParcial(request);
     }
 
-    //CLIENTE ATUALIZA O ENDEREÇO
+    //CLIENTE ATUALIZA O ENDEREÇO - PARCIAL
     
     //FUNCIONÁRIO ATUALIZA O ENDEREÇO DO CLIENTE
 
     //FUNCIONÁRIO DESATIVA A CONTA DO CLIENTE
-    @PatchMapping("/desativarConta/{id}")
+    @PatchMapping("/desativarContaCliente/{id}")
     public ClienteResponseDto desativarConta(@PathVariable Long id) {
         return service.desativarConta(id);
     }
 
     //FUNCIONÁRIO FAZ A ATIVAÇÃO DE UMA CONTA CLIENTE
-    @PatchMapping("/ativarConta/{id}")
+    @PatchMapping("/ativarContaCliente/{id}")
     public ClienteResponseDto ativarConta(@PathVariable Long id) {
         return service.tivarConta(id);
     }
 
     //CLIENTE ATIVA A CONTA VIA TOKEN
-    @PatchMapping("/ativarContaEmail/{email}/{token}")
-    public ResponseEntity<String> ativarConta(@PathVariable String email, @PathVariable String token) {
+    @PatchMapping("/ativarConta")
+    public ResponseEntity<String> ativarConta(@RequestParam String email, @RequestParam String token) {
         return service.ativarConta(email, token);
     }
 
@@ -79,7 +90,6 @@ public class ClienteController {
         return service.buscarPorId(id);
     }
 
-    
     //LISTA CLIENTES PELO NOME
     @GetMapping("/buscarPorNome/{nome}")
     public List<ClienteResponseDto> buscarPorNome(@PathVariable String nome) {

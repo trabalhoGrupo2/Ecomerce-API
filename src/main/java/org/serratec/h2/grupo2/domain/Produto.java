@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,14 +59,13 @@ public class Produto {
 	private LocalDate dataAtualizacao;
 
 	// Relação entre foto e produto
-	// @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
-	@OneToOne(cascade = CascadeType.ALL)
+	// OrphanRemoval faz a foto ser deletada junto com o produto
+	@OneToOne(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Foto foto;
 	
 	@OneToMany(mappedBy = "produto")
 	private List<ItemPedido> itens = new ArrayList<>();
 
-	
 	@PrePersist
 	private void oncreate() {
 		this.ativo = true;

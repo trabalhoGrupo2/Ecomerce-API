@@ -15,7 +15,7 @@ public class EmailService {
     private JavaMailSender mailSender;
 	
 	public void emailPraAtivacaoDaConta(String email, String nomeUsuario, String token) {
-	    String link = "http://localhost:8080/cliente/ativarConta/" + email + "/" + token;
+	    String link = "http://localhost:8080/cliente/ativarConta?email=" + email + "&token=" + token;
 
 	    String corpo = String.format(
 	        """
@@ -31,7 +31,7 @@ public class EmailService {
 
 	        Se preferir ativar manualmente, acesse:
 	        ➤ http://localhost:8080/cliente/ativarConta/seuemail/seuToken
-	        e utilize este código de ativação: %s
+	        e utilize este código de ativação:%s
 
 	        Se você não realizou esse cadastro, pode ignorar este e-mail com segurança.
 
