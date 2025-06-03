@@ -2,6 +2,7 @@ package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.serratec.h2.grupo2.enuns.StatusPedido;
@@ -44,8 +45,7 @@ public class Pedido {
     private Cliente cliente;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens;
-
+    private List<ItemPedido> itens = new ArrayList<>();
 
     private BigDecimal precoTotal;
     
