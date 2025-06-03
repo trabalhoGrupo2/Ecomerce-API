@@ -2,7 +2,6 @@ package org.serratec.h2.grupo2.service;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Categoria;
@@ -10,12 +9,14 @@ import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
-import org.serratec.h2.grupo2.repository.FotoRepository;
+//import org.serratec.h2.grupo2.repository.FotoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import jakarta.validation.Valid;
 
 @Service
 public class ProdutoService {
@@ -25,8 +26,8 @@ public class ProdutoService {
 	private ProdutoRepository produtoRepository;
 	
 	// Injetar a interface para procurar no banco de dados
-	@Autowired
-	private FotoRepository fotoRepository;
+	/*@Autowired
+	private FotoRepository fotoRepository;*/
 	
 	// Injetar a interface para procurar no banco de dados
 	@Autowired
@@ -101,21 +102,13 @@ public class ProdutoService {
             foto.setTipo(dto.getFoto().getTipo());
 
             produtoExistente.setFoto(foto);
+            
         }
-        produtoRepository.deleteById(id);
-    }
-
-    // GET: listar produtos com preço promocional
-    public List<ProdutoResponseDTO> listarPromocoes() {
-        return produtoRepository.findAll().stream()
-                .filter(p -> p.getPrecoPromocional() != null && p.getPrecoPromocional().compareTo(p.getPreco()) < 0)
-                .map(produtoMapper::toResponse)
-                .toList();
-    }
-
         Produto atualizado = produtoRepository.save(produtoExistente);
         return produtoMapper.toResponse(atualizado);
     }
+       
+
     
 	// Deletar um item
 	// Chamar apenas service.remover(id)
@@ -124,9 +117,11 @@ public class ProdutoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
 
-        produto = produtoRepository.save(produto);
-        return produtoMapper.toResponse(produto);
+        produtoRepository.deleteById(id);
     }
+
+        
+
     
     // Método para listar itens em promoção
     public List<ProdutoResponseDTO> listarPromocoes() {
