@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidoController {
 
     @Autowired
+
     private PedidoService service;
 
     //ADICIONA UM PRODUTO NO PEDIDO
@@ -107,6 +108,7 @@ public class PedidoController {
     public List<PedidoAndamentoResponseDto> pedidosCliente(Long idCliente) {
     	return service.pedidosCliente(idCliente);
     }
+
 }
 
 

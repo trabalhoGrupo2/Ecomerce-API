@@ -70,4 +70,8 @@ public class ClienteMapper {
 			
 		return listResponse;
 	}
+	
+
+	
+	
 }

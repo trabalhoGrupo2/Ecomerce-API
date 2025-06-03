@@ -1,10 +1,12 @@
 package org.serratec.h2.grupo2.enuns;
 
 public enum StatusPedido {
+
 	EM_ANDAMENTO,
 	EM_ENTREGA,
 	CONCLUIDO,
 	CANCELADO;
+
 
 	public static StatusPedido statusPeloNome(String nome) {
 	    for (StatusPedido status : StatusPedido.values()) {

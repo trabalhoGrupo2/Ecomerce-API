@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.serratec.h2.grupo2.DTO.pedido.ItemIndisponivel;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
 import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
@@ -30,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PedidoService {
+
 
 	@Autowired
 	private PedidoRepository pedidoRepository;
@@ -429,3 +429,4 @@ public class PedidoService {
 		return mapper.toListResponse(pedidos);
 	}
 }
+
