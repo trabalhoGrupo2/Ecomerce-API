@@ -39,7 +39,7 @@ Para testar com carinho cada funcionalidade, você pode importar nossa **coleç�
 📥 **Coleção de Requisições**:  
 ➡️ _[Coleção Postman - Grupo2]
 
-[Baixe o postman]("C:\Users\SERRATEC\Downloads\E-comerce Grupo2.postman.json")
+[Baixe a collection do Postman](E-comerce_Grupo2.postman.json)
 
 **Como importar:**
 
