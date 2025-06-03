@@ -260,8 +260,8 @@ public class PedidoService {
 	    return mapper.toResponseFinalizado(pedido, itensIndisponiveis);
 	}
 	
-	//CONFIRMAR ENTREGA DO PEDIDO + NOTA DO PRODUTO + COMENTÁRIO
-	
+	//CONFIRMAR ENTREGA DO PEDIDO 
+
 	//CANCELAR PEDIDO
     public ResponseEntity<String> cancelarPedido(Long idPedido) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
