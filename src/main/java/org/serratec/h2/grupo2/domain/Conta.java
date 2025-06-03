@@ -1,6 +1,8 @@
 package org.serratec.h2.grupo2.domain;
 
 import org.serratec.h2.grupo2.enuns.NivelAcesso;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,6 +25,7 @@ public class Conta {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	 @Column(unique = true)
 	private String email;
 	
 	private String senha;

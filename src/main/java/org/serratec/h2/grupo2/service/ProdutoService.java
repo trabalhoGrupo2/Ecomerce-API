@@ -9,9 +9,11 @@ import org.serratec.h2.grupo2.DTO.ProdutoRequestDTO;
 import org.serratec.h2.grupo2.DTO.ProdutoResponseDTO;
 import org.serratec.h2.grupo2.domain.Categoria;
 import org.serratec.h2.grupo2.domain.Foto;
+import org.serratec.h2.grupo2.domain.ItemPedido;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
+import org.serratec.h2.grupo2.repository.ItemPedidoRepository;
 //import org.serratec.h2.grupo2.repository.FotoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class ProdutoService {
 	// Injetar a interface para procurar no banco de dados
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired
+	private ItemPedidoRepository itemRepository;
 
 	// Injetar a interface para procurar no banco de dados
 	/*@Autowired
@@ -127,6 +132,13 @@ public class ProdutoService {
 		if (!produtoRepository.existsById(id)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
 		}
+		
+		ItemPedido item = itemRepository.findByProdutoId(id).orElse(null);
+		
+		if(!(item == null)) {
+			itemRepository.deleteById(item.getId());
+		}
+		
 		produtoRepository.deleteById(id);
 	}
 
