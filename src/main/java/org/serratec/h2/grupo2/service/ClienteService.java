@@ -155,6 +155,7 @@ public class ClienteService {
 		//ATUALIZAÇÃO DO ENDEREÇO - TOTAL
 		public Endereco atualizacaoEndereco(EnderecoUpdateDto endereco) {
 			Endereco novoEndereco = mapper.toEndereco(endereco);
+			return novoEndereco;
 		}
 		
 		//FUNCIONARIO INTERNO ATUALIZA O CADASTRO DE CLIENTE 
