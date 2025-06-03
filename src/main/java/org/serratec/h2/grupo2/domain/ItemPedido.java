@@ -28,36 +28,68 @@ public class ItemPedido {
 
     private BigDecimal precoUnitario;
 
+    private BigDecimal desconto = BigDecimal.ZERO; //  Desconto por item
+
     private BigDecimal precoTotal;
 
     public void calcularTotal() {
         if (quantidade != null && precoUnitario != null) {
-            this.precoTotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+            BigDecimal subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+            this.precoTotal = subtotal.subtract(desconto != null ? desconto : BigDecimal.ZERO);
         }
+    }
+
+    // Getters e Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
     }
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
 
-	public void setProduto(Produto produto2) {
-		// TODO Auto-generated method stub
-		
-	}
+    public Produto getProduto() {
+        return produto;
+    }
 
-	public void setQuantidade(Integer quantidade2) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
 
-	public void setPrecoUnitario(BigDecimal preco) {
-		// TODO Auto-generated method stub
-		
-	}
+    public Integer getQuantidade() {
+        return quantidade;
+    }
 
-	public BigDecimal getPrecoTotal() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public BigDecimal getPrecoUnitario() {
+        return precoUnitario;
+    }
+
+    public void setPrecoUnitario(BigDecimal precoUnitario) {
+        this.precoUnitario = precoUnitario;
+    }
+
+    public BigDecimal getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(BigDecimal desconto) {
+        this.desconto = desconto;
+    }
+
+    public BigDecimal getPrecoTotal() {
+        return precoTotal;
+    }
+
+    public void setPrecoTotal(BigDecimal precoTotal) {
+        this.precoTotal = precoTotal;
+    }
 }

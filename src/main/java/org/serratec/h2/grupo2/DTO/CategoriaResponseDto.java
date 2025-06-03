@@ -1,8 +1,15 @@
 package org.serratec.h2.grupo2.DTO;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class CategoriaResponseDto {
 
+    // Swagger, Identificador único da categoria
+    @Schema(description = "Identificador único da categoria", example = "1")
     private Long id;
+
+    // Swagger, Nome da categoria
+    @Schema(description = "Nome da categoria", example = "Eletrônicos")
     private String nome;
 
     public CategoriaResponseDto() {}

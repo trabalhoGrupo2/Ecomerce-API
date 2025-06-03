@@ -5,24 +5,36 @@ import org.serratec.h2.grupo2.enuns.TipoPessoa;
 
 import jakarta.validation.constraints.NotNull;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class FornecedorRequestDTO {
 	
-	@NotNull(message = "O nome não pode estar em branco")
+    // Swagger, Nome do fornecedor (não pode estar em branco)
+    @NotNull(message = "O nome não pode estar em branco")
+    @Schema(description = "Nome do fornecedor", example = "Fornecedor ABC", required = true)
 	private String nome;
 	
-	@NotNull(message = "O CPF não pode estar em branco")
+    // Swagger, CPF do fornecedor (não pode estar em branco)
+    @NotNull(message = "O CPF não pode estar em branco")
+    @Schema(description = "CPF do fornecedor", example = "123.456.789-00", required = true)
     private String cpf;
 	
-	@NotNull(message = "A conta não pode estar em branco")
+    // Swagger, Conta associada ao fornecedor (não pode estar em branco)
+    @NotNull(message = "A conta não pode estar em branco")
+    @Schema(description = "Conta bancária do fornecedor", required = true)
 	private Conta conta;
 	
-	@NotNull(message = "O campo não pode estar em branco")
+    // Swagger, Tipo de pessoa (Física ou Jurídica) do fornecedor
+    @NotNull(message = "O campo não pode estar em branco")
+    @Schema(description = "Tipo de pessoa (Física ou Jurídica)", example = "FÍSICA", required = true)
 	private TipoPessoa pessoa;
 	
-	@NotNull(message = "O campo não pode estar em branco")
+    // Swagger, CPF ou CNPJ do fornecedor (não pode estar em branco)
+    @NotNull(message = "O campo não pode estar em branco")
+    @Schema(description = "CPF ou CNPJ do fornecedor", example = "123.456.789-00", required = true)
 	private String cpfOuCnpj;
 
-	public FornecedorRequestDTO(@NotNull(message = "O nome não pode estar em branco") String nome,
+    public FornecedorRequestDTO(@NotNull(message = "O nome não pode estar em branco") String nome,
 			@NotNull(message = "O CPF não pode estar em branco") String cpf,
 			@NotNull(message = "A conta não pode estar em branco") Conta conta,
 			@NotNull(message = "O campo não pode estar em branco") TipoPessoa pessoa,
@@ -74,6 +86,4 @@ public class FornecedorRequestDTO {
 	public void setCpfOuCnpj(String cpfOuCnpj) {
 		this.cpfOuCnpj = cpfOuCnpj;
 	}
-	
-	
 }

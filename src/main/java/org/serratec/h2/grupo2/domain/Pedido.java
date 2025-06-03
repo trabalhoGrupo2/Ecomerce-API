@@ -1,5 +1,6 @@
 package org.serratec.h2.grupo2.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.math.BigDecimal;
 
 @Setter
 @Getter
@@ -32,7 +33,9 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double valorFrete;
+
+    private BigDecimal valorFrete; // Alterado para BigDecimal
+
     private LocalDate dataCriacao;
 
     @Enumerated(EnumType.STRING)
@@ -41,11 +44,14 @@ public class Pedido {
     @ManyToOne(optional = false)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-    
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
-    // método para adicionar item
+    private String codigoDesconto;
+
+    private BigDecimal valorFinal;
+
     public void adicionarItem(ItemPedido item) {
         item.setPedido(this);
         this.itens.add(item);
@@ -55,32 +61,11 @@ public class Pedido {
         this.itens.remove(item);
         item.setPedido(null);
     }
-    
-    private String codigoDesconto;  
-    
-    private BigDecimal valorFinal; 
 
-	public Double getValorTotal() {
-		
-		return null;
-	}
-
-	public void setValorTotal(double d) {
-		
-		
-	}
-
-	public void setDescricao(Object descricao) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setStatus(StatusPedido aguardandoPagamento) {
-		// TODO Auto-generated method stub
-		
-	}
-
-  
+    public BigDecimal getValorTotal() {
+        return itens.stream()
+            .map(ItemPedido::getPrecoTotal)
+            .filter(valor -> valor != null)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }
-
-

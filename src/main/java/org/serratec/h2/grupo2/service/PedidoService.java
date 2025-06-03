@@ -47,16 +47,23 @@ public class PedidoService {
             ItemPedido item = new ItemPedido();
             item.setProduto(produto);
             item.setQuantidade(itemDTO.getQuantidade());
-            item.setPrecoUnitario(produto.getPreco());
-            item.calcularTotal();
 
+            BigDecimal precoUsado = produto.getPrecoPromocional() != null
+                    ? produto.getPrecoPromocional()
+                    : produto.getPreco();
+            item.setPrecoUnitario(precoUsado);
+
+            item.setDesconto(itemDTO.getDesconto());
+
+            item.calcularTotal();
             total = total.add(item.getPrecoTotal());
 
-            item.setPedido(pedido); // importante para o relacionamento
-            pedido.getItens().add(item); // adiciona na lista
+            item.setPedido(pedido);
+            pedido.getItens().add(item);
         }
 
         pedido.setValorFinal(total);
+        pedido.setValorFrete(pedidoDTO.getValorFrete());  // Salvar valorFrete recebido no DTO
 
         return pedidoRepository.save(pedido);
     }
@@ -85,7 +92,6 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
     
-    //LUCAS
     public Pedido alterarStatus(Long id, String status) {
         Pedido pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
@@ -99,7 +105,6 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
     
-    //LUCAS
     public List<Pedido> listarPorClienteId(Long clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
             .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -107,14 +112,11 @@ public class PedidoService {
         return pedidoRepository.findByCliente(cliente);
     }
   
-    //LUCAS
     public Pedido calcularFrete(Long id, Double distanciaIgnorada) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-        pedido.setValorFrete(20.0); // valor fixo do frete
+        pedido.setValorFrete(BigDecimal.valueOf(20.0)); // valor fixo do frete corrigido para BigDecimal
         return pedidoRepository.save(pedido);
     }
-
-    
 }
