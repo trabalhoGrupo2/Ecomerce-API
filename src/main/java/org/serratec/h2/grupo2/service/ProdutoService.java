@@ -138,5 +138,4 @@ public class ProdutoService {
 				.map(produtoMapper::toResponse)
 				.toList();
 	}
-}
 

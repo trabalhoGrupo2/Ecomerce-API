@@ -22,6 +22,7 @@ public class ProdutoMapper {
 	// Injeção do banco de dados da Categoria
 	private CategoriaRepository categoriaRepository;
 	
+	// TRANSFORMA: REQUEST ---> PRODUTO
 	public Produto toProduto(ProdutoRequestDTO request) {
 		Produto produto = new Produto();
 
@@ -42,6 +43,7 @@ public class ProdutoMapper {
 		return produto;
 	}
 	
+	// TRANSFORMA: PRODUTO ---> RESPONSE
 	public ProdutoResponseDTO toResponse(Produto produto) {
 		ProdutoResponseDTO response = new ProdutoResponseDTO();
 		response.setId(produto.getId());
@@ -64,6 +66,7 @@ public class ProdutoMapper {
 		return response;
 	}
 	
+	// TRANSFORMA: LISTA PRODUTOS ---> LISTA RESPONSE
 	public List<ProdutoResponseDTO> toListResponse (List<Produto> listaProdutos) {
 		List<ProdutoResponseDTO> listResponse = new ArrayList<> ();
 			

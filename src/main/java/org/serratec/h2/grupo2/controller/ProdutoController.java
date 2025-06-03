@@ -63,7 +63,6 @@ public class ProdutoController {
         }
     }
 
-
     @PostMapping(consumes = "multipart/form-data")
 	public ResponseEntity<ProdutoResponseDTO> inserir(
 		// Cria as chaves do Postman que serão usadas para inserir o produto
@@ -120,8 +119,8 @@ public class ProdutoController {
 	    }
 	}
     
-    // Modificar, adicionar no Service todas as funções para apenas chamar no Controller
     // Apresentar a foto de determinado ID
+    // GET: ID
     @GetMapping("/{id}/foto")
     public ResponseEntity<byte[]> getFoto(@PathVariable Long id) {
         Produto produto = produtoRepository.findById(id)
@@ -131,12 +130,17 @@ public class ProdutoController {
         if (foto == null || foto.getDados() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Foto não encontrada");
         }
-
+        
+        // Cria o cabeçalho HTTP da resposta
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(foto.getTipo())); // ex: image/png
+        // Converte a string em um objeto MediaType e aceita arquivos jpg/png
+        headers.setContentType(MediaType.parseMediaType(foto.getTipo()));
+        // Retorna os bytes que será necessário carregar
         headers.setContentLength(foto.getDados().length);
+        // Imagem exibida na mesma página, nome do arquivo caso precise salvar e constrói o objeto
         headers.setContentDisposition(ContentDisposition.inline().filename(foto.getNome()).build());
-
+        
+        // Retorna a mensagem HTTP completa
         return new ResponseEntity<>(foto.getDados(), headers, HttpStatus.OK);
     }
 		
