@@ -179,37 +179,48 @@ public class ClienteService {
 	
 		//ATUALIZAÇÃO PARCIAL FEITA PELO CLIENTE
 		public ClienteResponseDto atualizacaoParcial(ClienteUpdateDto update) {
-			String email = SecurityContextHolder.getContext().getAuthentication().getName();
-			Cliente cliente = repository.findByContaEmail(email).orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
-			
-				if (update.getNome() != null && !update.getNome().isBlank()) {
-			        cliente.setNome(update.getNome());
-			    }
+		    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		    Cliente cliente = repository.findByContaEmail(email)
+		        .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
 
-			    if (update.getCpf() != null && update.getCpf().matches("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$")) {
-			        cliente.setCpf(update.getCpf());
-			    }
+		    boolean foiAtualizado = false;
 
-			    if (update.getDataDeNascimento() != null) {
-			        cliente.setDataDeNascimento(update.getDataDeNascimento());
-			    }
+		    if (update.getNome() != null && !update.getNome().isBlank()) {
+		        cliente.setNome(update.getNome());
+		        foiAtualizado = true;
+		    }
 
-			    if (update.getTelefone() != null && update.getTelefone().matches("^\\(\\d{2}\\) ?9?\\d{4}-\\d{4}$")) {
-			        cliente.setTelefone(update.getTelefone());
-			    }
+		    if (update.getCpf() != null && update.getCpf().matches("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$")) {
+		        cliente.setCpf(update.getCpf());
+		        foiAtualizado = true;
+		    }
 
-			    if (update.getEmail() != null && update.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-			        cliente.getConta().setEmail(update.getEmail());
-			    }
+		    if (update.getDataDeNascimento() != null) {
+		        cliente.setDataDeNascimento(update.getDataDeNascimento());
+		        foiAtualizado = true;
+		    }
 
-			    if (update.getSenha() != null &&
-			    		update.getSenha().matches("^(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$")) {
-			        cliente.getConta().setSenha(update.getSenha());
-			    }
-			    
-			    else {throw new IllegalArgumentException("Nenhuma alteração foi informada.");}
-			    
-			 return mapper.toResponse(repository.save(cliente));
+		    if (update.getTelefone() != null && update.getTelefone().matches("^\\(\\d{2}\\) ?9?\\d{4}-\\d{4}$")) {
+		        cliente.setTelefone(update.getTelefone());
+		        foiAtualizado = true;
+		    }
+
+		    if (update.getEmail() != null && update.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+		        cliente.getConta().setEmail(update.getEmail());
+		        foiAtualizado = true;
+		    }
+
+		    if (update.getSenha() != null &&
+		        update.getSenha().matches("^(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$")) {
+		        cliente.getConta().setSenha(update.getSenha());
+		        foiAtualizado = true;
+		    }
+
+		    if (!foiAtualizado) {
+		        throw new IllegalArgumentException("Nenhuma alteração válida foi informada.");
+		    }
+
+		    return mapper.toResponse(repository.save(cliente));
 		}
 		
 		//ATUALIZAÇÃO PARCIAL FEITA PELO FUNCIONÁRIO INTERNO

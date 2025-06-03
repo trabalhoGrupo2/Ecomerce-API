@@ -2,8 +2,10 @@ package org.serratec.h2.grupo2.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.serratec.h2.grupo2.DTO.funcionario.FuncionarioRequestDto;
 import org.serratec.h2.grupo2.DTO.funcionario.FuncionarioResponseDto;
+import org.serratec.h2.grupo2.domain.Conta;
 import org.serratec.h2.grupo2.domain.Funcionario;
 import org.serratec.h2.grupo2.enuns.Cargo;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,12 @@ public class FuncionarioMapper {
 
 	public Funcionario toFuncionario(FuncionarioRequestDto request) {
 		Funcionario funcionario = new Funcionario();
+		Conta conta = new Conta();
+		
+		conta.setEmail(request.getEmail());
+		conta.setSenha(request.getSenha());
+		conta.setNivelAcesso(Cargo.getNivelAcesso(request.getCargo()));
+		conta.setAtivo(true);
 		
 		funcionario.setNome(request.getNome());
 		funcionario.setCpf(request.getCpf());
@@ -20,10 +28,7 @@ public class FuncionarioMapper {
 		funcionario.setCargo(request.getCargo());
 		funcionario.setGenero(request.getGenero());
 		funcionario.setTelefone(request.getTelefone());
-		funcionario.getConta().setEmail(request.getEmail());
-		funcionario.getConta().setSenha(request.getSenha());
-		funcionario.getConta().setNivelAcesso(Cargo.getNivelAcesso(request.getCargo()));
-		funcionario.getConta().setAtivo(true);
+		funcionario.setConta(conta);
 		
 		return funcionario;
 	}
@@ -34,6 +39,7 @@ public class FuncionarioMapper {
 		response.setCodigo(funcionario.getId());
 		response.setNome(funcionario.getNome());
 		response.setCpf(funcionario.getCpf());
+		response.setTelefone(funcionario.getTelefone());
 		response.setDataDeNascimento(funcionario.getDataDeNascimento());
 		response.setCargo(funcionario.getCargo());
 		response.setGenero(funcionario.getGenero());

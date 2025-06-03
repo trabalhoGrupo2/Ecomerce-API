@@ -2,6 +2,7 @@ package org.serratec.h2.grupo2.security;
 
 import org.serratec.h2.grupo2.exception.CustomAccessDeniedHandler;
 import org.serratec.h2.grupo2.exception.CustomAuthenticationEntryPoint;
+import org.serratec.h2.grupo2.security.tokenAcesso.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -23,6 +25,9 @@ public class WebSecurityConfig {
 
 	@Autowired
 	private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	
+	@Autowired
+	private JwtAuthFilter jwtAuthFilter;
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -65,8 +70,11 @@ public class WebSecurityConfig {
 
 
                 .anyRequest().permitAll())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
 	}
+	
+	
 	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
