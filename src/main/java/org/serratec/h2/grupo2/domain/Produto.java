@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
+
 @Entity
 @Table(name="produto")
 public class Produto {
@@ -175,6 +176,5 @@ public class Produto {
 	public void setItens(List<ItemPedido> itens) {
 		this.itens = itens;
 	}
-	
-}
 
+}
