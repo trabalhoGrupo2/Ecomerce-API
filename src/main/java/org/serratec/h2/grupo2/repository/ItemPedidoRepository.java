@@ -13,4 +13,6 @@ public interface ItemPedidoRepository extends JpaRepository<ItemPedido, Long>{
 	Optional<ItemPedido> findByIdAndPedidoStatusAndPedidoClienteContaEmail (Long id, StatusPedido status, String email);
 	
 	Optional<ItemPedido> findByProdutoId (Long id);
+	
+	Optional<ItemPedido> findByPedidoIdAndProdutoId (Long idPedido, Long idItem);
 }
