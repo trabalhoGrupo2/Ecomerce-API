@@ -12,12 +12,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class EnderecoService {
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
-    
-    @Autowired
-    private RestTemplate restTemplate;
-
-    public Map<String, String> consultarCep(String cep) {
+	public Map<String, String> consultarCep(String cep) {
         String url = "https://viacep.com.br/ws/" + cep + "/json/";
         ResponseEntity<Map<String, String>> response = restTemplate.exchange(
             url,
@@ -28,6 +27,7 @@ public class EnderecoService {
         return response.getBody();
     }
 
+   
     public Endereco preencherEndereco(String cep, String numero) {
         Map<String, String> dadosCep = consultarCep(cep);
 
@@ -45,6 +45,5 @@ public class EnderecoService {
 
         return endereco;
     }
-
 }
 	

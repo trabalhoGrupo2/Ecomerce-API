@@ -49,7 +49,7 @@ public class FuncionarioService {
 		funcionario.setGenero(request.getGenero());
 		funcionario.setTelefone(request.getTelefone());
 		funcionario.getConta().setEmail(request.getEmail());
-		funcionario.getConta().setSenha(request.getSenha());
+		funcionario.getConta().setSenha(encoder.encode(request.getSenha()));
 		
 		return mapper.toResponse(repository.save(funcionario));
 	}
@@ -66,7 +66,7 @@ public class FuncionarioService {
 	    funcionario.setTelefone(request.getTelefone());
 
 	    funcionario.getConta().setEmail(request.getEmail());
-	    funcionario.getConta().setSenha(request.getSenha());
+	    funcionario.getConta().setSenha(encoder.encode(request.getSenha()));
 	    funcionario.getConta().setNivelAcesso(Cargo.getNivelAcesso(request.getCargo()));
 
 	    return mapper.toResponse(repository.save(funcionario));
@@ -116,7 +116,7 @@ public class FuncionarioService {
 	        if (!request.getSenha().matches("^(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$")) {
 	            throw new IllegalArgumentException("A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, número e caractere especial.");
 	        }
-	        funcionario.getConta().setSenha(request.getSenha());
+	        funcionario.getConta().setSenha(encoder.encode(request.getSenha()));
 	    }
 
 		
@@ -170,7 +170,7 @@ public class FuncionarioService {
 	        if (!request.getSenha().matches("^(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$")) {
 	            throw new IllegalArgumentException("A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, número e caractere especial.");
 	        }
-	        funcionario.getConta().setSenha(request.getSenha());
+	        funcionario.getConta().setSenha(encoder.encode(request.getSenha()));
 	    }
 
 	    return mapper.toResponse(repository.save(funcionario));

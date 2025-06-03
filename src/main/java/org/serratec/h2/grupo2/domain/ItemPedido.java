@@ -1,14 +1,21 @@
 package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ItemPedido {
 
@@ -29,35 +36,4 @@ public class ItemPedido {
     private BigDecimal precoUnitario;
 
     private BigDecimal precoTotal;
-
-    public void calcularTotal() {
-        if (quantidade != null && precoUnitario != null) {
-            this.precoTotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
-        }
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
-
-	public void setProduto(Produto produto2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setQuantidade(Integer quantidade2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setPrecoUnitario(BigDecimal preco) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public BigDecimal getPrecoTotal() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }
