@@ -1,6 +1,5 @@
 package org.serratec.h2.grupo2.service;
 
-import org.serratec.h2.grupo2.DTO.conta.ContaRequestDto;
 import org.serratec.h2.grupo2.security.tokenAcesso.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,8 +17,8 @@ public class ContaService  {
     @Autowired
     private JwtService jwtService;
 
-    public String login(ContaRequestDto request) {
-    	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha()));
+    public String login(String email, String senha) {
+    	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, senha));
     	UserDetails userDetails = (UserDetails) authentication.getPrincipal();
     	String token = jwtService.gerarToken(userDetails);
     	return token;
