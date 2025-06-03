@@ -12,7 +12,7 @@ import org.serratec.h2.grupo2.domain.Foto;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.mapper.ProdutoMapper;
 import org.serratec.h2.grupo2.repository.CategoriaRepository;
-import org.serratec.h2.grupo2.repository.FotoRepository;
+//import org.serratec.h2.grupo2.repository.FotoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
+
 
 // Representa uma camada de serviço
 @Service
@@ -30,8 +31,9 @@ public class ProdutoService {
 	private ProdutoRepository produtoRepository;
 
 	// Injetar a interface para procurar no banco de dados
-	@Autowired
-	private FotoRepository fotoRepository;
+	/*@Autowired
+	private FotoRepository fotoRepository;*/
+
 
 	// Injetar a interface para procurar no banco de dados
 	@Autowired
@@ -118,6 +120,7 @@ public class ProdutoService {
 		return produtoMapper.toResponse(atualizado);
 	}
 
+
 	// Deletar um item
 	// Chamar apenas service.remover(id)
 	public void remover(Long id) {
@@ -127,6 +130,7 @@ public class ProdutoService {
 		produtoRepository.deleteById(id);
 	}
 
+
 	// Método para listar itens em promoção
 	public List<ProdutoResponseDTO> listarPromocoes() {
 		return produtoRepository.findAll().stream()
@@ -135,3 +139,4 @@ public class ProdutoService {
 				.toList();
 	}
 }
+
