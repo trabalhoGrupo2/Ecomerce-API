@@ -30,8 +30,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 	    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
 	    if (passwordEncoder.matches(password, userDetails.getPassword())) {
-	        return new UsernamePasswordAuthenticationToken(
-	            userDetails.getUsername(),
+	        return new UsernamePasswordAuthenticationToken (
+	            userDetails,
 	            userDetails.getPassword(),
 	            userDetails.getAuthorities());
 	    } else { throw new BadCredentialsException("Senha inválida");}

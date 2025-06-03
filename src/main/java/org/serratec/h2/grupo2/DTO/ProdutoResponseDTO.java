@@ -3,9 +3,6 @@ package org.serratec.h2.grupo2.DTO;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.serratec.h2.grupo2.domain.Categoria;
-import org.serratec.h2.grupo2.domain.Foto;
-
 public class ProdutoResponseDTO {
 	private Long id;
 	private String nome;
@@ -13,7 +10,7 @@ public class ProdutoResponseDTO {
 	private Long idCategoria;
 	private BigDecimal preco;
 	private BigDecimal precoPromocional;
-	private BigDecimal estoque;
+	private Integer estoque;
 	private String fabricante;
 	private Boolean ativo;
 	private LocalDate dataCadastro;
@@ -21,8 +18,9 @@ public class ProdutoResponseDTO {
 	private FotoResponseDTO foto;
 
 	public ProdutoResponseDTO(Long id, String nome, String descricao, Long idCategoria, BigDecimal preco,
-			BigDecimal precoPromocional, BigDecimal estoque, String fabricante, Boolean ativo, LocalDate dataCadastro,
+			BigDecimal precoPromocional, Integer estoque, String fabricante, Boolean ativo, LocalDate dataCadastro,
 			LocalDate dataAtualizacao, FotoResponseDTO foto) {
+
 		this.id = id;
 		this.nome = nome;
 		this.descricao = descricao;
@@ -102,13 +100,13 @@ public class ProdutoResponseDTO {
 	}
 
 
-	public BigDecimal getEstoque() {
+	public Integer getEstoque() {
 		return estoque;
 	}
 
 
-	public void setEstoque(BigDecimal estoque) {
-		this.estoque = estoque;
+	public void setEstoque(Integer integer) {
+		this.estoque = integer;
 	}
 
 
