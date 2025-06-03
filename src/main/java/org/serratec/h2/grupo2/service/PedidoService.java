@@ -18,14 +18,14 @@ import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// Swagger/OpenAPI imports (Swagger em Service é incomum, mas aqui está conforme pedido)
-import io.swagger.v3.oas.annotations.Operation; // Swagger
-import io.swagger.v3.oas.annotations.tags.Tag;   // Swagger
-import io.swagger.v3.oas.annotations.responses.ApiResponse;  // Swagger
-import io.swagger.v3.oas.annotations.responses.ApiResponses; // Swagger
+// Swagger/OpenAPI imports
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @Service
-@Tag(name = "Pedido Service", description = "Serviço para gerenciamento de pedidos") // Swagger
+@Tag(name = "Pedido Service", description = "Serviço para gerenciamento de pedidos")
 public class PedidoService {
 
     @Autowired
@@ -40,12 +40,12 @@ public class PedidoService {
     @Autowired
     private CodigoDescontoRepository codigoDescontoRepository;
 
-    @Operation(summary = "Criar pedido", description = "Cria um novo pedido com os dados fornecidos e aplica desconto se código válido") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso"), // Swagger
-        @ApiResponse(responseCode = "400", description = "Dados inválidos para criação do pedido") // Swagger
+    @Operation(summary = "Criar pedido", description = "Cria um novo pedido com os dados fornecidos e aplica desconto se código válido")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos para criação do pedido")
     })
-    public Pedido criarPedido(PedidoRequestDTO pedidoDTO) { // Swagger
+    public Pedido criarPedido(PedidoRequestDTO pedidoDTO) {
         Pedido pedido = new Pedido();
         pedido.setDataCriacao(LocalDate.now());
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
@@ -102,30 +102,30 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
-    @Operation(summary = "Buscar pedido por ID", description = "Retorna um pedido existente pelo seu ID") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Pedido encontrado"), // Swagger
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
+    @Operation(summary = "Buscar pedido por ID", description = "Retorna um pedido existente pelo seu ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
-    public Pedido buscarPorId(Long id) { // Swagger
+    public Pedido buscarPorId(Long id) {
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
     }
 
-    @Operation(summary = "Listar todos os pedidos", description = "Retorna todos os pedidos cadastrados") // Swagger
+    @Operation(summary = "Listar todos os pedidos", description = "Retorna todos os pedidos cadastrados")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso")
     })
-    public List<Pedido> listarTodos() { // Swagger
+    public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
 
-    @Operation(summary = "Editar pedido", description = "Atualiza dados de um pedido existente e aplica desconto se código válido") // Swagger
+    @Operation(summary = "Editar pedido", description = "Atualiza dados de um pedido existente e aplica desconto se código válido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
-    public Pedido editarPedido(Long id, PedidoRequestDTO dto) { // Swagger
+    public Pedido editarPedido(Long id, PedidoRequestDTO dto) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
@@ -159,12 +159,12 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
-    @Operation(summary = "Alterar status do pedido", description = "Atualiza o status do pedido") // Swagger
+    @Operation(summary = "Alterar status do pedido", description = "Atualiza o status do pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Status atualizado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
-    public Pedido alterarStatus(Long id, String status) { // Swagger
+    public Pedido alterarStatus(Long id, String status) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
@@ -177,24 +177,24 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
-    @Operation(summary = "Listar pedidos por cliente", description = "Retorna todos os pedidos feitos por um cliente específico") // Swagger
+    @Operation(summary = "Listar pedidos por cliente", description = "Retorna todos os pedidos feitos por um cliente específico")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedidos retornados com sucesso"),
         @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
-    public List<Pedido> listarPorClienteId(Long clienteId) { // Swagger
+    public List<Pedido> listarPorClienteId(Long clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
         return pedidoRepository.findByCliente(cliente);
     }
 
-    @Operation(summary = "Calcular frete", description = "Calcula o frete fixo para um pedido") // Swagger
+    @Operation(summary = "Calcular frete", description = "Calcula o frete fixo para um pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Frete calculado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
-    public Pedido calcularFrete(Long id, Double distanciaIgnorada) { // Swagger
+    public Pedido calcularFrete(Long id, Double distanciaIgnorada) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
