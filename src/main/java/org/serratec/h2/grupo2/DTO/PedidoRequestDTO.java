@@ -9,30 +9,30 @@ import org.serratec.h2.grupo2.enuns.StatusPedido;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * DTO usado para receber os dados de criação ou edição de um pedido.
- */
+
+ //DTO usado para receber os dados de criação ou edição de um pedido.
+ 
 public class PedidoRequestDTO {
     
-    @Schema(description = "Data de criação do pedido", example = "2023-06-10")
-    private LocalDate dataCriacao;
+    @Schema(description = "Data de criação do pedido", example = "2023-06-10") // Swagger
+    private LocalDate dataCriacao; // Swagger
 
-    @Schema(description = "Status do pedido", example = "PENDENTE")
-    private StatusPedido status;
+    @Schema(description = "Status do pedido", example = "PENDENTE") // Swagger
+    private StatusPedido status; // Swagger
 
-    @Schema(description = "Valor do frete associado ao pedido", example = "50.00")
-    private BigDecimal valorFrete;  // Alterado para BigDecimal
+    @Schema(description = "Valor do frete associado ao pedido", example = "50.00") // Swagger
+    private BigDecimal valorFrete;  // BigDecimal para valor do frete // Swagger
 
     @NotNull(message = "O ID do cliente é obrigatório")
-    @Schema(description = "ID do cliente que está realizando o pedido", example = "123", required = true)
-    private Long clienteId;
+    @Schema(description = "ID do cliente que está realizando o pedido", example = "123", required = true) // Swagger
+    private Long clienteId; // Swagger
 
     @NotEmpty(message = "O pedido deve conter ao menos um item")
-    @Schema(description = "Lista de itens do pedido", required = true)
-    private List<ItemPedidoRequestDTO> itens;
+    @Schema(description = "Lista de itens do pedido", required = true) // Swagger
+    private List<ItemPedidoRequestDTO> itens; // Swagger
 
-    @Schema(description = "Código de desconto aplicado ao pedido", example = "DESCONTO10", nullable = true)
-    private String codigoDesconto;
+    @Schema(description = "Código de desconto aplicado ao pedido", example = "DESCONTO10", nullable = true) // Swagger
+    private String codigoDesconto;  // campo para cupom de desconto // Swagger
 
     // Getters e Setters
 
@@ -84,3 +84,4 @@ public class PedidoRequestDTO {
         this.valorFrete = valorFrete;
     }
 }
+

@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.EntityNotFoundException;
 
 // Swagger/OpenAPI imports
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-
+import io.swagger.v3.oas.annotations.Operation;                
+import io.swagger.v3.oas.annotations.Parameter;                
+import io.swagger.v3.oas.annotations.tags.Tag;                  
+import io.swagger.v3.oas.annotations.responses.ApiResponse;     
+import io.swagger.v3.oas.annotations.responses.ApiResponses;    
+import io.swagger.v3.oas.annotations.media.Content;             
+import io.swagger.v3.oas.annotations.media.Schema;              
 @RestController
 @RequestMapping("/api/pedidos")
+// Swagger
 @Tag(name = "Pedidos", description = "Endpoints para gerenciamento de pedidos")
 public class PedidoController {
 
@@ -40,12 +40,12 @@ public class PedidoController {
     private PedidoMapper pedidoMapper;
 
     // Criar novo pedido
-    @Operation(summary = "Criar novo pedido", description = "Insere um novo pedido com os dados fornecidos")
-    @ApiResponses({
+    @Operation(summary = "Criar novo pedido", description = "Insere um novo pedido com os dados fornecidos") // Swagger
+    @ApiResponses({ 
         @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos para criação")
-    })
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), 
+        @ApiResponse(responseCode = "400", description = "Dados inválidos para criação") // Swagger
+    })//swagger
     @PostMapping
     public ResponseEntity<PedidoResponseDTO> criarPedido(@RequestBody PedidoRequestDTO pedidoDTO) {
         Pedido pedido = pedidoService.criarPedido(pedidoDTO);
@@ -54,15 +54,15 @@ public class PedidoController {
     }
 
     // Editar pedido pelo ID
-    @Operation(summary = "Editar pedido", description = "Edita um pedido existente pelo ID")
-    @ApiResponses({
+    @Operation(summary = "Editar pedido", description = "Edita um pedido existente pelo ID") // Swagger
+    @ApiResponses({ // Swagger
         @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), // Swagger
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
     })
     @PutMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> editarPedido(
-            @Parameter(description = "ID do pedido a ser editado", example = "1") @PathVariable Long id,
+            @Parameter(description = "ID do pedido a ser editado", example = "1") @PathVariable Long id, // Swagger
             @RequestBody PedidoRequestDTO pedidoDTO) {
         Pedido pedido = pedidoService.editarPedido(id, pedidoDTO);
         PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
@@ -70,41 +70,41 @@ public class PedidoController {
     }
 
     // Alterar status do pedido
-    @Operation(summary = "Alterar status do pedido", description = "Altera o status do pedido pelo ID")
-    @ApiResponses({
+    @Operation(summary = "Alterar status do pedido", description = "Altera o status do pedido pelo ID") // Swagger
+    @ApiResponses({ // Swagger
         @ApiResponse(responseCode = "200", description = "Status do pedido alterado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), // Swagger
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
     })
     @PatchMapping("/{id}/status")
     public ResponseEntity<PedidoResponseDTO> alterarStatus(
-            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id,
-            @Parameter(description = "Novo status do pedido", example = "ENVIADO") @RequestParam String status) {
+            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id, // Swagger
+            @Parameter(description = "Novo status do pedido", example = "ENVIADO") @RequestParam String status) { // Swagger
         Pedido pedido = pedidoService.alterarStatus(id, status);
         PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
         return ResponseEntity.ok(dto);
     }
 
     // Buscar pedido por ID
-    @Operation(summary = "Buscar pedido por ID", description = "Busca um pedido pelo seu ID")
-    @ApiResponses({
+    @Operation(summary = "Buscar pedido por ID", description = "Busca um pedido pelo seu ID") // Swagger
+    @ApiResponses({ // Swagger
         @ApiResponse(responseCode = "200", description = "Pedido encontrado",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), // Swagger
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
     })
     @GetMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> buscarPorId(
-            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id) {
+            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id) { // Swagger
         Pedido pedido = pedidoService.buscarPorId(id);
         PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
         return ResponseEntity.ok(dto);
     }
 
     // Listar todos os pedidos
-    @Operation(summary = "Listar todos os pedidos", description = "Retorna uma lista com todos os pedidos")
-    @ApiResponses({
+    @Operation(summary = "Listar todos os pedidos", description = "Retorna uma lista com todos os pedidos") // Swagger
+    @ApiResponses({ // Swagger
         @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class)))
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))) // Swagger
     })
     @GetMapping
     public ResponseEntity<List<PedidoResponseDTO>> listarTodos() {
@@ -116,27 +116,27 @@ public class PedidoController {
     }
 
     // Remover pedido pelo ID
-    @Operation(summary = "Remover pedido", description = "Remove um pedido pelo seu ID")
-    @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Pedido removido com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+    @Operation(summary = "Remover pedido", description = "Remove um pedido pelo seu ID") // Swagger
+    @ApiResponses({ // Swagger
+        @ApiResponse(responseCode = "204", description = "Pedido removido com sucesso"), // Swagger
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@Parameter(description = "ID do pedido a ser removido", example = "1") @PathVariable Long id) {
+    public ResponseEntity<Void> remover(@Parameter(description = "ID do pedido a ser removido", example = "1") @PathVariable Long id) { // Swagger
         Pedido pedido = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pedido com ID " + id + " não encontrado."));
         repository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     // Listar pedidos por cliente
-    @Operation(summary = "Listar pedidos por cliente", description = "Retorna pedidos filtrados pelo ID do cliente")
-    @ApiResponses({
+    @Operation(summary = "Listar pedidos por cliente", description = "Retorna pedidos filtrados pelo ID do cliente") // Swagger
+    @ApiResponses({ // Swagger
         @ApiResponse(responseCode = "200", description = "Pedidos retornados com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class)))
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))) // Swagger
     })
     @GetMapping("/por-cliente")
     public ResponseEntity<List<PedidoResponseDTO>> listarPorCliente(
-            @Parameter(description = "ID do cliente", example = "1") @RequestParam Long clienteId) {
+            @Parameter(description = "ID do cliente", example = "1") @RequestParam Long clienteId) { // Swagger
         List<Pedido> pedidos = pedidoService.listarPorClienteId(clienteId);
         List<PedidoResponseDTO> dtos = pedidos.stream()
             .map(pedidoMapper::toResponse)
@@ -145,20 +145,19 @@ public class PedidoController {
     }
 
     // Calcular frete do pedido
-    @Operation(summary = "Calcular frete do pedido", description = "Calcula o frete do pedido pelo ID e distância em km")
-    @ApiResponses({
+    @Operation(summary = "Calcular frete do pedido", description = "Calcula o frete do pedido pelo ID e distância em km") // Swagger
+    @ApiResponses({ // Swagger
         @ApiResponse(responseCode = "200", description = "Frete calculado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))) // Swagger
+        ,
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
     })
     @PatchMapping("/{id}/frete")
     public ResponseEntity<PedidoResponseDTO> calcularFrete(
-            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id,
+            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id, // Swagger
             @RequestBody FreteDTO freteDTO) {
         Pedido pedido = pedidoService.calcularFrete(id, freteDTO.getDistanciaKm());
         PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
         return ResponseEntity.ok(dto);
     }
 }
-
-

@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PedidoMapper {
 
-    public PedidoResponseDTO toResponse(Pedido pedido) {
+    // Converte entidade Pedido para PedidoResponseDTO // Swagger (método de conversão DTO)
+    public PedidoResponseDTO toResponse(Pedido pedido) { // Swagger
         PedidoResponseDTO dto = new PedidoResponseDTO();
         dto.setId(pedido.getId());
 
@@ -38,7 +39,7 @@ public class PedidoMapper {
 
         // Mapear itens para List<ItemPedidoResponseDTO>
         List<ItemPedidoResponseDTO> itensDto = pedido.getItens().stream()
-            .map(this::toItemPedidoResponseDTO)
+            .map(this::toItemPedidoResponseDTO) // Swagger (conversão itens)
             .collect(Collectors.toList());
         dto.setItens(itensDto);
 
@@ -53,7 +54,8 @@ public class PedidoMapper {
         return dto;
     }
 
-    public ItemPedidoResponseDTO toItemPedidoResponseDTO(ItemPedido item) {
+    // Converte entidade ItemPedido para ItemPedidoResponseDTO // Swagger (método de conversão DTO)
+    public ItemPedidoResponseDTO toItemPedidoResponseDTO(ItemPedido item) { // Swagger
         ItemPedidoResponseDTO dto = new ItemPedidoResponseDTO();
         dto.setId(item.getId());
         dto.setProdutoId(item.getProduto().getId());

@@ -12,12 +12,20 @@ import org.serratec.h2.grupo2.domain.Pedido;
 import org.serratec.h2.grupo2.domain.Produto;
 import org.serratec.h2.grupo2.enuns.StatusPedido;
 import org.serratec.h2.grupo2.repository.ClienteRepository;
+import org.serratec.h2.grupo2.repository.CodigoDescontoRepository;
 import org.serratec.h2.grupo2.repository.PedidoRepository;
 import org.serratec.h2.grupo2.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+// Swagger/OpenAPI imports (Swagger em Service é incomum, mas aqui está conforme pedido)
+import io.swagger.v3.oas.annotations.Operation; // Swagger
+import io.swagger.v3.oas.annotations.tags.Tag;   // Swagger
+import io.swagger.v3.oas.annotations.responses.ApiResponse;  // Swagger
+import io.swagger.v3.oas.annotations.responses.ApiResponses; // Swagger
+
 @Service
+@Tag(name = "Pedido Service", description = "Serviço para gerenciamento de pedidos") // Swagger
 public class PedidoService {
 
     @Autowired
@@ -29,7 +37,15 @@ public class PedidoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public Pedido criarPedido(PedidoRequestDTO pedidoDTO) {
+    @Autowired
+    private CodigoDescontoRepository codigoDescontoRepository;
+
+    @Operation(summary = "Criar pedido", description = "Cria um novo pedido com os dados fornecidos e aplica desconto se código válido") // Swagger
+    @ApiResponses({ // Swagger
+        @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso"), // Swagger
+        @ApiResponse(responseCode = "400", description = "Dados inválidos para criação do pedido") // Swagger
+    })
+    public Pedido criarPedido(PedidoRequestDTO pedidoDTO) { // Swagger
         Pedido pedido = new Pedido();
         pedido.setDataCriacao(LocalDate.now());
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
@@ -62,22 +78,54 @@ public class PedidoService {
             pedido.getItens().add(item);
         }
 
-        pedido.setValorFinal(total);
-        pedido.setValorFrete(pedidoDTO.getValorFrete());  // Salvar valorFrete recebido no DTO
+        // Aplicar desconto do código se existir e estiver ativo
+        BigDecimal desconto = BigDecimal.ZERO;
+        if (pedidoDTO.getCodigoDesconto() != null && !pedidoDTO.getCodigoDesconto().isEmpty()) {
+            var codigoOpt = codigoDescontoRepository.findByCodigo(pedidoDTO.getCodigoDesconto());
+            if (codigoOpt.isPresent()) {
+                var codigo = codigoOpt.get();
+                if (codigo.isAtivo()) {
+                    desconto = codigo.getValorDesconto();
+                    pedido.setCodigoDesconto(codigo.getCodigo());
+                }
+            }
+        }
+
+        BigDecimal valorFinal = total.subtract(desconto);
+        if (valorFinal.compareTo(BigDecimal.ZERO) < 0) {
+            valorFinal = BigDecimal.ZERO;
+        }
+        pedido.setValorFinal(valorFinal);
+
+        pedido.setValorFrete(pedidoDTO.getValorFrete());
 
         return pedidoRepository.save(pedido);
     }
 
-    public Pedido buscarPorId(Long id) {
+    @Operation(summary = "Buscar pedido por ID", description = "Retorna um pedido existente pelo seu ID") // Swagger
+    @ApiResponses({ // Swagger
+        @ApiResponse(responseCode = "200", description = "Pedido encontrado"), // Swagger
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
+    })
+    public Pedido buscarPorId(Long id) { // Swagger
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
     }
 
-    public List<Pedido> listarTodos() {
+    @Operation(summary = "Listar todos os pedidos", description = "Retorna todos os pedidos cadastrados") // Swagger
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso")
+    })
+    public List<Pedido> listarTodos() { // Swagger
         return pedidoRepository.findAll();
     }
-    
-    public Pedido editarPedido(Long id, PedidoRequestDTO dto) {
+
+    @Operation(summary = "Editar pedido", description = "Atualiza dados de um pedido existente e aplica desconto se código válido") // Swagger
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+    })
+    public Pedido editarPedido(Long id, PedidoRequestDTO dto) { // Swagger
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
@@ -87,14 +135,38 @@ public class PedidoService {
         pedido.setCliente(cliente);
         pedido.setDataCriacao(dto.getDataCriacao() != null ? dto.getDataCriacao() : pedido.getDataCriacao());
         pedido.setStatus(dto.getStatus());
+
+        BigDecimal total = pedido.getValorTotal();
+        BigDecimal desconto = BigDecimal.ZERO;
+        if (dto.getCodigoDesconto() != null && !dto.getCodigoDesconto().isEmpty()) {
+            var codigoOpt = codigoDescontoRepository.findByCodigo(dto.getCodigoDesconto());
+            if (codigoOpt.isPresent()) {
+                var codigo = codigoOpt.get();
+                if (codigo.isAtivo()) {
+                    desconto = codigo.getValorDesconto();
+                    pedido.setCodigoDesconto(codigo.getCodigo());
+                }
+            }
+        }
+        BigDecimal valorFinal = total.subtract(desconto);
+        if (valorFinal.compareTo(BigDecimal.ZERO) < 0) {
+            valorFinal = BigDecimal.ZERO;
+        }
+        pedido.setValorFinal(valorFinal);
+
         pedido.setValorFrete(dto.getValorFrete());
 
         return pedidoRepository.save(pedido);
     }
-    
-    public Pedido alterarStatus(Long id, String status) {
+
+    @Operation(summary = "Alterar status do pedido", description = "Atualiza o status do pedido") // Swagger
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Status atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+    })
+    public Pedido alterarStatus(Long id, String status) { // Swagger
         Pedido pedido = pedidoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
         try {
             pedido.setStatus(StatusPedido.valueOf(status.toUpperCase()));
@@ -104,19 +176,29 @@ public class PedidoService {
 
         return pedidoRepository.save(pedido);
     }
-    
-    public List<Pedido> listarPorClienteId(Long clienteId) {
+
+    @Operation(summary = "Listar pedidos por cliente", description = "Retorna todos os pedidos feitos por um cliente específico") // Swagger
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pedidos retornados com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    })
+    public List<Pedido> listarPorClienteId(Long clienteId) { // Swagger
         Cliente cliente = clienteRepository.findById(clienteId)
-            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
         return pedidoRepository.findByCliente(cliente);
     }
-  
-    public Pedido calcularFrete(Long id, Double distanciaIgnorada) {
+
+    @Operation(summary = "Calcular frete", description = "Calcula o frete fixo para um pedido") // Swagger
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Frete calculado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+    })
+    public Pedido calcularFrete(Long id, Double distanciaIgnorada) { // Swagger
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-        pedido.setValorFrete(BigDecimal.valueOf(20.0)); // valor fixo do frete corrigido para BigDecimal
+        pedido.setValorFrete(BigDecimal.valueOf(20.0));
         return pedidoRepository.save(pedido);
     }
 }

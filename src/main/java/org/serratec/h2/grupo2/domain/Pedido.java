@@ -34,7 +34,7 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private BigDecimal valorFrete; // Alterado para BigDecimal
+    private BigDecimal valorFrete; // BigDecimal para frete
 
     private LocalDate dataCriacao;
 
@@ -48,7 +48,7 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
-    private String codigoDesconto;
+    private String codigoDesconto;  // campo para salvar o cupom
 
     private BigDecimal valorFinal;
 
