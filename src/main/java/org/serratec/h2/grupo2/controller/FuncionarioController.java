@@ -39,7 +39,7 @@ public class FuncionarioController {
 		return service.atualizacaoCadastro(request);
 	}
 	
-	@PutMapping("/atualizarFuncionario")
+	@PutMapping("/atualizarFuncionario/{id}")
 	public FuncionarioResponseDto atualizacaoCompleta(@PathVariable Long id, @Valid @RequestBody FuncionarioUpdateForGestorDto request) {
 		return service.atualizacaoCompleta(id, request);
 	}

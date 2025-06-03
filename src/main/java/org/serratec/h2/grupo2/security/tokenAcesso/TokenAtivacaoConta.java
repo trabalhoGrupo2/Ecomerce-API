@@ -56,7 +56,7 @@ public class TokenAtivacaoConta {
     public boolean tokenValido(String token) {
         Optional<LocalDateTime> horaGerada = extrairHoraDoToken(token);
         return horaGerada
-                .map(hora -> Duration.between(hora, LocalDateTime.now(ZoneOffset.UTC)).toMinutes() < 5)
+                .map(hora -> Duration.between(hora, LocalDateTime.now(ZoneOffset.UTC)).toMinutes() < 120)
                 .orElse(false);
     }
 }

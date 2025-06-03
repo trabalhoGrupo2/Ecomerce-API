@@ -2,17 +2,7 @@ package org.serratec.h2.grupo2.DTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import org.serratec.h2.grupo2.domain.Categoria;
 import org.serratec.h2.grupo2.domain.Foto;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -43,7 +33,7 @@ public class ProdutoRequestDTO {
 	
 	private BigDecimal precoPromocional;
 	
-	private BigDecimal estoque;
+	private Integer estoque;
 	
 	private String fabricante;
 	
@@ -95,11 +85,11 @@ public class ProdutoRequestDTO {
 		this.precoPromocional = precoPromocional;
 	}
 
-	public BigDecimal getEstoque() {
+	public Integer getEstoque() {
 		return estoque;
 	}
 
-	public void setEstoque(BigDecimal estoque) {
+	public void setEstoque(Integer estoque) {
 		this.estoque = estoque;
 	}
 

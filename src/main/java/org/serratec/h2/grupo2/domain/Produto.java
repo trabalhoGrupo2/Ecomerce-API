@@ -4,12 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-=======
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
->>>>>>> f2e2b20e49d869dfc56536af2da18608646a65b6
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,10 +19,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import lombok.NoArgsConstructor;
 
-
-@NoArgsConstructor
 @Entity
 @Table(name="produto")
 public class Produto {
@@ -41,8 +33,7 @@ public class Produto {
 	
 	@Column(name="descricao", nullable=false, length=255)
 	private String descricao;
-	
-	
+
     @NotNull(message = "Categoria é obrigatória")
 	@ManyToOne
 	@JoinTable(name="id_categoria")
@@ -55,7 +46,7 @@ public class Produto {
 	private BigDecimal precoPromocional;
 	
 	@DecimalMin(value="0", message="O estoque não pode ser negativo")
-	private BigDecimal estoque;
+	private Integer estoque;
 	
 	@Column(name="fabricante", nullable=false, length=50)
 	private String fabricante;
@@ -67,16 +58,13 @@ public class Produto {
 	private LocalDate dataAtualizacao;
 
 	// Relação entre foto e produto
-	// @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL)
-	@OneToOne(cascade = CascadeType.ALL)
+	// OrphanRemoval faz a foto ser deletada junto com o produto
+	@OneToOne(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Foto foto;
 	
 	@OneToMany(mappedBy = "produto")
 	private List<ItemPedido> itens = new ArrayList<>();
-<<<<<<< HEAD
 
-=======
-	
 	@PrePersist
 	private void oncreate() {
 		this.ativo = true;
@@ -132,11 +120,11 @@ public class Produto {
 		this.precoPromocional = precoPromocional;
 	}
 
-	public BigDecimal getEstoque() {
+	public Integer getEstoque() {
 		return estoque;
 	}
 
-	public void setEstoque(BigDecimal estoque) {
+	public void setEstoque(Integer estoque) {
 		this.estoque = estoque;
 	}
 
@@ -188,6 +176,5 @@ public class Produto {
 		this.itens = itens;
 	}
 	
->>>>>>> f2e2b20e49d869dfc56536af2da18608646a65b6
 }
 
