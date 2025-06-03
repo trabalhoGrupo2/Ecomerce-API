@@ -1,163 +1,113 @@
 package org.serratec.h2.grupo2.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.serratec.h2.grupo2.DTO.FreteDTO;
-import org.serratec.h2.grupo2.DTO.PedidoRequestDTO;
-import org.serratec.h2.grupo2.DTO.PedidoResponseDTO;
-import org.serratec.h2.grupo2.domain.Pedido;
-import org.serratec.h2.grupo2.mapper.PedidoMapper;
-import org.serratec.h2.grupo2.repository.PedidoRepository;
+import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
+import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
 import org.serratec.h2.grupo2.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.persistence.EntityNotFoundException;
-
-// Swagger/OpenAPI imports
-import io.swagger.v3.oas.annotations.Operation;                
-import io.swagger.v3.oas.annotations.Parameter;                
-import io.swagger.v3.oas.annotations.tags.Tag;                  
-import io.swagger.v3.oas.annotations.responses.ApiResponse;     
-import io.swagger.v3.oas.annotations.responses.ApiResponses;    
-import io.swagger.v3.oas.annotations.media.Content;             
-import io.swagger.v3.oas.annotations.media.Schema;              
 @RestController
-@RequestMapping("/api/pedidos")
-// Swagger
-@Tag(name = "Pedidos", description = "Endpoints para gerenciamento de pedidos")
+@RequestMapping("/pedidos")
 public class PedidoController {
 
     @Autowired
-    private PedidoService pedidoService;
 
-    @Autowired
-    private PedidoRepository repository;
+    private PedidoService service;
 
-    @Autowired
-    private PedidoMapper pedidoMapper;
-
-    // Criar novo pedido
-    @Operation(summary = "Criar novo pedido", description = "Insere um novo pedido com os dados fornecidos") // Swagger
-    @ApiResponses({ 
-        @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), 
-        @ApiResponse(responseCode = "400", description = "Dados inválidos para criação") // Swagger
-    })//swagger
-    @PostMapping
-    public ResponseEntity<PedidoResponseDTO> criarPedido(@RequestBody PedidoRequestDTO pedidoDTO) {
-        Pedido pedido = pedidoService.criarPedido(pedidoDTO);
-        PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
-        return ResponseEntity.ok(dto);
+    //ADICIONA UM PRODUTO NO PEDIDO
+    @PostMapping("/adicionar")
+    public PedidoAndamentoResponseDto adicionarProdutoPedido(@RequestParam Long idProduto, @RequestParam Integer quantidade) {
+    	return service.adicionarProdutoPedido(idProduto, quantidade);
+    }
+   
+    //FINALIZAR PEDIDO, ELE VAI PRA ROTA DE ENTREGA + E-MAIL
+    @PostMapping("/finalizar")
+    public PedidoFinalizadoResponseDto finalizarPedido(@RequestParam(required = false) String codigoDesconto) {
+        return service.finalizarPedido(codigoDesconto);
+    }
+    
+    //DIMINUIR A QUANTIDADE DE UM PRODUTO NO PEDIDO
+    @PatchMapping("/diminuir/{itemId}")
+    public PedidoAndamentoResponseDto diminuirQuantidade(@PathVariable Long itemId) {
+    	return service.diminuirQuantidade(itemId);
+    }
+    
+    //AUMENTAR A QUANTIDADE DE UM PRODUTO NO PEDIDO
+    @PatchMapping("/aumentar/{itemId}")
+    public PedidoAndamentoResponseDto aumentarQuantidade(@PathVariable Long itemId) {
+    	return service.aumentarQuantidade(itemId);
+    }
+    
+    //EXLUIR UM ITEM DO PEDIDO
+    @DeleteMapping("/excluir/item/{itemId}")
+    public PedidoAndamentoResponseDto excluirItem(@PathVariable Long itemId) {
+    	return service.excluirItem(itemId);
+    }
+    
+    //CANCELAMENTO DE UM PEDIDO QUE ESTAVA EM ROTA DE ENTREGA + E-MAIL
+    @PatchMapping("/cancelar/{idPedido}")
+    public ResponseEntity<String> cancelarPedido(@PathVariable Long idPedido) {
+    	return service.cancelarPedido(idPedido);
+    }
+    
+    //LISTAR PEDIDOS EM ENTREGA DO PRÓPRIO CLIENTE
+    @GetMapping("/em-entrega")
+    public List<PedidoAndamentoResponseDto> pedidosEmEntrega() {
+    	return service.pedidosEmEntrega();
+    }
+    
+    //LISTAR PEDIDOS FINALIZADOS DO PRÓPRIO CLIENTE
+    @GetMapping("/finalizados")
+    public List<PedidoAndamentoResponseDto> pedidosFinalizados() {
+    	return service.pedidosFinalizados();
+    }
+    
+    //LISTAR PEDIDOS CANCELADOS DO PRÓRPRIO CLIENTE
+    @GetMapping("/cancelados")
+    public List<PedidoAndamentoResponseDto> pedidosCancelados() {
+    	return service.pedidosCancelados();
+    }
+    
+    //FUNCINÁRIO
+    
+    //LISTAR TODOS OS PEDIDOS EM ANDAMENTOS
+    @GetMapping("/listar-pedidos-andamento")
+    public List<PedidoAndamentoResponseDto> pedidoAndamentoFuncionario () {
+    	return service.pedidoAndamentoFuncionario();
+    }
+    
+    //LISTAR TODOS OS PEDIDOS EM ROTA DE ENTREGA
+    @GetMapping("/listar-pedidos-entregues")
+    public List<PedidoAndamentoResponseDto> pedidosEntregaFuncionario () {
+    	return service.pedidosEntregaFuncionario();
+    }
+    
+    //LISTAR TODOS OS PEDIDO FINALIZADOS
+    @GetMapping("/listar-pedidos-finalizados")
+    public List<PedidoAndamentoResponseDto> pedidosFinalizadosFuncionario () {
+    	return service.pedidosFinalizadosFuncionario();
+    }
+    
+    //LISTAR TODOS OS PEDIDOS CANCELADOS
+    @GetMapping("/listar-pedidos-cancelados")
+    public List<PedidoAndamentoResponseDto> pedidosCanceladosFuncionario () {
+    	return service.pedidosCanceladosFuncionario();
+    }
+    
+    //FUNCIONÁRIO LISTA TODOS OS PEDIDOS DO CLIENTE PELO ID
+    @GetMapping("/pedidos-por-cliente/{idCliente}")
+    public List<PedidoAndamentoResponseDto> pedidosCliente(@PathVariable Long idCliente) {
+    	return service.pedidosCliente(idCliente);
     }
 
-    // Editar pedido pelo ID
-    @Operation(summary = "Editar pedido", description = "Edita um pedido existente pelo ID") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), // Swagger
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<PedidoResponseDTO> editarPedido(
-            @Parameter(description = "ID do pedido a ser editado", example = "1") @PathVariable Long id, // Swagger
-            @RequestBody PedidoRequestDTO pedidoDTO) {
-        Pedido pedido = pedidoService.editarPedido(id, pedidoDTO);
-        PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
-        return ResponseEntity.ok(dto);
-    }
-
-    // Alterar status do pedido
-    @Operation(summary = "Alterar status do pedido", description = "Altera o status do pedido pelo ID") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Status do pedido alterado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), // Swagger
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
-    })
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<PedidoResponseDTO> alterarStatus(
-            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id, // Swagger
-            @Parameter(description = "Novo status do pedido", example = "ENVIADO") @RequestParam String status) { // Swagger
-        Pedido pedido = pedidoService.alterarStatus(id, status);
-        PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
-        return ResponseEntity.ok(dto);
-    }
-
-    // Buscar pedido por ID
-    @Operation(summary = "Buscar pedido por ID", description = "Busca um pedido pelo seu ID") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Pedido encontrado",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))), // Swagger
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<PedidoResponseDTO> buscarPorId(
-            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id) { // Swagger
-        Pedido pedido = pedidoService.buscarPorId(id);
-        PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
-        return ResponseEntity.ok(dto);
-    }
-
-    // Listar todos os pedidos
-    @Operation(summary = "Listar todos os pedidos", description = "Retorna uma lista com todos os pedidos") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Lista de pedidos retornada com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))) // Swagger
-    })
-    @GetMapping
-    public ResponseEntity<List<PedidoResponseDTO>> listarTodos() {
-        List<Pedido> pedidos = pedidoService.listarTodos();
-        List<PedidoResponseDTO> dtos = pedidos.stream()
-            .map(pedidoMapper::toResponse)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-
-    // Remover pedido pelo ID
-    @Operation(summary = "Remover pedido", description = "Remove um pedido pelo seu ID") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "204", description = "Pedido removido com sucesso"), // Swagger
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@Parameter(description = "ID do pedido a ser removido", example = "1") @PathVariable Long id) { // Swagger
-        Pedido pedido = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pedido com ID " + id + " não encontrado."));
-        repository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Listar pedidos por cliente
-    @Operation(summary = "Listar pedidos por cliente", description = "Retorna pedidos filtrados pelo ID do cliente") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Pedidos retornados com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))) // Swagger
-    })
-    @GetMapping("/por-cliente")
-    public ResponseEntity<List<PedidoResponseDTO>> listarPorCliente(
-            @Parameter(description = "ID do cliente", example = "1") @RequestParam Long clienteId) { // Swagger
-        List<Pedido> pedidos = pedidoService.listarPorClienteId(clienteId);
-        List<PedidoResponseDTO> dtos = pedidos.stream()
-            .map(pedidoMapper::toResponse)
-            .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
-    }
-
-    // Calcular frete do pedido
-    @Operation(summary = "Calcular frete do pedido", description = "Calcula o frete do pedido pelo ID e distância em km") // Swagger
-    @ApiResponses({ // Swagger
-        @ApiResponse(responseCode = "200", description = "Frete calculado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PedidoResponseDTO.class))) // Swagger
-        ,
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado") // Swagger
-    })
-    @PatchMapping("/{id}/frete")
-    public ResponseEntity<PedidoResponseDTO> calcularFrete(
-            @Parameter(description = "ID do pedido", example = "1") @PathVariable Long id, // Swagger
-            @RequestBody FreteDTO freteDTO) {
-        Pedido pedido = pedidoService.calcularFrete(id, freteDTO.getDistanciaKm());
-        PedidoResponseDTO dto = pedidoMapper.toResponse(pedido);
-        return ResponseEntity.ok(dto);
-    }
 }

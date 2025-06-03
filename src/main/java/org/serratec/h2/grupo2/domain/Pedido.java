@@ -48,9 +48,9 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
-    private String codigoDesconto;  // campo para salvar o cupom
+    private String codigoDesconto;  //LUCAS - código de desconto usado no pedido
 
-    private BigDecimal valorFinal;
+    private BigDecimal valorFinal;  //LUCAS - valor final após desconto
 
     public void adicionarItem(ItemPedido item) {
         item.setPedido(this);
@@ -68,4 +68,34 @@ public class Pedido {
             .filter(valor -> valor != null)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    //LUCAS - Getter e Setter para códigoDesconto
+    public String getCodigoDesconto() {
+        return codigoDesconto;
+    }
+
+    public void setCodigoDesconto(String codigoDesconto) {
+        this.codigoDesconto = codigoDesconto;
+    }
+
+    //LUCAS - Getter e Setter para valorFinal
+    public BigDecimal getValorFinal() {
+        return valorFinal;
+    }
+
+    public void setValorFinal(BigDecimal valorFinal) {
+        this.valorFinal = valorFinal;
+    }
+
+	public BigDecimal getPrecoTotal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPrecoTotal(BigDecimal valorTotal) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

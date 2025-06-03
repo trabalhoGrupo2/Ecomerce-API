@@ -1,14 +1,21 @@
 package org.serratec.h2.grupo2.domain;
 
 import java.math.BigDecimal;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ItemPedido {
 
@@ -31,6 +38,7 @@ public class ItemPedido {
     private BigDecimal desconto = BigDecimal.ZERO; //  Desconto por item
 
     private BigDecimal precoTotal;
+
 
     public void calcularTotal() {
         if (quantidade != null && precoUnitario != null) {
@@ -93,3 +101,6 @@ public class ItemPedido {
         this.precoTotal = precoTotal;
     }
 }
+
+
+

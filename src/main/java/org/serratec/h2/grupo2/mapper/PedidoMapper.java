@@ -1,70 +1,79 @@
 package org.serratec.h2.grupo2.mapper;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import org.serratec.h2.grupo2.DTO.ItemPedidoResponseDTO;
-import org.serratec.h2.grupo2.DTO.cliente.ClienteResponseDto;
-import org.serratec.h2.grupo2.DTO.PedidoResponseDTO;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.serratec.h2.grupo2.DTO.pedido.ItemIndisponivel;
+import org.serratec.h2.grupo2.DTO.pedido.ItemResponseDto;
+import org.serratec.h2.grupo2.DTO.pedido.PedidoAndamentoResponseDto;
+import org.serratec.h2.grupo2.DTO.pedido.PedidoFinalizadoResponseDto;
 import org.serratec.h2.grupo2.domain.ItemPedido;
 import org.serratec.h2.grupo2.domain.Pedido;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PedidoMapper {
+	
+	public ItemResponseDto itemToResponse(ItemPedido item) {
+		ItemResponseDto itemResponse = new ItemResponseDto();
+		
+		itemResponse.setCodigo(item.getId());
+		itemResponse.setNome(item.getProduto().getNome());
+		itemResponse.setPrecoTotal(item.getPrecoTotal());
+		itemResponse.setPrecoUnitario(item.getPrecoUnitario());
+		itemResponse.setQuantidade(item.getQuantidade());
+		
+		return itemResponse;
+	}
+	
+	public List<ItemResponseDto>  toResponseItensList(List<ItemPedido> listItems) {
+		List<ItemResponseDto> listResponse = new ArrayList<>();
+		
+		for(ItemPedido item : listItems) {
+			listResponse.add(itemToResponse(item));
+		}
+		return listResponse;
+	}
+	
+	public PedidoAndamentoResponseDto toResponse (Pedido pedido) {
+		PedidoAndamentoResponseDto response = new PedidoAndamentoResponseDto();
+		
+		response.setCodigo(pedido.getId());
+		response.setItens(toResponseItensList(pedido.getItens()));
+		response.setStatusPedido(pedido.getStatus());
+		response.setValorFrete(pedido.getValorFrete());
+		response.setPrecoTotal(pedido.getPrecoTotal());
+		
+		return response;
+	}
+	
+	public PedidoFinalizadoResponseDto toResponseFinalizado(Pedido pedido, List<ItemIndisponivel> itensIndisponiveis) {
+		PedidoFinalizadoResponseDto response = new PedidoFinalizadoResponseDto();
+		
+		response.setCodigo(pedido.getId());
+		response.setNome(pedido.getCliente().getNome());
+		response.setItens(toResponseItensList(pedido.getItens()));
+		response.setItensIndisponiveis(itensIndisponiveis);
+		response.setDataDeFinalizacao(LocalDate.now());
+		response.setStatus(pedido.getStatus());
+		response.setEnderecoEntrega(pedido.getCliente().getEndereco());
+		response.setValorFrete(pedido.getValorFrete());
+		response.setPrecoTotal(pedido.getPrecoTotal());
 
-    // Converte entidade Pedido para PedidoResponseDTO // Swagger (método de conversão DTO)
-    public PedidoResponseDTO toResponse(Pedido pedido) { // Swagger
-        PedidoResponseDTO dto = new PedidoResponseDTO();
-        dto.setId(pedido.getId());
-
-        // Mapear cliente para ClienteResponseDto
-        ClienteResponseDto clienteDto = new ClienteResponseDto();
-        clienteDto.setId(pedido.getCliente().getId());
-        clienteDto.setNome(pedido.getCliente().getNome());
-        clienteDto.setCpf(pedido.getCliente().getCpf());
-        clienteDto.setDataDeNascimento(pedido.getCliente().getDataDeNascimento());
-        clienteDto.setTelefone(pedido.getCliente().getTelefone());
-
-        // Pegar email da conta com verificação de null para evitar erros
-        if (pedido.getCliente().getConta() != null && pedido.getCliente().getConta().getEmail() != null) {
-            clienteDto.setEmail(pedido.getCliente().getConta().getEmail());
-        } else {
-            clienteDto.setEmail(null);
-        }
-
-        clienteDto.setEndereco(pedido.getCliente().getEndereco());
-        dto.setCliente(clienteDto);
-
-        // Mapear itens para List<ItemPedidoResponseDTO>
-        List<ItemPedidoResponseDTO> itensDto = pedido.getItens().stream()
-            .map(this::toItemPedidoResponseDTO) // Swagger (conversão itens)
-            .collect(Collectors.toList());
-        dto.setItens(itensDto);
-
-        dto.setStatus(pedido.getStatus().name());
-        dto.setDataCriacao(pedido.getDataCriacao());
-        dto.setCodigoDesconto(pedido.getCodigoDesconto());
-        dto.setValorTotal(pedido.getItens().stream()
-            .map(ItemPedido::getPrecoTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add));
-        dto.setValorFinal(pedido.getValorFinal());
-
-        return dto;
-    }
-
-    // Converte entidade ItemPedido para ItemPedidoResponseDTO // Swagger (método de conversão DTO)
-    public ItemPedidoResponseDTO toItemPedidoResponseDTO(ItemPedido item) { // Swagger
-        ItemPedidoResponseDTO dto = new ItemPedidoResponseDTO();
-        dto.setId(item.getId());
-        dto.setProdutoId(item.getProduto().getId());
-        dto.setNomeProduto(item.getProduto().getNome());
-        dto.setQuantidade(item.getQuantidade());
-        dto.setPrecoUnitario(item.getPrecoUnitario());
-        dto.setDesconto(item.getDesconto());
-        dto.setPrecoTotal(item.getPrecoTotal());
-        return dto;
-    }
+		return response;
+	}
+	
+	public List<PedidoAndamentoResponseDto> toListResponse(List<Pedido> listPedidos) {
+		List<PedidoAndamentoResponseDto> responseList = new ArrayList<>();
+		
+		for(Pedido pedido: listPedidos) {
+			PedidoAndamentoResponseDto response = new PedidoAndamentoResponseDto();
+			response = toResponse(pedido);
+			responseList.add(response);
+		}
+		
+		return responseList;
+	}
 }
-

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.serratec.h2.grupo2.DTO.cliente.ClienteResponseDto;  // import do DTO do cliente
+import org.serratec.h2.grupo2.DTO.cliente.ClienteResponseDto;  // DTO do cliente
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -12,35 +12,27 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 public class PedidoResponseDTO {
 
-    // Swagger, ID do pedido
     @Schema(description = "ID do pedido", example = "1")
-    private Long id;                     
+    private Long id;
 
-    // Swagger, Dados do cliente
     @Schema(description = "Dados do cliente", required = true)
-    private ClienteResponseDto cliente;    
+    private ClienteResponseDto cliente;
 
-    // Swagger, Lista de itens do pedido
     @Schema(description = "Lista dos itens do pedido", required = true)
-    private List<ItemPedidoResponseDTO> itens;  // considere criar este DTO para ItemPedido
+    private List<ItemPedidoResponseDTO> itens;
 
-    // Swagger, Status do pedido
     @Schema(description = "Status do pedido (ex: PAGO, ENVIADO)", example = "PAGO")
-    private String status;                
+    private String status;
 
-    // Swagger, Data de criação do pedido
     @Schema(description = "Data de criação do pedido", example = "2023-06-10")
-    private LocalDate dataCriacao;        
+    private LocalDate dataCriacao;
 
-    // Swagger, Valor total do pedido
     @Schema(description = "Valor total do pedido (somatório dos itens)", example = "250.00")
-    private BigDecimal valorTotal;        
+    private BigDecimal valorTotal;
 
-    // Swagger, Código de desconto
     @Schema(description = "Código de desconto aplicado ao pedido", example = "DESCONTO10")
     private String codigoDesconto;
 
-    // Swagger, Valor final do pedido após desconto
     @Schema(description = "Valor final do pedido após desconto", example = "225.00")
     private BigDecimal valorFinal;
 
@@ -93,7 +85,7 @@ public class PedidoResponseDTO {
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
-    
+
     public String getCodigoDesconto() {
         return codigoDesconto;
     }
