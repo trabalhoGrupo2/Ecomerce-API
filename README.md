@@ -61,6 +61,15 @@ Para testar com carinho cada funcionalidade, você pode importar nossa **coleç�
 - ✅ Postman
 - ✅ Maven
 
+## 📮 Partes Indivíduais
+
+- 🌻 CAUÃ DA SILVA PACHECO – controle autenticação e autorização;
+- 🌼 DANDARA LIMA FERREIRA - endpoint produtos em promoção;
+- 🌷 KAREN LESSA DA SILVA MENEZES - Cálculo de frete;
+- 🌺 LUCAS JOSÉ DO PRADO SOUZA - Endpoint Relatório Clientes agrupado por UF-cidade;
+- 🌸 MARIA EDUARDA DOS SANTOS PEREIRA ARAGÃO - Confirmação de conta do cliente por email;
+- 🌹 MARLOS SALLES BIANNA - Inclusão de foto no cadastro de produtos.
+
 
 ## 🌈 Considerações finais
 
